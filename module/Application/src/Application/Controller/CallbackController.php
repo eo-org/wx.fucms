@@ -10,20 +10,36 @@ class CallbackController extends AbstractActionController
 {
     public function indexAction()
     {
+    	
+//     	$q = $this->params()->fromQuery();
+    	
+//     	print_r($q);
+    	
+    	
     	$postArr = $this->params()->fromPost();
+//     	if($this->getRequest()->isPost()) {
+//     		$postData = $this->getRequest()->getPost();
+//     		print_r($postData);
+    		
+//     		print_r($postArr);
+    		
+//     		die();
+//     	}
+//     	print_r($postArr);
+//     	die();
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	$doc = $dm->createQueryBuilder('Application\Document\Admin')
     					->field('appSecret')->equals('0c79e1fa963cd80cc0be99b20a18faeb')
     					->getQuery()
     					->getSingleResult();
     	if($doc){
-    		if($postArr){
+//     		if($postArr){
     			$doc->setAppId('demo');
     			$doc->setData($postArr);
     			if(isset($postArr['ComponentVerifyTicket'])){
     				$doc->seTticket($postArr['ComponentVerifyTicket']);
     			}
-    		}    		
+//     		}    		
     	}else {
     		$doc = new Admin();
     		$data = array(
