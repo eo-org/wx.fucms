@@ -2,7 +2,8 @@
 return array(
 	'controllers' => array(
         'invokables' => array(
-            'app'			=> 'Application\Controller\IndexController'
+            'app'			=> 'Application\Controller\IndexController',
+        	'callback'		=> 'Application\Controller\CallbackController',
         ),
     ),
     'router' => array(
@@ -18,39 +19,50 @@ return array(
                 ),
             	'may_terminate' => true
             ),
-        	'admin' => array(
-				'type' => 'literal',
-        		'options'=> array(
-        			'route'	=> '/admin',
+        	'callback' => array(
+        		'type'    => 'literal',
+        		'options' => array(
+        			'route'    => '/callback',
         			'defaults' => array(
-        				'controller' => 'app',
-        				'action' => 'index'
-        			)
+        				'controller'    => 'callback',
+        				'action'        => 'index',
+        			),
         		),
-        		'may_terminate' => true,
-        		'child_routes' => array(
-        			'actionroutes' => array(
-        				'type' => 'segment',
-        				'options' => array(
-        					'route' => '[/:controller][/:action]',
-        					'constraints' => array(
-        						'controller' => '[a-z-]*',
-        						'action' => '[a-z-]*'
-        					),
-        					'defaults' => array(
-        						'controller' => 'app',
-        						'action' => 'index'
-        					)
-        				),
-        				'may_terminate' => true,
-        				'child_routes' => array(
-        					'wildcard' => array(
-        						'type' => 'wildcard'
-        					)
-        				)
-        			)
-        		)
-			),
+        		'may_terminate' => true
+             ),
+//         	'admin' => array(
+// 				'type' => 'literal',
+//         		'options'=> array(
+//         			'route'	=> '/admin',
+//         			'defaults' => array(
+//         				'controller' => 'app',
+//         				'action' => 'index'
+//         			)
+//         		),
+//         		'may_terminate' => true,
+//         		'child_routes' => array(
+//         			'actionroutes' => array(
+//         				'type' => 'segment',
+//         				'options' => array(
+//         					'route' => '[/:controller][/:action]',
+//         					'constraints' => array(
+//         						'controller' => '[a-z-]*',
+//         						'action' => '[a-z-]*'
+//         					),
+//         					'defaults' => array(
+//         						'controller' => 'app',
+//         						'action' => 'index'
+//         					)
+//         				),
+//         				'may_terminate' => true,
+//         				'child_routes' => array(
+//         					'wildcard' => array(
+//         						'type' => 'wildcard'
+//         					)
+//         				)
+//         			)
+//         		)
+// 			),
         	'admrs' => array(
         		'type'    => 'literal',
         		'options' => array(
