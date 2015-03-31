@@ -11,8 +11,8 @@ class CallbackController extends AbstractActionController
     public function indexAction()
     {
     	$q = $this->params()->fromQuery();
-    	$postArr = $this->params()->fromPost();
-    	$s = $_SERVER;
+    	$postArr = file_get_contents('php://input');
+    	
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	$doc = $dm->createQueryBuilder('Application\Document\Admin')
     					->field('appSecret')->equals('0c79e1fa963cd80cc0be99b20a18faeb')
@@ -23,7 +23,7 @@ class CallbackController extends AbstractActionController
     		if($postArr){
     			$doc->setData($postArr);
    			}else {
-   				$doc->setData(array('s'=> $s, 'q'=>$q));
+   				$doc->setData(array('q'=>$q));
    			}
     	}else {
     		$doc = new Admin();
