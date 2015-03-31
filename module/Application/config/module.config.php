@@ -83,7 +83,8 @@ return array(
             'error/index'				=> __DIR__ . '/../view/error/index.phtml',
         	'layout/error'				=> __DIR__ . '/../view/layout/error.phtml',
         	'layout/layout'				=> __DIR__ . '/../view/layout/layout.phtml',
-        	'application/index/index'	=> __DIR__ . '/../view/application/index/index.phtml',
+        	'application/index/index'	=> __DIR__ . '/../view/index/index.phtml',
+        	'application/index/login'	=> __DIR__ . '/../view/index/login.phtml',
         ),
     	'strategies' => array(
     		'ViewJsonStrategy'

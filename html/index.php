@@ -19,6 +19,7 @@ include BASE_PATH . '/inc/Zend/Loader/StandardAutoloader.php';
 $autoLoader = new Zend\Loader\StandardAutoloader(array(
 	'namespaces' => array(
 		'Zend'		=> BASE_PATH . '/inc/Zend',
+		'Doctrine'	=> BASE_PATH . '/inc/Doctrine',
 	)
 ));
 $autoLoader->register();

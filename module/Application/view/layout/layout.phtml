@@ -20,68 +20,10 @@
 </head>
 <body>
 <div class='page-container'>
-	<div id='header' class='header'>
-		<div class='container-fluid'>
-			<div class='navbar-header'>
-				<a href='/' class='navbar-brand'>Fucms Accounts</a>
-				<butt on type='button' class='navbar-toggle' data-click='sidebar-toggled'>
-					<span class='icon-bar'></span>
-					<span class='icon-bar'></span>
-					<span class='icon-bar'></span>
-				</button>
-			</div>
-			<ul class='nav navbar-nav navbar-right'>
-				<li class='dropdown'>
-					<a href='' class='dropdown-toggle'>
-						<span>Gavin</span>
-						<b class='caret'></b>
-					</a>
-					<ul class='dropdown-menu'>
-						<li class='arrow'></li>
-						<li>
-							<a href=''>Edit Profile</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-	</div>
-	<div id='sidebar' class='sidebar'>
-		<div class='slim-scroll'>
-			<div class='nav-profile'>
-				<div class='info'>
-					Gavin
-					<small>Web Admin</small>
-				</div>
-			</div>
-			<ul class='nav'>
-				<li class='nav-header'>Navigation</li>
-				<li class='<?php echo $this->controller == 'client' ? 'active' : '' ?>'><a href='/admin/client'><i class='fa fa-th-list'></i>Client List</a></li>
-				<li class='<?php echo $this->controller == 'website' ? 'active' : '' ?>'><a href='/admin/website'><i class='fa fa-laptop'></i>Website List</a></li>
-			</ul>
-		</div>
-	</div>
 	
 	<div id='content' class='content'>
-		<ol class="breadcrumb">
-			<li><a href="/admin">home</a></li>
-			<li><a href="<?php echo $this->url('admin/actionroutes', array('controller' => $this->controller, 'action' => 'index'))?>"><?php echo $this->controller ?></a></li>
-			<?php if($this->action != 'index') {?>
-			<li class="active"><?php echo $this->action?></li>
-			<?php }?>
-		</ol>
 		<?php echo $this->content; ?>
 	</div>
 </div>
-<script>
-	var adminApp = angular.module('adminApp', appRequiredModules);
-	
-	$('.slim-scroll').slimScroll({
-		height: 'auto',
-		railColor: '#ffffff',
-		railOpacity: 0.8
-	});
-</script>
-<script src='<?php echo $this->path('account')?>/account/ng/main.js'></script>
 </body>
 </html>
