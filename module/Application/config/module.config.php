@@ -3,7 +3,7 @@ return array(
 	'controllers' => array(
         'invokables' => array(
             'app'			=> 'Application\Controller\IndexController',
-        	'callback'		=> 'Application\Controller\CallbackController',
+        	'Application\Controller\CallbackController'		=> 'Application\Controller\CallbackController',
         ),
     ),
     'router' => array(
@@ -17,19 +17,31 @@ return array(
                         'action'        => 'index',
                     ),
                 ),
-            	'may_terminate' => true
+            	'may_terminate' => true,
+            	'child_routes' => array(
+            		'callback' => array(
+            			'type' => 'segment',
+            			'options' => array(
+            				'route' => 'callback',
+            				'defaults' => array(
+            					'controller'    => 'Application\Controller\CallbackController',
+                				'action'        => 'index',
+                  			)
+            			)
+            		)
+            	)
             ),
-        	'callback' => array(
-        		'type'    => 'literal',
-        		'options' => array(
-        			'route'    => '/callback',
-        			'defaults' => array(
-        				'controller'    => 'callback',
-        				'action'        => 'index',
-        			),
-        		),
-        		'may_terminate' => true
-             ),
+//         	'callback' => array(
+//         		'type'    => 'literal',
+//         		'options' => array(
+//         			'route'    => '/callback',
+//         			'defaults' => array(
+//         				'controller'    => 'callback',
+//         				'action'        => 'index',
+//         			),
+//         		),
+//         		'may_terminate' => true
+//              ),
 //         	'admin' => array(
 // 				'type' => 'literal',
 //         		'options'=> array(
