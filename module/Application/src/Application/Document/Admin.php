@@ -32,6 +32,11 @@ class Admin extends AbstractDocument
 	 */
 	protected $ticket;
 	
+	/**
+	 * @ODM\Field(type="hash")
+	 */
+	protected $data;
+	
 	public function exchangeArray($data)
 	{
 		if(isset($data['appId'])){
@@ -46,6 +51,9 @@ class Admin extends AbstractDocument
 			$this->ticket = $data['ticket'];
 		}
 		
+		if(isset($data['data'])){
+			$this->data = $data['data'];
+		}
 	}
 	public function getArrayCopy()
 	{

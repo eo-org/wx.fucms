@@ -17,7 +17,7 @@ return array(
 			'appId' => 'wx2ce4babba45b702d',
 			'appSecret' => '0c79e1fa963cd80cc0be99b20a18faeb',
 			'token' => 'fucmsweb2015weixinopen888',
-			'key' => 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqco4',
+			'encryptKey' => 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqco4',
 		),
 	),
 );
