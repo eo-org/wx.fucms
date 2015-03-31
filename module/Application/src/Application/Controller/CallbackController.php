@@ -2,7 +2,7 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
+use Zend\View\Model\ConsoleModel;
 use Application\Session\User;
 use Application\Document\Admin as Admin;
 
@@ -36,7 +36,7 @@ class CallbackController extends AbstractActionController
     	
     	$dm->persist($doc);
     	$dm->flush();
-    	return new JsonModel(array('id' => $doc->getId()));
+    	return new ConsoleModel();
     }
     
     public function loginAction()

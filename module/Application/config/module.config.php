@@ -108,7 +108,7 @@ return array(
         	'layout/error'				=> __DIR__ . '/../view/layout/error.phtml',
         	'layout/layout'				=> __DIR__ . '/../view/layout/layout.phtml',
         	'application/index/index'	=> __DIR__ . '/../view/index/index.phtml',
-        	'application/index/login'	=> __DIR__ . '/../view/index/login.phtml',
+        	'application/callback/index'=> __DIR__ . '/../view/callback/index.phtml'
         ),
     	'strategies' => array(
     		'ViewJsonStrategy'
