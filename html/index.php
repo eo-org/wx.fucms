@@ -20,6 +20,7 @@ $autoLoader = new Zend\Loader\StandardAutoloader(array(
 	'namespaces' => array(
 		'Zend'		=> BASE_PATH . '/inc/Zend',
 		'Doctrine'	=> BASE_PATH . '/inc/Doctrine',
+		'Core'		=> BASE_PATH . '/inc/Core',
 	)
 ));
 $autoLoader->register();

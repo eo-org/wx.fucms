@@ -1,7 +1,9 @@
 <?php
 return array(
 	'env' => array(
-		'usage' => 'production',
+		'usage' => array(
+			'server' => 'production',
+		),
 		'base_path' => '/var/www',
 		'path' => array(
 			'fucms' => 'http://lib-media.qiniudn.com/fucms',
