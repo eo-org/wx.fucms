@@ -1,13 +1,27 @@
 <div ng-controller="wxCtrl">
 	<a ng-href="https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=wx2ce4babba45b702d&pre_auth_code={{authModel.preAuthCode}}&redirect_uri=http://wx.fucmsweb.com/callback" class="btn btn-primary">authorised</a>
 </div>
+
+
+
+
+
+<!-- <form action='/callback' method='POST'> -->
+<!-- 	<input type='hidden' name='test' value='a string' /> -->
+<!-- 	<input type='submit' name='submit' value='submit' /> -->
+<!-- </form> -->
+
+
 <script>
 	var adminApp = angular.module('adminApp',[]);
 	adminApp.controller('wxCtrl', ['$scope', '$http', function($scope, $http){
 		$scope.authModel = {};
-		$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=wx2ce4babba45b702d').success(function(data){
-			console.log(data.pre_auth_code);
-			$scope.authModel.preAuthCode = data.pre_auth_code;
-		});		
+// 		$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=wx2ce4babba45b702d').success(function(data){
+// 			console.log(data.pre_auth_code);
+// 			$scope.authModel.preAuthCode = data.pre_auth_code;
+// 		});
+		$http.post('/callback?a=b', {id:'demo',main:'text'}).success(function(data){
+			console.log(data);
+		});
 	}]);
 </script>

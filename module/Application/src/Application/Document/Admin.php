@@ -37,6 +37,11 @@ class Admin extends AbstractDocument
 	 */
 	protected $data;
 	
+	/**
+	 * @ODM\Field(type="date")
+	 */
+	protected $modified;
+	
 	public function exchangeArray($data)
 	{
 		if(isset($data['appId'])){

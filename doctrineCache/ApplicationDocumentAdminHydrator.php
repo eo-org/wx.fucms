@@ -66,6 +66,14 @@ class ApplicationDocumentAdminHydrator implements HydratorInterface
             $this->class->reflFields['data']->setValue($document, $return);
             $hydratedData['data'] = $return;
         }
+
+        /** @Field(type="date") */
+        if (isset($data['modified'])) {
+            $value = $data['modified'];
+            if ($value instanceof \MongoDate) { $date = new \DateTime(); $date->setTimestamp($value->sec); $return = $date; } else { $return = new \DateTime($value); }
+            $this->class->reflFields['modified']->setValue($document, clone $return);
+            $hydratedData['modified'] = $return;
+        }
         return $hydratedData;
     }
 }
