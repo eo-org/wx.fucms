@@ -5,7 +5,7 @@
 	var adminApp = angular.module('adminApp',[]);
 	adminApp.controller('wxCtrl', ['$scope', '$http', function($scope, $http){
 		$scope.authModel = {};
-		$http.post('https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=wx2ce4babba45b702d').success(function(data){
+		$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=wx2ce4babba45b702d').success(function(data){
 			console.log(data.pre_auth_code);
 			$scope.authModel.preAuthCode = data.pre_auth_code;
 		});		
