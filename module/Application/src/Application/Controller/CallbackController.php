@@ -18,7 +18,11 @@ class CallbackController extends AbstractActionController
     					->getSingleResult();
     	if($doc){
     		if($postArr){
-    			$doc->seTticket($postArr['ComponentVerifyTicket']);
+    			$doc->setAppId('demo');
+    			$doc->setData($postArr);
+    			if(isset($postArr['ComponentVerifyTicket'])){
+    				$doc->seTticket($postArr['ComponentVerifyTicket']);
+    			}
     		}    		
     	}else {
     		$doc = new Admin();

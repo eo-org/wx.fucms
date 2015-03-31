@@ -58,6 +58,14 @@ class ApplicationDocumentAdminHydrator implements HydratorInterface
             $this->class->reflFields['ticket']->setValue($document, $return);
             $hydratedData['ticket'] = $return;
         }
+
+        /** @Field(type="hash") */
+        if (isset($data['data'])) {
+            $value = $data['data'];
+            $return = $value;
+            $this->class->reflFields['data']->setValue($document, $return);
+            $hydratedData['data'] = $return;
+        }
         return $hydratedData;
     }
 }
