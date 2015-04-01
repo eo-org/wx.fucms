@@ -28,9 +28,17 @@
 		}
 		$http.get('/redirecturl').success(function(data){
 			tokenPostData.component_verify_ticket = data.ticket;
-			$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_component_token', tokenPostData).success(function(data){
-				console.log(data);
+			$.ajax({
+				url:'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
+				type:'POST',
+				data: tokenPostData,
+				success: function(data){
+					console.log(data);
+				}
 			});
+// 			$http.post('https://api.weixin.qq.com/cgi-bin/component/api_component_token').success(function(data){
+// 				console.log(data);
+// 			});
 		});		
 	}]);
 </script>
