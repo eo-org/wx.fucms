@@ -26,7 +26,7 @@ class Encrypt
 		$appId = $wx['appId'];
 		$this->pc = new \WXBizMsgCrypt($token, $encodingAesKey, $appId);
 		$this->msg_sign = $q['msg_signature'];
-		$this->timeStamp = $q['timetamp'];
+		$this->timeStamp = $q['timestamp'];
 		$this->nonce = $q['nonce'];
 	}
 	
