@@ -20,7 +20,7 @@
 // 			console.log(data.pre_auth_code);
 // 			$scope.authModel.preAuthCode = data.pre_auth_code;
 // 		});
-		$http.post('/callback?a=b', {id:'demo',main:'text'}).success(function(data){
+		$http.post('/callback?signature=fb14ea229115eacb37b4a15c055b1aa00694a9f5&timestamp=1427856622&nonce=1395081176&encrypt_type=aes&msg_signature=2283fafed043e7fb4e79c04c3e6e987f673c00d9', {id:'demo',main:'text'}).success(function(data){
 			console.log(data);
 		});
 	}]);
