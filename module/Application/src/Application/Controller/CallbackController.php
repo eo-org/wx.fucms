@@ -16,10 +16,10 @@ class CallbackController extends AbstractActionController
     	$serviceLocator = $this->getServiceLocator();
     	$wxEncrypt = new Encrypt($serviceLocator, $q);
     	
-    	$postData = '<xml>
-		    <AppId><![CDATA[wx2ce4babba45b702d]]></AppId>
-		    <Encrypt><![CDATA[K3cO8Z4PSJ91oORMInA2pNVcOrEqDshAKpGDxBQGN+GPmxjwSr78iuJxhqX7bGdmTEI9C2NBIGJJPtwHUD8XJo42Me9qrONmmr2gbOxxP5T4iihWoim7PRSljEl05XOTfYbDeJCSoPz2i8uNVDj9wB14LVvM2Qy2sREW2MmvuwccWB4+w8egmEL2LzWt6enhbLfLGHZw+qpQ1j0PJBioIjdZIUszZXKlelw0acnFv0pr+r/4SvtxnT7/AwOXNoMb/R9mSfJEL+P/v9BirID7WfIa0fGkVu7jWXBCxzlc6RFLjUAjlBffLGN0OveY2GO8GgWzTVs8qBIB7BuUNlPE/yVhPnRzzrlVsddawyb8TZhgPaFw7ZBcOwFUJodQoAuk9Wy8zBqGgItc2iQHPm08n2mEXQPgToh5XmCIeet1kr5MbmEVgPDppPSm1gljV6CiPpAZ73AjLcV2dS1oyW7IVA==]]></Encrypt>
-		</xml>';
+//     	$postData = '<xml>
+// 		    <AppId><![CDATA[wx2ce4babba45b702d]]></AppId>
+// 		    <Encrypt><![CDATA[K3cO8Z4PSJ91oORMInA2pNVcOrEqDshAKpGDxBQGN+GPmxjwSr78iuJxhqX7bGdmTEI9C2NBIGJJPtwHUD8XJo42Me9qrONmmr2gbOxxP5T4iihWoim7PRSljEl05XOTfYbDeJCSoPz2i8uNVDj9wB14LVvM2Qy2sREW2MmvuwccWB4+w8egmEL2LzWt6enhbLfLGHZw+qpQ1j0PJBioIjdZIUszZXKlelw0acnFv0pr+r/4SvtxnT7/AwOXNoMb/R9mSfJEL+P/v9BirID7WfIa0fGkVu7jWXBCxzlc6RFLjUAjlBffLGN0OveY2GO8GgWzTVs8qBIB7BuUNlPE/yVhPnRzzrlVsddawyb8TZhgPaFw7ZBcOwFUJodQoAuk9Wy8zBqGgItc2iQHPm08n2mEXQPgToh5XmCIeet1kr5MbmEVgPDppPSm1gljV6CiPpAZ73AjLcV2dS1oyW7IVA==]]></Encrypt>
+// 		</xml>';
     	$xml_tree = new \DOMDocument();
     	$xml_tree->loadXML($postData);
     	$array_e = $xml_tree->getElementsByTagName('Encrypt');
