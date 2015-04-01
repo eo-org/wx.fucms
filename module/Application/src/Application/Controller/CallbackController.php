@@ -43,6 +43,23 @@ class CallbackController extends AbstractActionController
     				$array_ticket = $xmlData->getElementsByTagName('ComponentVerifyTicket');
     				$ticket = $array_ticket->item(0)->nodeValue;
     			}
+    			if(!$doc->getAccessToken()){
+    				$config = $this->getServiceLocator()->get('Config');
+    				$wx = $config['env']['wx'];
+    				$url = $wx['path']['accessToken'];
+    				$post_data = array (
+    					"component_appid" => $wx['appId'],
+    					"component_appsecret" =>$wx['appSecret'],
+    					'component_verify_ticket' => $ticket,
+    				);
+    				curl_setopt($ch, CURLOPT_URL, $url);
+    				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    				curl_setopt($ch, CURLOPT_POST, 1);
+    				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    				$output = curl_exec($ch);
+    				curl_close($ch);
+    				$doc->setAccessToken($output['component_access_token']);
+    			}
     			$doc->setTicket($ticket);
     			$doc->setData(array(
     				'data' => $postData,

@@ -33,6 +33,16 @@ class Admin extends AbstractDocument
 	protected $ticket;
 	
 	/**
+	 * @ODM\Field(type="string")
+	 */
+	protected $accessToken;
+	
+	/**
+	 * @ODM\Field(type="date")
+	 */
+	protected $tokenModified;
+	
+	/**
 	 * @ODM\Field(type="hash")
 	 */
 	protected $data;
@@ -56,6 +66,10 @@ class Admin extends AbstractDocument
 			$this->ticket = $data['ticket'];
 		}
 		
+		if(isset($data['accessToken'])){
+			$this->accessToken = $data['accessToken'];
+		}
+		
 		if(isset($data['data'])){
 			$this->data = $data['data'];
 		}
@@ -67,6 +81,7 @@ class Admin extends AbstractDocument
 			'appId'	=> $this->appId,
 			'appSecret'	=> $this->appSecret,
 			'ticket'	=> $this->ticket,
+			'accessToken'		=> $this->accessToken
 		);
 	}
 }

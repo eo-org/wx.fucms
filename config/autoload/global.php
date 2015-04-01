@@ -18,6 +18,11 @@ return array(
 			'appSecret' => '0c79e1fa963cd80cc0be99b20a18faeb',
 			'token' => 'fucmsweb2015weixinopen888',
 			'encryptKey' => 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqco4',
+			'path' => array(
+				'accessToken' => 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
+				'preAuthCode' => 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=',
+				
+			),
 		),
 	),
 );
