@@ -17,7 +17,7 @@ class CallbackController extends AbstractActionController
 //     	$wxEncrypt = new Encrypt($serviceLocator, $q);
     	
 //     	$postData = $wxEncrypt->Decrypt($format);
-    	
+    	$postData = $format;
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	$doc = $dm->createQueryBuilder('Application\Document\Admin')
     					->field('appSecret')->equals('0c79e1fa963cd80cc0be99b20a18faeb')
