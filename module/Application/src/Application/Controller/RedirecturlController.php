@@ -25,29 +25,40 @@ class RedirecturlController extends AbstractActionController
 	 		$timestamp = strtotime ($modified);
 	 		if($cTimestamp - $timestamp > 7200){
 	 			$tokenFailed = true;
+	 		}else {
+	 			$accessToken = $doc->getAccessToken();
 	 		}
     	}
  		if($tokenFailed){ 			
- 			$url = $wx['path']['accessToken'];
+ 			$getTokenUrl = $wx['path']['accessToken'];
 	    	$post_data = array (
 	    		"component_appid" => $wx['appId'],
 	    		"component_appsecret" =>$wx['appSecret'],
 	    		'component_verify_ticket' => $doc->getTicket(),
 	    	);
-	    	$ch = curl_init();
-	    	curl_setopt($ch, CURLOPT_URL, $url);
-	    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	    	curl_setopt($ch, CURLOPT_POST, 1);
-	    	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-	    	$output = curl_exec($ch);
-	    	curl_close($ch);
-	    	$doc->setData(array('aa' => $output));
+	    	$tokenCurl = curl_init();
+	    	curl_setopt($tokenCurl, CURLOPT_URL, $getTokenUrl);
+	    	curl_setopt($tokenCurl, CURLOPT_RETURNTRANSFER, 1);
+	    	curl_setopt($tokenCurl, CURLOPT_POST, 1);
+	    	curl_setopt($tokenCurl, CURLOPT_POSTFIELDS, $post_data);
+	    	$output = curl_exec($tokenCurl);
+	    	curl_close($tokenCurl);
+	    	$doc->setData(array('aa' => $output,'bb' => $post_data));
 	    	$currentDateTime = new \DateTime();
 	    	$doc->setTokenModified($currentDateTime);
+	    	$accessToken = $output('component_access_token');
+	    	$doc->setAccessToken();
 	    	$dm->persist($doc);
 	    	$dm->flush();
  		}
  		
+//  		$preAuthCodeCurl = curl_init();
+//  		curl_setopt($preAuthCodeCurl, CURLOPT_URL, $url);
+//  		curl_setopt($preAuthCodeCurl, CURLOPT_RETURNTRANSFER, 1);
+//  		curl_setopt($preAuthCodeCurl, CURLOPT_POST, 1);
+//  		curl_setopt($preAuthCodeCurl, CURLOPT_POSTFIELDS, $post_data);
+//  		$output = curl_exec($preAuthCodeCurl);
+//  		curl_close($preAuthCodeCurl);
     	
     	return new JsonModel();
     }
