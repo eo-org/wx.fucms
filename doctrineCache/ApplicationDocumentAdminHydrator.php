@@ -59,6 +59,22 @@ class ApplicationDocumentAdminHydrator implements HydratorInterface
             $hydratedData['ticket'] = $return;
         }
 
+        /** @Field(type="string") */
+        if (isset($data['accessToken'])) {
+            $value = $data['accessToken'];
+            $return = (string) $value;
+            $this->class->reflFields['accessToken']->setValue($document, $return);
+            $hydratedData['accessToken'] = $return;
+        }
+
+        /** @Field(type="date") */
+        if (isset($data['tokenModified'])) {
+            $value = $data['tokenModified'];
+            if ($value instanceof \MongoDate) { $date = new \DateTime(); $date->setTimestamp($value->sec); $return = $date; } else { $return = new \DateTime($value); }
+            $this->class->reflFields['tokenModified']->setValue($document, clone $return);
+            $hydratedData['tokenModified'] = $return;
+        }
+
         /** @Field(type="hash") */
         if (isset($data['data'])) {
             $value = $data['data'];
