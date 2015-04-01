@@ -1,24 +1,24 @@
 <?php
 
-include_once "errorCode.php";
+include_once (BASE_PATH ."/wx.fucms/html/WxEncrypt/errorCode.php");
 
 /**
  * SHA1 class
  *
- * 计算公众平台的消息签名接口.
+ * 璁＄畻鍏紬骞冲彴鐨勬秷鎭鍚嶆帴鍙�.
  */
 class SHA1
 {
 	/**
-	 * 用SHA1算法生成安全签名
-	 * @param string $token 票据
-	 * @param string $timestamp 时间戳
-	 * @param string $nonce 随机字符串
-	 * @param string $encrypt 密文消息
+	 * 鐢⊿HA1绠楁硶鐢熸垚瀹夊叏绛惧悕
+	 * @param string $token 绁ㄦ嵁
+	 * @param string $timestamp 鏃堕棿鎴�
+	 * @param string $nonce 闅忔満瀛楃涓�
+	 * @param string $encrypt 瀵嗘枃娑堟伅
 	 */
 	public function getSHA1($token, $timestamp, $nonce, $encrypt_msg)
 	{
-		//排序
+		//鎺掑簭
 		try {
 			$array = array($encrypt_msg, $token, $timestamp, $nonce);
 			sort($array, SORT_STRING);
