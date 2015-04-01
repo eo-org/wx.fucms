@@ -13,10 +13,10 @@ class CallbackController extends AbstractActionController
     {
     	$q = $this->params()->fromQuery();
     	$format = file_get_contents('php://input');
+    	$serviceLocator = $this->getServiceLocator();
+//     	$wxEncrypt = new Encrypt($serviceLocator, $q);
     	
-    	$wxEncrypt = new Encrypt($this->getServiceLocator());
-    	
-    	$postData = $wxEncrypt->Decrypt($q, $format);
+//     	$postData = $wxEncrypt->Decrypt($format);
     	
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	$doc = $dm->createQueryBuilder('Application\Document\Admin')
@@ -25,8 +25,12 @@ class CallbackController extends AbstractActionController
     					->getSingleResult();
     	if($doc){
     		if($postData){
+    			
 //     			$doc->setTicket();
-    			$doc->setData($postData);
+    			$doc->setData(array(
+    				'data' => $format,
+    				's'	=> $_SERVER,
+    			));
    			}else {
    				$doc->setData(array('q'=>$q));
    			}
