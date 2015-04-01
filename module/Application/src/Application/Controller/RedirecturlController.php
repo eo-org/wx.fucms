@@ -32,7 +32,7 @@ class RedirecturlController extends AbstractActionController
  		if($tokenFailed){ 			
  			$getTokenUrl = $wx['path']['accessToken'];
 	    	$post_data = array (
-	    		"component_appid" => $wx['appId'],
+// 	    		"component_appid" => $wx['appId'],
 	    		"component_appsecret" =>$wx['appSecret'],
 	    		'component_verify_ticket' => $doc->getTicket(),
 	    	);
@@ -46,7 +46,7 @@ class RedirecturlController extends AbstractActionController
 	    	$doc->setData(array('aa' => $output,'bb' => $post_data));
 	    	$currentDateTime = new \DateTime();
 	    	$doc->setTokenModified($currentDateTime);
-	    	$accessToken = $output('component_access_token');
+// 	    	$accessToken = $output('component_access_token');
 	    	$doc->setAccessToken();
 	    	$dm->persist($doc);
 	    	$dm->flush();
