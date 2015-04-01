@@ -1,17 +1,50 @@
 <?php
+namespace Application\WxEncrypt;
 
-include_once "wxBizMsgCrypt.php";
+include_once "/html/WxEncrypt/wxBizMsgCrypt.php";
 
-class WxEncrypt 
+class Encrypt
 {
-	public function Decrypt($data)
+	protected $token;
+	protected $encodingAesKey;
+	protected $appId;
+	protected $pc;
+	
+	public function __construct($erviceLocator)
+	{
+		$config = $erviceLocator->get('Config');
+		$wx = $config['env']['wx'];
+		$token = $wx['token'];
+		$encodingAesKey = $wx['encryptKey'];
+		$appId = $wx['appId'];
+		$this->pc = new \WXBizMsgCrypt($token, $encodingAesKey, $appId);
+	}
+	
+	public function Decrypt($q, $format)
+	{
+		$msg_sign = $q['msg_signature'];
+		$timeStamp = $q['timetamp'];
+		$nonce = $q['nonce'];
+		$msg = '';
+		$errCode = $this->pc->decryptMsg($msg_sign, $timeStamp, $nonce, $format, $msg);
+		
+		if ($errCode == 0) {
+			return array(
+				'status'=> true,
+				'msg'	=> $msg,
+			);
+		} else {
+			return array(
+				'status' => false,
+				'msg'	=> $errCode,
+			);
+		}
+	}
+	
+	public function Encrypt()
 	{
 		
-		$pc = new WXBizMsgCrypt($token, $encodingAesKey, $appId);
-		
-		
-		$errCode = $pc->decryptMsg($msg_sign, $timeStamp, $nonce, $from_xml, $msg);
-	} 
+	}
 }
 // 第三方发送消息给公众平台
 // $encodingAesKey = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";

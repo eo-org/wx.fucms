@@ -5,13 +5,18 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ConsoleModel;
 use Application\Session\User;
 use Application\Document\Admin as Admin;
+use Application\WxEncrypt\Encrypt;
 
 class CallbackController extends AbstractActionController
 {
     public function indexAction()
     {
     	$q = $this->params()->fromQuery();
-    	$postArr = file_get_contents('php://input');
+    	$format = file_get_contents('php://input');
+    	
+    	$wxEncrypt = new Encrypt($this->getServiceLocator());
+    	
+    	$postData = $wxEncrypt->Decrypt($q, $format);
     	
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	$doc = $dm->createQueryBuilder('Application\Document\Admin')
@@ -19,9 +24,9 @@ class CallbackController extends AbstractActionController
     					->getQuery()
     					->getSingleResult();
     	if($doc){
-    		$doc->setAppId('demo1111');
-    		if($postArr){
-    			$doc->setData($postArr);
+    		if($postData){
+//     			$doc->setTicket();
+    			$doc->setData($postData);
    			}else {
    				$doc->setData(array('q'=>$q));
    			}
@@ -30,7 +35,7 @@ class CallbackController extends AbstractActionController
     		$data = array(
     			'appId'=>'wx2ce4babba45b702d',
     			'appSecret' => '0c79e1fa963cd80cc0be99b20a18faeb',
-    			'data' => $postArr,
+    			'data' => $postData,
     		);
     		$doc->exchangeArray($data);
     	}
