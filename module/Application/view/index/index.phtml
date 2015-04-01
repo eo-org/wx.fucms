@@ -20,8 +20,17 @@
 // 			console.log(data.pre_auth_code);
 // 			$scope.authModel.preAuthCode = data.pre_auth_code;
 // 		});
-		$http.post('/callback?signature=fb14ea229115eacb37b4a15c055b1aa00694a9f5&timestamp=1427856622&nonce=1395081176&encrypt_type=aes&msg_signature=2283fafed043e7fb4e79c04c3e6e987f673c00d9', {id:'demo',main:'text'}).success(function(data){
-			console.log(data);
-		});
+
+		var tokenPostData = {
+			component_appid:'wx2ce4babba45b702d',
+			component_appsecret:'0c79e1fa963cd80cc0be99b20a18faeb',
+			component_verify_ticket:'',
+		}
+		$http.get('/redirecturl').success(function(data){
+			tokenPostData.component_verify_ticket = data.ticket;
+			$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_component_token', tokenPostData).success(function(data){
+				console.log(data);
+			});
+		});		
 	}]);
 </script>

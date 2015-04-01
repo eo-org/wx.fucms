@@ -17,6 +17,7 @@ class RedirecturlController extends AbstractActionController
 			    	->field('appSecret')->equals($wx['appSecret'])
 			    	->getQuery()
 			    	->getSingleResult();
+    	$ticket = $doc->getTicket();
     	if(!$doc->getAccessToken()){
     		$tokenFailed = true;
     	}else {
@@ -29,12 +30,12 @@ class RedirecturlController extends AbstractActionController
 	 			$accessToken = $doc->getAccessToken();
 	 		}
     	}
- 		if($tokenFailed){ 			
+ 		if($tokenFailed){
  			$getTokenUrl = $wx['path']['accessToken'];
 	    	$post_data = array (
-// 	    		"component_appid" => $wx['appId'],
+	    		"component_appid" => $wx['appId'],
 	    		"component_appsecret" =>$wx['appSecret'],
-	    		'component_verify_ticket' => $doc->getTicket(),
+	    		'component_verify_ticket' => $ticket,
 	    	);
 	    	$tokenCurl = curl_init();
 	    	curl_setopt($tokenCurl, CURLOPT_URL, $getTokenUrl);
@@ -47,7 +48,7 @@ class RedirecturlController extends AbstractActionController
 	    	$currentDateTime = new \DateTime();
 	    	$doc->setTokenModified($currentDateTime);
 // 	    	$accessToken = $output('component_access_token');
-	    	$doc->setAccessToken();
+// 	    	$doc->setAccessToken();
 	    	$dm->persist($doc);
 	    	$dm->flush();
  		}
@@ -60,6 +61,6 @@ class RedirecturlController extends AbstractActionController
 //  		$output = curl_exec($preAuthCodeCurl);
 //  		curl_close($preAuthCodeCurl);
     	
-    	return new JsonModel();
+    	return new JsonModel(array('ticket'=>$ticket));
     }
 }
