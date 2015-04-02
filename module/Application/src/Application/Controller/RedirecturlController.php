@@ -30,14 +30,14 @@ class RedirecturlController extends AbstractActionController
 	 			$accessToken = $doc->getAccessToken();
 	 		}
     	}
- 		if($tokenFailed){
+ 		if($tokenFailed) {
  			$getTokenUrl = $wx['path']['accessToken'];
 // 	    	$post_data = array (
 // 	    		"component_appid" => $wx['appId'],
 // 	    		"component_appsecret" =>$wx['appSecret'],
 // 	    		'component_verify_ticket' => $ticket,
 // 	    	);
-	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
+	    	$post_data = '{"component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
 // 	    	print($post_data);
 	    	$tokenCurl = curl_init();
 	    	curl_setopt($tokenCurl, CURLOPT_URL, $getTokenUrl);
@@ -67,6 +67,6 @@ class RedirecturlController extends AbstractActionController
 //  		$output = curl_exec($preAuthCodeCurl);
 //  		curl_close($preAuthCodeCurl);
     	
-    	return new JsonModel(array('ticket'=>$ticket));
+    	return new JsonModel(array('aa' => $output,'bb' => $post_data));
     }
 }
