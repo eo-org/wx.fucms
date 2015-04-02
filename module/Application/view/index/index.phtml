@@ -1,56 +1,14 @@
 <div ng-controller="wxCtrl">
-	<a ng-href="https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=wx2ce4babba45b702d&pre_auth_code={{authModel.preAuthCode}}&redirect_uri=http://wx.fucmsweb.com/callback" class="btn btn-primary">authorised</a>
+	<a ng-href="{{ authModel.url }}" class="btn btn-primary">authorised</a>
 </div>
-
-
-
-
-
-<!-- <form action='/callback' method='POST'> -->
-<!-- 	<input type='hidden' name='test' value='a string' /> -->
-<!-- 	<input type='submit' name='submit' value='submit' /> -->
-<!-- </form> -->
-
 
 <script>
 	var adminApp = angular.module('adminApp',[]);
 	adminApp.controller('wxCtrl', ['$scope', '$http', function($scope, $http){
 		$scope.authModel = {};
-// 		$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=wx2ce4babba45b702d').success(function(data){
-// 			console.log(data.pre_auth_code);
-// 			$scope.authModel.preAuthCode = data.pre_auth_code;
-// 		});
-
-		var tokenPostData = {
-			component_appid:'wx2ce4babba45b702d',
-			component_appsecret:'0c79e1fa963cd80cc0be99b20a18faeb',
-			component_verify_ticket:'',
-		}
-		$http.get('/redirecturl').success(function(data){
-			tokenPostData.component_verify_ticket = data.ticket;
-// 			$.ajax({
-// 				url:'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
-// 				type:'POST',
-// 				data: tokenPostData,
-// 				success: function(data){
-// 					console.log(data);
-// 				}
-// 			});
-
-// 			$http({
-
-// 				   url:'https://api.weixin.qq.com/cgi-bin/component/api_component_token',			
-// 				   method:"POST",			
-// 				   headers: {			
-// 						'Content-Type': 'application/x-www-form-urlencoded'
-// 				   },			
-// 				   data: tokenPostData,			
-// 			  }).success(function(data){
-// 					console.log(data);
-// 				 });
-			$http.post('https://api.weixin.qq.com/cgi-bin/component/api_component_token', tokenPostData).success(function(data){
-				console.log(data);
-			});
+		$http.get('/redirecturi').success(function(data){
+			console.log(data);
+			$scope.authModel.url = data.redirectUri;
 		});		
 	}]);
 </script>
