@@ -37,7 +37,7 @@ class RedirecturlController extends AbstractActionController
 // 	    		"component_appsecret" =>$wx['appSecret'],
 // 	    		'component_verify_ticket' => $ticket,
 // 	    	);
-	    	$post_data = '{"component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
+	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
 // 	    	print($post_data);
 	    	$tokenCurl = curl_init();
 	    	curl_setopt($tokenCurl, CURLOPT_URL, $getTokenUrl);
