@@ -60,22 +60,22 @@ class RedirecturlController extends AbstractActionController
 	    	$doc->setData(array(
 	    		'tokenResult'=> $tokenResultStr,
 	    	));
-	    	$accessToken = $tokenResult('component_access_token');
+	    	$accessToken = $tokenResult['component_access_token'];
 	    	$doc->setAccessToken($accessToken);
 	    	$dm->persist($doc);
 	    	$dm->flush();
  		}
-//  		$preAuthCodePostData = array(
-//  			'component_appid' => $wx['appId'],
-//  		);
-//  		$preAuthCodePostData = json_encode($preAuthCodePostData);
-//  		$getPreAuthCodeUrl = $wx['path']['preAuthCode'].$accessToken;
+ 		$preAuthCodePostData = array(
+ 			'component_appid' => $wx['appId'],
+ 		);
+ 		$preAuthCodePostData = json_encode($preAuthCodePostData);
+ 		$getPreAuthCodeUrl = $wx['path']['preAuthCode'].$accessToken;
  		
-//  		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
-//  		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
+ 		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
+ 		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
  		
-//  		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
- 		$result = $tokenResult;
+ 		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
+//  		$result = $tokenResult;
     	return new JsonModel(array('redirectUri' => $result));
     }
 }
