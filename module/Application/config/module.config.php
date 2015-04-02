@@ -4,7 +4,7 @@ return array(
         'invokables' => array(
             'app'			=> 'Application\Controller\IndexController',
         	'Application\Controller\CallbackController'		=> 'Application\Controller\CallbackController',
-        	'Application\Controller\RedirecturlController'		=> 'Application\Controller\RedirecturlController',
+        	'Application\Controller\RedirecturiController'		=> 'Application\Controller\RedirecturiController',
         ),
     ),
     'router' => array(
@@ -30,12 +30,12 @@ return array(
                   			)
             			)
             		),
-            		'redirecturl' => array(
+            		'redirecturi' => array(
             			'type' => 'segment',
             			'options' => array(
-            				'route' => 'redirecturl',
+            				'route' => 'redirecturi',
             				'defaults' => array(
-            					'controller'    => 'Application\Controller\RedirecturlController',
+            					'controller'    => 'Application\Controller\RedirecturiController',
             					'action'        => 'index',
             				)
             			)

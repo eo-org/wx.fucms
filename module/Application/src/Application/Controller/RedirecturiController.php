@@ -4,7 +4,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class RedirecturlController extends AbstractActionController
+class RedirecturiController extends AbstractActionController
 {
 	protected function curlPostResult($url, $data)
 	{
@@ -74,7 +74,7 @@ class RedirecturlController extends AbstractActionController
  		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
  		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
  		
- 		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
+ 		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['path']['redirectUri'];
 //  		$result = $tokenResult;
     	return new JsonModel(array('redirectUri' => $result));
     }
