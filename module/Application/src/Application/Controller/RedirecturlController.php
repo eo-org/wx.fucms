@@ -44,6 +44,9 @@ class RedirecturlController extends AbstractActionController
 	    	curl_setopt($tokenCurl, CURLOPT_RETURNTRANSFER, 1);
 	    	curl_setopt($tokenCurl, CURLOPT_POST, 1);
 	    	curl_setopt($tokenCurl, CURLOPT_POSTFIELDS, $post_data);
+	    	
+	    	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+	    	
 	    	$output = curl_exec($tokenCurl);
 	    	curl_close($tokenCurl);
 	    	
