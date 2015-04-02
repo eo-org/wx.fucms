@@ -51,8 +51,6 @@ class RedirecturlController extends AbstractActionController
 	    		'component_verify_ticket' => $ticket,
 	    	);
 	    	$post_data = json_encode($post_data);
-// 	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
-// 	    	print($post_data);
 	    	$tokenResultStr = $this->curlPostResult($getTokenUrl, $post_data);
 	    	
 	    	$tokenResult = json_decode($tokenResultStr , true);
@@ -62,7 +60,7 @@ class RedirecturlController extends AbstractActionController
 	    	$doc->setData(array(
 	    		'tokenResult'=> $tokenResultStr,
 	    	));
-// 	    	$accessToken = $tokenResult('component_access_token');
+	    	$accessToken = $tokenResult('component_access_token');
 	    	$doc->setAccessToken($accessToken);
 	    	$dm->persist($doc);
 	    	$dm->flush();
