@@ -37,20 +37,20 @@
 // 				}
 // 			});
 
-			$http({
+// 			$http({
 
-				   url:'https://api.weixin.qq.com/cgi-bin/component/api_component_token',			
-				   method:"POST",			
-				   headers: {			
-						'Content-Type': 'application/x-www-form-urlencoded'
-				   },			
-				   data: tokenPostData,			
-			  }).success(function(data){
-					console.log(data);
-				 });
-// 			$http.jsonp('https://api.weixin.qq.com/cgi-bin/component/api_component_token', tokenPostData).success(function(data){
-// 				console.log(data);
-// 			});
+// 				   url:'https://api.weixin.qq.com/cgi-bin/component/api_component_token',			
+// 				   method:"POST",			
+// 				   headers: {			
+// 						'Content-Type': 'application/x-www-form-urlencoded'
+// 				   },			
+// 				   data: tokenPostData,			
+// 			  }).success(function(data){
+// 					console.log(data);
+// 				 });
+			$http.post('https://api.weixin.qq.com/cgi-bin/component/api_component_token', tokenPostData).success(function(data){
+				console.log(data);
+			});
 		});		
 	}]);
 </script>

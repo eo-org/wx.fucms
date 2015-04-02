@@ -21,7 +21,7 @@ return array(
 			'path' => array(
 				'accessToken' => 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
 				'preAuthCode' => 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=',
-				
+				'redirectUri' => 'http://wx.fucmsweb.com/callback'
 			),
 		),
 	),

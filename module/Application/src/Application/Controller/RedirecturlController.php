@@ -6,6 +6,19 @@ use Zend\View\Model\JsonModel;
 
 class RedirecturlController extends AbstractActionController
 {
+	protected function curlPostResult($url, $data)
+	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		$output = curl_exec($ch);
+		curl_close($ch);
+		 
+		return $output;
+	}
+	
     public function indexAction()
     {
     	$dm = $this->getServiceLocator()->get('DocumentManager');
@@ -32,44 +45,36 @@ class RedirecturlController extends AbstractActionController
     	}
  		if($tokenFailed) {
  			$getTokenUrl = $wx['path']['accessToken'];
-// 	    	$post_data = array (
-// 	    		"component_appid" => $wx['appId'],
-// 	    		"component_appsecret" =>$wx['appSecret'],
-// 	    		'component_verify_ticket' => $ticket,
-// 	    	);
-	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
+	    	$post_data = array (
+	    		"component_appid" => $wx['appId'],
+	    		"component_appsecret" =>$wx['appSecret'],
+	    		'component_verify_ticket' => $ticket,
+	    	);
+	    	$post_data = json_encode($post_data);
+// 	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
 // 	    	print($post_data);
-	    	$tokenCurl = curl_init();
-	    	curl_setopt($tokenCurl, CURLOPT_URL, $getTokenUrl);
-	    	curl_setopt($tokenCurl, CURLOPT_RETURNTRANSFER, 1);
-	    	curl_setopt($tokenCurl, CURLOPT_POST, 1);
-	    	curl_setopt($tokenCurl, CURLOPT_POSTFIELDS, $post_data);
+	    	$tokenResult = $this->curlPostResult($getTokenUrl, $post_data);
 	    	
-//	    	curl_setopt($tokenCurl, CURLOPT_SSL_VERIFYPEER, 0);
+	    	$tokenResult = json_decode($tokenResult , true);
 	    	
-	    	$output = curl_exec($tokenCurl);
-	    	curl_close($tokenCurl);
-	    	
-	    	
-	    	
-	    	
-	    	$doc->setData(array('aa' => $output,'bb' => $post_data));
 	    	$currentDateTime = new \DateTime();
 	    	$doc->setTokenModified($currentDateTime);
-// 	    	$accessToken = $output('component_access_token');
-// 	    	$doc->setAccessToken();
+	    	$accessToken = $tokenResult('component_access_token');
+	    	$doc->setAccessToken($accessToken);
 	    	$dm->persist($doc);
 	    	$dm->flush();
  		}
+ 		$preAuthCodePostData = array(
+ 			'component_appid' => $wx['appId'],
+ 		);
+ 		$preAuthCodePostData = json_encode($preAuthCodePostData);
+ 		$getPreAuthCodeUrl = $wx['path']['preAuthCode'].$accessToken;
  		
-//  		$preAuthCodeCurl = curl_init();
-//  		curl_setopt($preAuthCodeCurl, CURLOPT_URL, $url);
-//  		curl_setopt($preAuthCodeCurl, CURLOPT_RETURNTRANSFER, 1);
-//  		curl_setopt($preAuthCodeCurl, CURLOPT_POST, 1);
-//  		curl_setopt($preAuthCodeCurl, CURLOPT_POSTFIELDS, $post_data);
-//  		$output = curl_exec($preAuthCodeCurl);
-//  		curl_close($preAuthCodeCurl);
-    	
-    	return new JsonModel(array('aa' => $output,'bb' => $post_data));
+ 		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
+ 		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
+ 		
+ 		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
+ 		
+    	return new JsonModel(array('redirectUri' => $result));
     }
 }
