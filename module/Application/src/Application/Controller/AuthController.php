@@ -22,7 +22,7 @@ class AuthController extends AbstractActionController
     {
     	$config = $this->getServiceLocator()->get('Config');
     	$wx = $config['env']['wx'];
-    	$dm = $this->documentManager();
+    	$dm = $this->getServiceLocator()->documentManager();
     	$q = $this->params()->fromQuery();
     	$authCode = $q['auth_code'];
     	
