@@ -53,28 +53,31 @@ class RedirecturlController extends AbstractActionController
 	    	$post_data = json_encode($post_data);
 // 	    	$post_data = '{"component_appid":"'.$wx['appId'].'", "component_appsecret":"'.$wx['appSecret'].'", "component_verify_ticket":"'.$ticket.'"}';
 // 	    	print($post_data);
-	    	$tokenResult = $this->curlPostResult($getTokenUrl, $post_data);
+	    	$tokenResultStr = $this->curlPostResult($getTokenUrl, $post_data);
 	    	
-	    	$tokenResult = json_decode($tokenResult , true);
+	    	$tokenResult = json_decode($tokenResultStr , true);
 	    	
 	    	$currentDateTime = new \DateTime();
 	    	$doc->setTokenModified($currentDateTime);
-	    	$accessToken = $tokenResult('component_access_token');
+	    	$doc->setData(array(
+	    		'tokenResult'=> $tokenResultStr,
+	    	));
+// 	    	$accessToken = $tokenResult('component_access_token');
 	    	$doc->setAccessToken($accessToken);
 	    	$dm->persist($doc);
 	    	$dm->flush();
  		}
- 		$preAuthCodePostData = array(
- 			'component_appid' => $wx['appId'],
- 		);
- 		$preAuthCodePostData = json_encode($preAuthCodePostData);
- 		$getPreAuthCodeUrl = $wx['path']['preAuthCode'].$accessToken;
+//  		$preAuthCodePostData = array(
+//  			'component_appid' => $wx['appId'],
+//  		);
+//  		$preAuthCodePostData = json_encode($preAuthCodePostData);
+//  		$getPreAuthCodeUrl = $wx['path']['preAuthCode'].$accessToken;
  		
- 		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
- 		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
+//  		$preAuthCodeResult = $this->curlPostResult($getPreAuthCodeUrl, $preAuthCodePostData);
+//  		$preAuthCodeResult = json_decode($preAuthCodeResult , true);
  		
- 		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
- 		
+//  		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['redirectUri'];
+ 		$result = $tokenResult;
     	return new JsonModel(array('redirectUri' => $result));
     }
 }
