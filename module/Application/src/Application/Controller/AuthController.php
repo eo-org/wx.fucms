@@ -2,7 +2,7 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Application\Document\WxUser;
+use Application\Document\Auth;
 
 class AuthController extends AbstractActionController
 {
@@ -82,12 +82,13 @@ class AuthController extends AbstractActionController
     	$authInfoResultStr = $this->curlPostResult($getAuthInfoUrl, $post_data);
     	$authInfoResult = json_decode($authInfoResultStr, true);
     	
-    	$wxUserDoc = new WxUser();
-    	$wxUserDoc->exchangeArray($authInfoResult['authorization_info']);
+    	
+    	$authDoc = new Auth();
+    	$authDoc->exchangeArray($authInfoResult['authorization_info']);
     	$currentDateTime = new \DateTime();
-    	$wxUserDoc->setTokenModified($currentDateTime);
-    	$wxUserDoc->setCreated($currentDateTime);
-    	$dm->persist($wxUserDoc);
+    	$authDoc->setTokenModified($currentDateTime);
+    	$authDoc->setCreated($currentDateTime);
+    	$dm->persist($authDoc);
     	$dm->flush();
     	return $this->redirect()->toUrl('/#'.$authInfoResultStr);
     }

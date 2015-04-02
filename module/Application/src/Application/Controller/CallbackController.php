@@ -27,6 +27,7 @@ class CallbackController extends AbstractActionController
     	
     	$xmlData = new \DOMDocument();
     	$xmlData->loadXML($postData['msg']);
+    	
     	$array_info_type = $xmlData->getElementsByTagName('InfoType');
     	$infotype = $array_info_type->item(0)->nodeValue;
     	if($infotype == 'component_verify_ticket') {
@@ -58,14 +59,7 @@ class CallbackController extends AbstractActionController
     		$ticketDoc->setModified($currentDateTime);
     		$dm->persist($ticketDoc);
     		$dm->flush();
-    	}else {
-    		
     	}
     	return new ConsoleModel();
-    }
-    
-    public function loginAction()
-    {
-    	
     }
 }

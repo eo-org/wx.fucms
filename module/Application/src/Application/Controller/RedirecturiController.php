@@ -51,6 +51,7 @@ class RedirecturiController extends AbstractActionController
 				    		->field('label')->equals('ticket')
 				    		->getQuery()
 				    		->getSingleResult();
+    		
     		$ticket = $ticketDoc->getValue();
     		$getTokenUrl = $wx['path']['accessToken'];
     		$post_data = array (
