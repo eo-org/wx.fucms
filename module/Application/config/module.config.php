@@ -3,6 +3,7 @@ return array(
 	'controllers' => array(
         'invokables' => array(
             'app'			=> 'Application\Controller\IndexController',
+        	'Application\Controller\AuthController'		=> 'Application\Controller\AuthController',
         	'Application\Controller\CallbackController'		=> 'Application\Controller\CallbackController',
         	'Application\Controller\RedirecturiController'		=> 'Application\Controller\RedirecturiController',
         ),
@@ -20,6 +21,16 @@ return array(
                 ),
             	'may_terminate' => true,
             	'child_routes' => array(
+            		'auth' => array(
+            			'type' => 'segment',
+            			'options' => array(
+            				'route' => 'auth',
+            				'defaults' => array(
+            					'controller'    => 'Application\Controller\AuthController',
+            					'action'        => 'index',
+            				)
+            			)
+            		),
             		'callback' => array(
             			'type' => 'segment',
             			'options' => array(

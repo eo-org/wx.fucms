@@ -19,9 +19,10 @@ return array(
 			'token' => 'fucmsweb2015weixinopen888',
 			'encryptKey' => 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqco4',
 			'path' => array(
+				'redirectUri' => 'http://wx.fucmsweb.com/auth',
 				'accessToken' => 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
-				'preAuthCode' => 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=',
-				'redirectUri' => 'http://wx.fucmsweb.com/callback'
+				'preAuthCode' => 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=',				
+				'authInfo' => 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=',
 			),
 		),
 	),
