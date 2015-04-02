@@ -1,7 +1,7 @@
 <?php
 namespace Application\WxEncrypt;
 
-include_once (BASE_PATH ."/wx.fucms/html/WxEncrypt/wxBizMsgCrypt.php");
+include_once (BASE_PATH ."/inc/WxEncrypt/wxBizMsgCrypt.php");
 
 class Encrypt
 {

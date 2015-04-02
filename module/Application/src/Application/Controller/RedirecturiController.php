@@ -26,15 +26,15 @@ class RedirecturiController extends AbstractActionController
     	
     	$config = $this->getServiceLocator()->get('Config');
     	$wx = $config['env']['wx'];
-    	$tokenFailed = true;
+    	
     	
     	$tokenDoc = $dm->createQueryBuilder('Application\Document\Ticket')
 				    		->field('label')->equals('token')
 				    		->getQuery()
 				    		->getSingleResult();
-    	
+    	$tokenFailed = true;
     	if(!empty($tokenDoc)) {
-    		
+    		    		
     		$modified = $tokenDoc->getModified()->format('y-m-d H:i:s');
     		$cTimestamp = strtotime (date("y-m-d H:i:s"));
     		$timestamp = strtotime ($modified);
@@ -47,6 +47,11 @@ class RedirecturiController extends AbstractActionController
     		$tokenDoc->setLabel('token');
     	}
     	if($tokenFailed) {
+    		$ticketDoc = $dm->createQueryBuilder('Application\Document\Ticket')
+				    		->field('label')->equals('ticket')
+				    		->getQuery()
+				    		->getSingleResult();
+    		$ticket = $ticketDoc->getValue();
     		$getTokenUrl = $wx['path']['accessToken'];
     		$post_data = array (
     			"component_appid" => $wx['appId'],
@@ -95,7 +100,7 @@ class RedirecturiController extends AbstractActionController
  		$preAuthCodeResult = json_decode($preAuthCodeResultStr , true);
  		
  		$result = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid='.$wx['appId'].'&pre_auth_code='.$preAuthCodeResult['pre_auth_code'].'&redirect_uri='.$wx['path']['redirectUri'];
-//  		$result = $tokenResult;
+ 		
     	return new JsonModel(array('redirectUri' => $result));
     }
 }

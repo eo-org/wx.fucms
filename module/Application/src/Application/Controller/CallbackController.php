@@ -3,8 +3,6 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ConsoleModel;
-use Application\Session\User;
-use Application\Document\Admin as Admin;
 use Application\Document\Ticket;
 use Application\WxEncrypt\Encrypt;
 
@@ -63,32 +61,6 @@ class CallbackController extends AbstractActionController
     	}else {
     		
     	}
-    	
-    	
-    	
-//     	if(is_null($ticketDoc)){
-//     		if($postData){
-    			
-//     			$doc->setTicket($ticket);
-//     			$doc->setData(array(
-//     				'data' => $postData,
-//     			));
-//    			}else {
-//    				$doc->setData(array('q'=>$q));
-//    			}
-//     	}else {
-//     		$ticketDoc = new Ticket();
-//     		$data = array(
-//     			'label'=>'ticket',
-//     			'appSecret' => '0c79e1fa963cd80cc0be99b20a18faeb',
-//     			'data' => $postData,
-//     		);
-//     		$doc->exchangeArray($data);
-//     	}
-//     	$currentDateTime = new \DateTime();
-//     	$doc->setModified($currentDateTime);
-//     	$dm->persist($doc);
-//     	$dm->flush();
     	return new ConsoleModel();
     }
     
