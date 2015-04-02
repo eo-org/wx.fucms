@@ -50,6 +50,7 @@ class CallbackController extends AbstractActionController
     				'label' => 'ticket',
     				'value' => $ticket,
     			);
+    			$ticketDoc->exchangeArray($data);
     			
     		}
     		$ticketDoc->setMsg(array(
