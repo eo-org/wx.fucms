@@ -82,6 +82,6 @@ class AuthController extends AbstractActionController
     	$wxUserDoc->setCreated($currentDateTime);
     	$dm->persist($wxUserDoc);
     	$dm->flush();
-    	return $this->redirect()->toUrl('/');
+    	return $this->redirect()->toUrl('/#'.$authInfoResultStr);
     }
 }
