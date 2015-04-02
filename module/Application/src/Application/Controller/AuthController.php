@@ -68,7 +68,6 @@ class AuthController extends AbstractActionController
     		$accessToken = $tokenResult['component_access_token'];
     		$doc->setAccessToken($accessToken);
     		$dm->persist($doc);
-    		$dm->flush();
     	}
     	$post_data = json_encode($post_data);
     	$getAuthInfoUrl = $wx['path']['authInfo'].$accessToken;
@@ -81,7 +80,7 @@ class AuthController extends AbstractActionController
     	$currentDateTime = new \DateTime();
     	$wxUserDoc->setTokenModified($currentDateTime);
     	$wxUserDoc->setCreated($currentDateTime);
-    	$dm->persist($doc);
+    	$dm->persist($wxUserDoc);
     	$dm->flush();
     	return $this->redirect()->toUrl('/');
     }
