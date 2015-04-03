@@ -73,24 +73,6 @@ class RedirecturiController extends AbstractActionController
     		$dm->persist($tokenDoc);
     		$dm->flush();
     	}
-//     	if(!$doc->getAccessToken()){
-//     		$tokenFailed = true;
-//     	}else {
-// 	    	$modified = $doc->getModified()->format('y-m-d H:i:s');
-// 	 		$cTimestamp = strtotime (date("y-m-d H:i:s"));
-// 	 		$timestamp = strtotime ($modified);
-// 	 		if($cTimestamp - $timestamp > 7200){
-// 	 			$tokenFailed = true;
-// 	 		}else {
-// 	 			$accessToken = $doc->getAccessToken();
-// 	 		}
-//     	}
-//  		if($tokenFailed) {
-// 	    	$accessToken = $tokenResult['component_access_token'];
-// 	    	$doc->setAccessToken($accessToken);
-// 	    	$dm->persist($doc);
-// 	    	$dm->flush();
-//  		}
  		$preAuthCodePostData = array(
  			'component_appid' => $wx['appId'],
  		);

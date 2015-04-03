@@ -24,10 +24,13 @@ return array(
             		'auth' => array(
             			'type' => 'segment',
             			'options' => array(
-            				'route' => 'auth',
+            				'route' => 'auth/[:websiteId]',
             				'defaults' => array(
             					'controller'    => 'Application\Controller\AuthController',
             					'action'        => 'index',
+            				),
+            				'constraints' => array(
+            					'appId' => '[a-z0-9]*',
             				)
             			)
             		),

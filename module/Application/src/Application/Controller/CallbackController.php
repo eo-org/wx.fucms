@@ -6,7 +6,7 @@ use Zend\View\Model\ConsoleModel;
 use Application\WxEncrypt\Encrypt;
 
 use Application\Document\Ticket;
-use Application\Document\Messgae;
+use Application\Document\Message;
 
 class CallbackController extends AbstractActionController
 {
@@ -87,7 +87,7 @@ class CallbackController extends AbstractActionController
     	$postData = file_get_contents('php://input');
     	$wxEncrypt = new Encrypt($sm, $q);
     	
-    	$messageDoc = new Messgae();
+    	$messageDoc = new Message();
     	
     	$postDataDe = $wxEncrypt->Decrypt($postData);
     	

@@ -20,6 +20,8 @@ class AuthController extends AbstractActionController
 	
     public function indexAction()
     {
+    	$websiteId = $this->params()->fromRoute('websiteId');
+    	
     	$config = $this->getServiceLocator()->get('Config');
     	$wx = $config['env']['wx'];
     	$dm = $this->getServiceLocator()->get('DocumentManager');
@@ -82,6 +84,13 @@ class AuthController extends AbstractActionController
     	$authInfoResultStr = $this->curlPostResult($getAuthInfoUrl, $post_data);
     	$authInfoResult = json_decode($authInfoResultStr, true);
     	
+    	$fucmsToken = $dm->createQueryBuilder('Application\Document\Token')	    					
+				    		->field('websiteId')->equals($websiteId)
+				    		->sort('created', -1)
+				    		->getQuery()
+				    		->getSingleResult();
+    		
+    	$redirecturi = $fucmsToken->getRedirecturi();
     	
     	$authDoc = new Auth();
     	$authDoc->exchangeArray($authInfoResult['authorization_info']);
@@ -90,6 +99,6 @@ class AuthController extends AbstractActionController
     	$authDoc->setCreated($currentDateTime);
     	$dm->persist($authDoc);
     	$dm->flush();
-    	return $this->redirect()->toUrl('/#'.$authInfoResultStr);
+    	return $this->redirect()->toUrl($redirecturi);
     }
 }
