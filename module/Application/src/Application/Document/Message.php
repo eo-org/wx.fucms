@@ -23,6 +23,11 @@ class Message extends AbstractDocument
 	protected $appId;
 	
 	/**
+	 * @ODM\Field(type="string")
+	 */
+	protected $type;
+	
+	/**
 	 * @ODM\Field(type="hash")
 	 */
 	protected $data;
