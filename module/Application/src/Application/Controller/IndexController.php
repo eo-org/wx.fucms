@@ -31,9 +31,10 @@ class IndexController extends AbstractActionController
     		
     		$dm->persist($tokenDoc);
     		$dm->flush();
-//     		$Redirecturi = new Redirecturi($sm);
-//     		$url = $Redirecturi->get($websiteId);
-//     		return $this->redirect()->toUrl($url);
+    		
+    	return array(
+    		'websiteId' => $websiteId,
+    	);
     	}else {
     		die('error');
     	}
