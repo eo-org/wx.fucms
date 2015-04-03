@@ -86,8 +86,33 @@ class CallbackController extends AbstractActionController
     	return $value;
     }
     
+    protected function getResultXml($data)
+    {
+    	$resultStr = 'success';
+    	$textTpl = "<xml>
+                <ToUserName><![CDATA[%s]]></ToUserName>
+                <FromUserName><![CDATA[%s]]></FromUserName>
+                <CreateTime>%s</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content><![CDATA[%s]]></Content>
+                </xml>";
+    	if(isset($data['MsgType'])) {
+    		switch ($data['MsgType'])
+    		{
+    			case 'text':
+    				$resultStr = sprintf($textTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['MsgType'], $data['Content']);
+    				break;
+    		}    		
+    	}
+    	
+    	
+    	
+    	return $resultStr;
+    }
+    
     public function msgAction()
     {
+    	$result = 'success';
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
     	$appId = $this->params()->fromRoute('appId');
@@ -102,70 +127,83 @@ class CallbackController extends AbstractActionController
     	$xmlData = new \DOMDocument();
     	$xmlData->loadXML($postData['msg']);
     	
-    	
+    	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
     	$msgContent = $this->getXmlNode($xmlData, 'Content');//消息内容
     	$openId = $this->getXmlNode($xmlData, 'FromUserName');//用户与公众号间唯一识别码
     	$msgType = $this->getXmlNode($xmlData, 'MsgType');//消息类型
+    	
     	$messageData = array(
     		'appId' => $appId,
     		'openId' => $openId,
     		'type' => $msgType,
     	);
-    	switch ($msgType) {
-    		case 'text':
-    			$content = $this->getXmlNode($xmlData, 'Content');
-    			$messageData['content'] = $content;
-    			break;
-    		case 'image':
-    			$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
-    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    			$messageData['picUrl'] = $picUrl;
-    			$messageData['mediaId'] = $mediaId;
-    			break;
-    		case 'voice':
-    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    			$format = $this->getXmlNode($xmlData, 'Format');
-    			$messageData['format'] = $format;
-    			$messageData['mediaId'] = $mediaId;
-    			break;
-    		case 'video':
-    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    			$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-    			$messageData['mediaId'] = $mediaId;
-    			$messageData['thumbMediaId'] = $thumbMediaId;
-    			break;
-    		case 'shortvideo':
-    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    			$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-    			$messageData['mediaId'] = $mediaId;
-    			$messageData['thumbMediaId'] = $thumbMediaId;
-    			break;
-    		case 'location':
-    			$locationX = $this->getXmlNode($xmlData, 'Location_X');
-    			$locationY = $this->getXmlNode($xmlData, 'Location_Y');
-    			$scale = $this->getXmlNode($xmlData, 'Scale');
-    			$label = $this->getXmlNode($xmlData, 'Label');
-    			$messageData['locationX'] = $locationX;
-    			$messageData['locationY'] = $locationY;
-    			$messageData['scale'] = $scale;
-    			$messageData['label'] = $label;
-    			break;
-    		case 'link':
-    			$title = $this->getXmlNode($xmlData, 'Title');
-    			$description = $this->getXmlNode($xmlData, 'Description');
-    			$url = $this->getXmlNode($xmlData, 'Url');
-    			$messageData['title'] = $title;
-    			$messageData['description'] = $description;
-    			$messageData['url'] = $url;
-    			break;    			
+    	$returnData = array(
+    		'ToUserName' =>$openId,
+    		'FromUserName' => $wxNumber,
+    	);
+    	if($msgType != 'event'){
+    		
+    	}else {
+    		switch ($msgType) {
+    			case 'text':
+    				$content = $this->getXmlNode($xmlData, 'Content');
+    				$messageData['content'] = $content;
+    				break;
+    			case 'image':
+    				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$messageData['picUrl'] = $picUrl;
+    				$messageData['mediaId'] = $mediaId;
+    				break;
+    			case 'voice':
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$format = $this->getXmlNode($xmlData, 'Format');
+    				$messageData['format'] = $format;
+    				$messageData['mediaId'] = $mediaId;
+    				break;
+    			case 'video':
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    				$messageData['mediaId'] = $mediaId;
+    				$messageData['thumbMediaId'] = $thumbMediaId;
+    				break;
+    			case 'shortvideo':
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    				$messageData['mediaId'] = $mediaId;
+    				$messageData['thumbMediaId'] = $thumbMediaId;
+    				break;
+    			case 'location':
+    				$locationX = $this->getXmlNode($xmlData, 'Location_X');
+    				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
+    				$scale = $this->getXmlNode($xmlData, 'Scale');
+    				$label = $this->getXmlNode($xmlData, 'Label');
+    				$messageData['locationX'] = $locationX;
+    				$messageData['locationY'] = $locationY;
+    				$messageData['scale'] = $scale;
+    				$messageData['label'] = $label;
+    				break;
+    			case 'link':
+    				$title = $this->getXmlNode($xmlData, 'Title');
+    				$description = $this->getXmlNode($xmlData, 'Description');
+    				$url = $this->getXmlNode($xmlData, 'Url');
+    				$messageData['title'] = $title;
+    				$messageData['description'] = $description;
+    				$messageData['url'] = $url;
+    				break;
+    		}
     	}
+    	
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
     	
     	$dm->persist($messageDoc);
     	$dm->flush();
-    	return new ConsoleModel();
+    	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    	$returnData['MsgType'] = 'text';
+    	$result = $this->getResultXml($returnData);
+    	return new ConsoleModel(array('result' => $result));
     }
     
     
