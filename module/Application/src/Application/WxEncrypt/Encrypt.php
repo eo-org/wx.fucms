@@ -11,7 +11,7 @@ class Encrypt
 	protected $nonce;
 	protected $msg_sign;
 	
-	public function __construct($sl, $q)
+	public function __construct($sm, $q)
 	{
 		/*
 		*
@@ -19,13 +19,18 @@ class Encrypt
 		* @params $q Array 公众平台发出消息的URL所带参数，以获取时间戳等参数进行验证解密
 		*
 		*/
-		$config = $sl->get('Config');
+		$config = $sm->get('Config');
 		$wx = $config['env']['wx'];
 		$token = $wx['token'];
 		$encodingAesKey = $wx['encryptKey'];
 		$appId = $wx['appId'];
 		$this->pc = new \WXBizMsgCrypt($token, $encodingAesKey, $appId);
-		$this->msg_sign = $q['msg_signature'];
+				
+		if(isset($data['signature'])){
+			$this->msg_sign = $q['signature'];
+		}else {
+			$this->msg_sign = $q['msg_signature'];
+		}
 		$this->timeStamp = $q['timestamp'];
 		$this->nonce = $q['nonce'];
 	}

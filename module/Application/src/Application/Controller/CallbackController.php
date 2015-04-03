@@ -3,8 +3,10 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ConsoleModel;
-use Application\Document\Ticket;
 use Application\WxEncrypt\Encrypt;
+
+use Application\Document\Ticket;
+use Application\Document\Messgae;
 
 class CallbackController extends AbstractActionController
 {
@@ -59,7 +61,47 @@ class CallbackController extends AbstractActionController
     		$ticketDoc->setModified($currentDateTime);
     		$dm->persist($ticketDoc);
     		$dm->flush();
+    	}else if($infotype == 'unauthorized'){
+    		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
+    		$appId = $array_appId->item(0)->nodeValue;
+    		
+    		$authDoc = $dm->createQueryBuilder('Application\Document\Ticket')
+				    		->field('authorizerAppid')->equals($appId)
+				    		->getQuery()
+				    		->getSingleResult();
+    		if($authDoc) {
+    			$authDoc->setStatus('inactive');
+    			$dm->persist($authDoc);
+    			$dm->flush();
+    		}
     	}
+    	return new ConsoleModel();
+    }
+    
+    public function msgAction()
+    {
+    	$sm = $this->getServiceLocator();
+    	$dm = $sm->get('DocumentManager');
+    	$appId = $this->params()->fromRoute('appId');
+    	$q = $this->params()->fromQuery();
+    	$postData = file_get_contents('php://input');
+    	$wxEncrypt = new Encrypt($sm, $q);
+    	
+    	$messageDoc = new Messgae();
+    	
+    	$postDataDe = $wxEncrypt->Decrypt($postData);
+    	
+    	$messageDoc->setData(array(
+    		'data' => array(
+    			'message' => $postData,
+    			'messageDec' => $postDataDe,
+    			'aaa' => 'aaaaaa',
+    		),
+    	));
+    	$messageDoc->setAppId($appId);
+    	
+    	$dm->persist($messageDoc);
+    	$dm->flush();
     	return new ConsoleModel();
     }
 }

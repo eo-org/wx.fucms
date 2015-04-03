@@ -41,6 +41,19 @@ return array(
                   			)
             			)
             		),
+            		'msg-callback' => array(
+            			'type' => 'segment',
+            			'options' => array(
+            				'route' => 'msg-callback/[:appId]',
+            				'defaults' => array(
+            					'controller'    => 'Application\Controller\CallbackController',
+            					'action'        => 'msg',
+            				),
+            				'constraints' => array(
+            					'appId' => '[a-z0-9]*',
+            				)
+            			),
+            		),
             		'redirecturi' => array(
             			'type' => 'segment',
             			'options' => array(
@@ -50,7 +63,7 @@ return array(
             					'action'        => 'index',
             				)
             			)
-            		),
+            		),            		
             	)
             ),
 //         	'callback' => array(
@@ -130,7 +143,8 @@ return array(
         	'layout/error'				=> __DIR__ . '/../view/layout/error.phtml',
         	'layout/layout'				=> __DIR__ . '/../view/layout/layout.phtml',
         	'application/index/index'	=> __DIR__ . '/../view/index/index.phtml',
-        	'application/callback/index'=> __DIR__ . '/../view/callback/index.phtml'
+        	'application/callback/index'=> __DIR__ . '/../view/callback/index.phtml',
+        	'application/callback/msg'	=> __DIR__ . '/../view/callback/msg.phtml'
         ),
     	'strategies' => array(
     		'ViewJsonStrategy'

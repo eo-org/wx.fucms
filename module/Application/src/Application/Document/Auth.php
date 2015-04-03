@@ -25,6 +25,11 @@ class Auth extends AbstractDocument
 	/**
 	 * @ODM\Field(type="string")
 	 */
+	protected $status = 'active';
+	
+	/**
+	 * @ODM\Field(type="string")
+	 */
 	protected $authorizerAppid;
 	
 	/**
