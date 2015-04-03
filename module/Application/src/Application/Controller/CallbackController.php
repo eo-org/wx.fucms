@@ -78,6 +78,14 @@ class CallbackController extends AbstractActionController
     	return new ConsoleModel();
     }
     
+    protected function getXmlNode($xmlData, $tagName)
+    {
+    	$tat_array = $xmlData->getElementsByTagName($tagName);
+    	$value = $tat_array->item(0)->nodeValue;
+    	 
+    	return $value;
+    }
+    
     public function msgAction()
     {
     	$sm = $this->getServiceLocator();
@@ -89,19 +97,76 @@ class CallbackController extends AbstractActionController
     	
     	$messageDoc = new Message();
     	
-    	$postDataDe = $wxEncrypt->Decrypt($postData);
+    	$postData = $wxEncrypt->Decrypt($postData);
     	
-    	$messageDoc->setData(array(
-    		'data' => array(
-    			'message' => $postData,
-    			'messageDec' => $postDataDe,
-    			'aaa' => 'aaaaaa',
-    		),
-    	));
-    	$messageDoc->setAppId($appId);
+    	$xmlData = new \DOMDocument();
+    	$xmlData->loadXML($postData['msg']);
+    	
+    	
+    	$msgContent = $this->getXmlNode($xmlData, 'Content');//消息内容
+    	$openId = $this->getXmlNode($xmlData, 'FromUserName');//用户与公众号间唯一识别码
+    	$msgType = $this->getXmlNode($xmlData, 'MsgType');//消息类型
+    	$messageData = array(
+    		'appId' => $appId,
+    		'openId' => $openId,
+    		'type' => $msgType,
+    	);
+    	switch ($msgType) {
+    		case 'text':
+    			$content = $this->getXmlNode($xmlData, 'Content');
+    			$messageData['content'] = $content;
+    			break;
+    		case 'image':
+    			$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
+    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    			$messageData['picUrl'] = $picUrl;
+    			$messageData['mediaId'] = $mediaId;
+    			break;
+    		case 'voice':
+    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    			$format = $this->getXmlNode($xmlData, 'Format');
+    			$messageData['format'] = $format;
+    			$messageData['mediaId'] = $mediaId;
+    			break;
+    		case 'video':
+    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    			$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    			$messageData['mediaId'] = $mediaId;
+    			$messageData['thumbMediaId'] = $thumbMediaId;
+    			break;
+    		case 'shortvideo':
+    			$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    			$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    			$messageData['mediaId'] = $mediaId;
+    			$messageData['thumbMediaId'] = $thumbMediaId;
+    			break;
+    		case 'location':
+    			$locationX = $this->getXmlNode($xmlData, 'Location_X');
+    			$locationY = $this->getXmlNode($xmlData, 'Location_Y');
+    			$scale = $this->getXmlNode($xmlData, 'Scale');
+    			$label = $this->getXmlNode($xmlData, 'Label');
+    			$messageData['locationX'] = $locationX;
+    			$messageData['locationY'] = $locationY;
+    			$messageData['scale'] = $scale;
+    			$messageData['label'] = $label;
+    			break;
+    		case 'link':
+    			$title = $this->getXmlNode($xmlData, 'Title');
+    			$description = $this->getXmlNode($xmlData, 'Description');
+    			$url = $this->getXmlNode($xmlData, 'Url');
+    			$messageData['title'] = $title;
+    			$messageData['description'] = $description;
+    			$messageData['url'] = $url;
+    			break;    			
+    	}
+    	$messageDoc->exchangeArray($messageData);
+    	$currentDateTime = new \DateTime();
+    	$messageDoc->setCreated($currentDateTime);
     	
     	$dm->persist($messageDoc);
     	$dm->flush();
     	return new ConsoleModel();
     }
+    
+    
 }
