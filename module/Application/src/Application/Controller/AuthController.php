@@ -93,7 +93,7 @@ class AuthController extends AbstractActionController
     	$redirecturi = $fucmsToken->getRedirecturi();
     	
     	$authDoc = new Auth();
-    	$authInfoResult['websiteId'] = $websiteId;
+    	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
     	$authDoc->exchangeArray($authInfoResult['authorization_info']);
     	$currentDateTime = new \DateTime();
     	$authDoc->setTokenModified($currentDateTime);

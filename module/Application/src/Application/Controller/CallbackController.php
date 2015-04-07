@@ -42,27 +42,23 @@ class CallbackController extends AbstractActionController
 				    		->getQuery()
 				    		->getSingleResult();
     		
-    		if(!empty($ticketDoc)) {
-    			    			    			
+    		if($ticketDoc) {    			    			    			
     			$ticketDoc->setTicket($ticket);    			
-    			
-    		}else {
-    			
+    		}else {    			
     			$ticketDoc = new Ticket();
     			$data = array(
     				'label' => 'ticket',
     				'value' => $ticket,
     			);
-    			$ticketDoc->exchangeArray($data);
-    			
+    			$ticketDoc->exchangeArray($data);    			
     		}
     		$ticketDoc->setMsg(array(
     			'postdata' => $postData,
+    			'time' => time(),
     		));
     		$currentDateTime = new \DateTime();
     		$ticketDoc->setModified($currentDateTime);
-    		$dm->persist($ticketDoc);
-    		$dm->flush();
+    		$dm->persist($ticketDoc);    		
     	}else if($infotype == 'unauthorized'){
     		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
     		$appId = $array_appId->item(0)->nodeValue;
@@ -74,9 +70,9 @@ class CallbackController extends AbstractActionController
     		if($authDoc) {
     			$authDoc->setStatus('inactive');
     			$dm->persist($authDoc);
-    			$dm->flush();
     		}
     	}
+    	$dm->flush();
     	return new ConsoleModel();
     }
     
