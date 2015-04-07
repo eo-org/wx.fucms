@@ -76,14 +76,6 @@ class CallbackController extends AbstractActionController
     	return new ConsoleModel();
     }
     
-    protected function getXmlNode($xmlData, $tagName)
-    {
-    	$tat_array = $xmlData->getElementsByTagName($tagName);
-    	$value = $tat_array->item(0)->nodeValue;
-    	 
-    	return $value;
-    }
-    
     protected function getResultXml($data)
     {
     	$resultStr = 'success';
@@ -100,8 +92,8 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$resultStr = sprintf($textTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['Content']);
     				break;
-    		}    		
-    	}    	
+    		}
+    	}
     	return $resultStr;
     }
     
@@ -133,9 +125,6 @@ class CallbackController extends AbstractActionController
     	$wxEncrypt = new Encrypt($sm, $q);
     	
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
-    	
-    	
-    	
     	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
 
@@ -162,6 +151,49 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
+    				$keywordsDocs = $cdm->getRepository('Application\Document\Query')->findAll();
+    				$matchData = '';
+    				if($keywordsDocs){
+    					foreach ($keywordsDocs as $keywordsDoc){
+    						$keywordsData = $keywordsDoc->getArrayCopy();
+    						if($keywordsData['match']){
+    							if($content == $keywordsData['label']){
+    								$matchData = $keywordsData;
+    							}
+    						}else {
+    							if(strpos($keywordsData['label'], $content) !== false){
+    								$matchData = $keywordsData;
+    							}
+    						}
+    					}
+    				}
+    				
+    				if($matchData){
+    					switch ($matchData['type']) {
+    						case 'text':
+    							$returnData['Content'] = $matchData['content'];
+    							break;
+    						case 'image':
+    							$returnData['MediaId'] = $matchData['mediaId'];
+    							break;
+    						case 'voice':
+    							$returnData['MediaId'] = $matchData['mediaId'];
+    							break;
+    						case 'video':
+    							$returnData['MediaId'] = $matchData['mediaId'];
+    							$returnData['Title'] = $matchData['title'];
+    							$returnData['Description'] = $matchData['description'];
+    							break;
+    						case 'news':
+    							$returnData['ArticleCount'] = count($matchData['articles']);
+    							$returnData['Articles'] = $matchData['articles'];
+    							break;
+    					}
+    					$returnData['MsgType'] = $matchData['type'];
+    				}else {
+    					$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    					$returnData['MsgType'] = 'text';
+    				}    				
     				break;
     			case 'image':
     				$picUrl = $postObj->PicUrl;
@@ -207,9 +239,6 @@ class CallbackController extends AbstractActionController
     				break;
     		}
     	}
-    	
-    	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-    	$returnData['MsgType'] = 'text';
     	$result = $this->getResultXml($returnData);
     	$enResult = $wxEncrypt->Encrypt($result);
     	if($enResult['status']) {
