@@ -145,14 +145,6 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-    	
-//     	$xmlData = new \DOMDocument();
-//     	$xmlData->loadXML($postData['msg']);
-//     	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
-//     	$msgContent = $this->getXmlNode($xmlData, 'Content');
-//     	$openId = $this->getXmlNode($xmlData, 'FromUserName');
-//     	$msgType = $this->getXmlNode($xmlData, 'MsgType');
-    	
     	$messageData = array(
     		'appId' => $appId,
     		'openId' => $openId,
@@ -183,36 +175,36 @@ class CallbackController extends AbstractActionController
     				$messageData['format'] = $format;
     				$messageData['mediaId'] = $mediaId;
     				break;
-//     			case 'video':
-//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-//     				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-//     				$messageData['mediaId'] = $mediaId;
-//     				$messageData['thumbMediaId'] = $thumbMediaId;
-//     				break;
-//     			case 'shortvideo':
-//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-//     				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-//     				$messageData['mediaId'] = $mediaId;
-//     				$messageData['thumbMediaId'] = $thumbMediaId;
-//     				break;
-//     			case 'location':
-//     				$locationX = $this->getXmlNode($xmlData, 'Location_X');
-//     				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
-//     				$scale = $this->getXmlNode($xmlData, 'Scale');
-//     				$label = $this->getXmlNode($xmlData, 'Label');
-//     				$messageData['locationX'] = $locationX;
-//     				$messageData['locationY'] = $locationY;
-//     				$messageData['scale'] = $scale;
-//     				$messageData['label'] = $label;
-//     				break;
-//     			case 'link':
-//     				$title = $this->getXmlNode($xmlData, 'Title');
-//     				$description = $this->getXmlNode($xmlData, 'Description');
-//     				$url = $this->getXmlNode($xmlData, 'Url');
-//     				$messageData['title'] = $title;
-//     				$messageData['description'] = $description;
-//     				$messageData['url'] = $url;
-//     				break;
+    			case 'video':
+    				$mediaId = $postObj->MediaId;
+    				$thumbMediaId = $postObj->ThumbMediaId;
+    				$messageData['mediaId'] = $mediaId;
+    				$messageData['thumbMediaId'] = $thumbMediaId;
+    				break;
+    			case 'shortvideo':
+    				$mediaId = $postObj->MediaId;
+    				$thumbMediaId = $postObj->ThumbMediaId;
+    				$messageData['mediaId'] = $mediaId;
+    				$messageData['thumbMediaId'] = $thumbMediaId;
+    				break;
+    			case 'location':
+    				$locationX = $postObj->Location_X;
+    				$locationY = $postObj->Location_Y;
+    				$scale = $postObj->Scale;
+    				$label = $postObj->Label;
+    				$messageData['locationX'] = $locationX;
+    				$messageData['locationY'] = $locationY;
+    				$messageData['scale'] = $scale;
+    				$messageData['label'] = $label;
+    				break;
+    			case 'link':
+    				$title = $postObj->Title;
+    				$description = $postObj->Description;
+    				$url = $postObj->Url;
+    				$messageData['title'] = $title;
+    				$messageData['description'] = $description;
+    				$messageData['url'] = $url;
+    				break;
     		}
     	}
     	
