@@ -135,21 +135,21 @@ class CallbackController extends AbstractActionController
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
     	$messageDoc = new Message();
-    	$postData = $wxEncrypt->Decrypt($postData);
+//     	$postData = $wxEncrypt->Decrypt($postData);
 
-    	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
-    	$wxNumber = $postObj->ToUserName;
-    	$msgContent = $postObj->Content;
-    	$openId = $postObj->FromUserName;
-    	$msgType = $postObj->MsgType;
+//     	$postObj = simplexml_load_string($demo, 'SimpleXMLElement', LIBXML_NOCDATA);
+//     	$wxNumber = $postObj->ToUserName;
+//     	$msgContent = $postObj->Content;
+//     	$openId = $postObj->FromUserName;
+//     	$msgType = $postObj->MsgType;
     	
     	
-//     	$xmlData = new \DOMDocument();
-//     	$xmlData->loadXML($postData['msg']);
-//     	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
-//     	$msgContent = $this->getXmlNode($xmlData, 'Content');
-//     	$openId = $this->getXmlNode($xmlData, 'FromUserName');
-//     	$msgType = $this->getXmlNode($xmlData, 'MsgType');
+    	$xmlData = new \DOMDocument();
+    	$xmlData->loadXML($postData['msg']);
+    	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
+    	$msgContent = $this->getXmlNode($xmlData, 'Content');
+    	$openId = $this->getXmlNode($xmlData, 'FromUserName');
+    	$msgType = $this->getXmlNode($xmlData, 'MsgType');
     	
     	$messageData = array(
     		'appId' => $appId,
@@ -161,52 +161,52 @@ class CallbackController extends AbstractActionController
     		'FromUserName' => $wxNumber,
     	);
 
-    	if($msgType == 'event') {
+    	if($msgType != 'event') {
     		
     	} else {
     		switch ($msgType) {
     			case 'text':
-    				$content = $postObj ->Content;
+    				$content = $this->getXmlNode($xmlData, 'Content');
     				$messageData['content'] = $content;
     				break;
     			case 'image':
-    				$picUrl = $postObj->PicUrl;
-    				$mediaId = $postObj->MediaId;
+    				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
     				$messageData['picUrl'] = $picUrl;
     				$messageData['mediaId'] = $mediaId;
     				break;
     			case 'voice':
-    				$mediaId = $postObj->MediaId;
-    				$format = $postObj->Format;
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$format = $this->getXmlNode($xmlData, 'Format');
     				$messageData['format'] = $format;
     				$messageData['mediaId'] = $mediaId;
     				break;
     			case 'video':
-    				$mediaId = $postObj->MediaId;
-    				$thumbMediaId = $postObj->ThumbMediaId;
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
     				$messageData['mediaId'] = $mediaId;
     				$messageData['thumbMediaId'] = $thumbMediaId;
     				break;
     			case 'shortvideo':
-    				$mediaId = $postObj->MediaId;
-    				$thumbMediaId = $postObj->ThumbMediaId;
+    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
     				$messageData['mediaId'] = $mediaId;
     				$messageData['thumbMediaId'] = $thumbMediaId;
     				break;
     			case 'location':
-    				$locationX = $postObj->Location_X;
-    				$locationY = $postObj->Location_Y;
-    				$scale = $postObj->Scale;
-    				$label = $postObj->Label;
+    				$locationX = $this->getXmlNode($xmlData, 'Location_X');
+    				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
+    				$scale = $this->getXmlNode($xmlData, 'Scale');
+    				$label = $this->getXmlNode($xmlData, 'Label');
     				$messageData['locationX'] = $locationX;
     				$messageData['locationY'] = $locationY;
     				$messageData['scale'] = $scale;
     				$messageData['label'] = $label;
     				break;
     			case 'link':
-    				$title = $postObj->Title;
-    				$description = $postObj->Description;
-    				$url = $postObj->Url;
+    				$title = $this->getXmlNode($xmlData, 'Title');
+    				$description = $this->getXmlNode($xmlData, 'Description');
+    				$url = $this->getXmlNode($xmlData, 'Url');
     				$messageData['title'] = $title;
     				$messageData['description'] = $description;
     				$messageData['url'] = $url;
@@ -214,16 +214,15 @@ class CallbackController extends AbstractActionController
     		}
     	}
     	
-//     	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-//     	$returnData['MsgType'] = 'text';
-//     	$result = $this->getResultXml($returnData);
-//     	$enResult = $wxEncrypt->Encrypt($result);
-//     	if($enResult['status']) {
-//     		$resultStr = $enResult['msg'];
-//     	} else {
-//     		$resultStr= 'success';
-//     	}
-    	
+    	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    	$returnData['MsgType'] = 'text';
+    	$result = $this->getResultXml($returnData);
+    	$enResult = $wxEncrypt->Encrypt($result);
+    	if($enResult['status']) {
+    		$resultStr = $enResult['msg'];
+    	} else {
+    		$resultStr= 'success';
+    	}
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
