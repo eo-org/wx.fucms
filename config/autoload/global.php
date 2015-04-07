@@ -5,6 +5,12 @@ return array(
 			'server' => 'production',
 		),
 		'base_path' => '/var/www',
+		'account_fucms_db' => array(
+			'host' => '127.0.0.1',
+			'username' => 'craftgavin',
+			'password' => 'whothirstformagic?',
+			'db' => 'admin'
+		),
 		'path' => array(
 			'fucms' => 'http://lib-media.qiniudn.com/fucms',
 			'src'	=> 'http://lib-media.qiniudn.com/src',

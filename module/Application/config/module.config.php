@@ -157,5 +157,10 @@ return array(
 		'invokables' => array(
 			'path' => 'Application\View\Helper\Path',
 		)
+	),
+	'service_manager' => array(
+		'factories' => array(
+			'CmsDocumentManager' => 'Application\Service\Db\CmsDocumentManagerFactory',
+		)
 	)
 );

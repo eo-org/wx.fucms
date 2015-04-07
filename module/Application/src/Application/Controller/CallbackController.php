@@ -8,6 +8,8 @@ use Application\WxEncrypt\Encrypt;
 use Application\Document\Ticket;
 use Application\Document\Message;
 
+use Application\SiteInfo;
+
 class CallbackController extends AbstractActionController
 {
     public function indexAction()
@@ -113,9 +115,19 @@ class CallbackController extends AbstractActionController
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
     	$appId = $this->params()->fromRoute('appId');
+    	
+    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+    	if($authDoc == null) {
+    		return new ConsoleModel();
+    	}
+    	$websiteId = $authDoc->getWebsiteId();
+    	SiteInfo::setWebsiteId($websiteId);
+    	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
     	$wxEncrypt = new Encrypt($sm, $q);
+    	
+    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
     	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
@@ -135,9 +147,9 @@ class CallbackController extends AbstractActionController
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
     	);
-    	if($msgType != 'event'){
+    	if($msgType != 'event') {
     		
-    	}else {
+    	} else {
     		switch ($msgType) {
     			case 'text':
     				$content = $this->getXmlNode($xmlData, 'Content');
@@ -194,15 +206,15 @@ class CallbackController extends AbstractActionController
     	$enResult = $wxEncrypt->Encrypt($result);
     	if($enResult['status']) {
     		$resultStr = $enResult['msg'];
-    	}else {
+    	} else {
     		$resultStr= 'success';
     	}
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
     	
-    	$dm->persist($messageDoc);
-    	$dm->flush();
+    	$cdm->persist($messageDoc);
+    	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
     }
