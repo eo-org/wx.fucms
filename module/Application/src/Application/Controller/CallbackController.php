@@ -107,7 +107,16 @@ class CallbackController extends AbstractActionController
     
     public function msgAction()
     {
-    	$result = 'success';
+    	$resultStr = 'success';
+    	
+//     	$demo = '<xml>
+//                 <ToUserName><![CDATA[ocjKfuG0RpHa_PJUMOEB1L9LOkzU]]></ToUserName>
+//                 <FromUserName><![CDATA[wx536a9272e58807e7]]></FromUserName>
+//                 <CreateTime>1428374648</CreateTime>
+//                 <MsgType><![CDATA[text]]></MsgType>
+//                 <Content><![CDATA[text]]></Content>
+//                 </xml>';
+    	
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
     	$appId = $this->params()->fromRoute('appId');
@@ -127,12 +136,20 @@ class CallbackController extends AbstractActionController
     	
     	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
-    	$xmlData = new \DOMDocument();
-    	$xmlData->loadXML($postData['msg']);
-    	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
-    	$msgContent = $this->getXmlNode($xmlData, 'Content');
-    	$openId = $this->getXmlNode($xmlData, 'FromUserName');
-    	$msgType = $this->getXmlNode($xmlData, 'MsgType');
+
+    	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
+    	$wxNumber = $postObj->ToUserName;
+    	$msgContent = $postObj->Content;
+    	$openId = $postObj->FromUserName;
+    	$msgType = $postObj->MsgType;
+    	
+    	
+//     	$xmlData = new \DOMDocument();
+//     	$xmlData->loadXML($postData['msg']);
+//     	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
+//     	$msgContent = $this->getXmlNode($xmlData, 'Content');
+//     	$openId = $this->getXmlNode($xmlData, 'FromUserName');
+//     	$msgType = $this->getXmlNode($xmlData, 'MsgType');
     	
     	$messageData = array(
     		'appId' => $appId,
@@ -144,52 +161,52 @@ class CallbackController extends AbstractActionController
     		'FromUserName' => $wxNumber,
     	);
 
-    	if($msgType != 'event') {
+    	if($msgType == 'event') {
     		
     	} else {
     		switch ($msgType) {
     			case 'text':
-    				$content = $this->getXmlNode($xmlData, 'Content');
+    				$content = $postObj ->Content;
     				$messageData['content'] = $content;
     				break;
     			case 'image':
-    				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+    				$picUrl = $postObj->PicUrl;
+    				$mediaId = $postObj->MediaId;
     				$messageData['picUrl'] = $picUrl;
     				$messageData['mediaId'] = $mediaId;
     				break;
     			case 'voice':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$format = $this->getXmlNode($xmlData, 'Format');
+    				$mediaId = $postObj->MediaId;
+    				$format = $postObj->Format;
     				$messageData['format'] = $format;
     				$messageData['mediaId'] = $mediaId;
     				break;
     			case 'video':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    				$mediaId = $postObj->MediaId;
+    				$thumbMediaId = $postObj->ThumbMediaId;
     				$messageData['mediaId'] = $mediaId;
     				$messageData['thumbMediaId'] = $thumbMediaId;
     				break;
     			case 'shortvideo':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+    				$mediaId = $postObj->MediaId;
+    				$thumbMediaId = $postObj->ThumbMediaId;
     				$messageData['mediaId'] = $mediaId;
     				$messageData['thumbMediaId'] = $thumbMediaId;
     				break;
     			case 'location':
-    				$locationX = $this->getXmlNode($xmlData, 'Location_X');
-    				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
-    				$scale = $this->getXmlNode($xmlData, 'Scale');
-    				$label = $this->getXmlNode($xmlData, 'Label');
+    				$locationX = $postObj->Location_X;
+    				$locationY = $postObj->Location_Y;
+    				$scale = $postObj->Scale;
+    				$label = $postObj->Label;
     				$messageData['locationX'] = $locationX;
     				$messageData['locationY'] = $locationY;
     				$messageData['scale'] = $scale;
     				$messageData['label'] = $label;
     				break;
     			case 'link':
-    				$title = $this->getXmlNode($xmlData, 'Title');
-    				$description = $this->getXmlNode($xmlData, 'Description');
-    				$url = $this->getXmlNode($xmlData, 'Url');
+    				$title = $postObj->Title;
+    				$description = $postObj->Description;
+    				$url = $postObj->Url;
     				$messageData['title'] = $title;
     				$messageData['description'] = $description;
     				$messageData['url'] = $url;
@@ -206,6 +223,7 @@ class CallbackController extends AbstractActionController
     	} else {
     		$resultStr= 'success';
     	}
+    	
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
