@@ -41,6 +41,7 @@ class CmsDocumentManagerFactory implements FactoryInterface
     	$internalIpAddress = $server['internalIpAddress'];
     	
     	
+    	echo $internalIpAddress.' is the ip address<br />';
     	
 		$sm = $serviceLocator;
 		
