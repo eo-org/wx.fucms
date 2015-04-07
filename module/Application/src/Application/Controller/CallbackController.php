@@ -103,15 +103,13 @@ class CallbackController extends AbstractActionController
     				$resultStr = sprintf($textTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['MsgType'], $data['Content']);
     				break;
     		}    		
-    	}
-    	
-    	
-    	
+    	}    	
     	return $resultStr;
     }
     
     public function msgAction()
     {
+    	$data = array();
     	$result = 'success';
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
@@ -121,9 +119,9 @@ class CallbackController extends AbstractActionController
     	$wxEncrypt = new Encrypt($sm, $q);
     	
     	$messageDoc = new Message();
-    	
+    	$data['postData'] = $postData;
     	$postData = $wxEncrypt->Decrypt($postData);
-    	
+    	$data['dePostData'] = $postData;
     	$xmlData = new \DOMDocument();
     	$xmlData->loadXML($postData['msg']);
     	
@@ -194,18 +192,22 @@ class CallbackController extends AbstractActionController
     		}
     	}
     	
-    	$messageDoc->exchangeArray($messageData);
-    	$currentDateTime = new \DateTime();
-    	$messageDoc->setCreated($currentDateTime);
-    	
-    	$dm->persist($messageDoc);
-    	$dm->flush();
     	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
     	$returnData['MsgType'] = 'text';
     	$result = $this->getResultXml($returnData);
-    	
+    	$data['result'] = $result;    	 
     	$resultStr = $wxEncrypt->Encrypt($result);
-    	return new ConsoleModel(array('result' => $result));
+    	$data['resultStr'] = $resultStr;
+    	
+    	$messageDoc->exchangeArray($messageData);
+    	$currentDateTime = new \DateTime();
+    	$messageDoc->setCreated($currentDateTime);
+    	$messageDoc->setData($data);
+    	
+    	$dm->persist($messageDoc);
+    	$dm->flush();
+    	
+    	return new ConsoleModel(array('result' => $resultStr));
     }
     
     
