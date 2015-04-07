@@ -116,10 +116,10 @@ class CallbackController extends AbstractActionController
     	$appId = $this->params()->fromRoute('appId');
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
-    	$q = array(
-    		'timestamp' => time(),
-    		'nonce' => '23423423'
-    	);
+//     	$q = array(
+//     		'timestamp' => time(),
+//     		'nonce' => '23423423'
+//     	);
     	$wxEncrypt = new Encrypt($sm, $q);
     	
     	$messageDoc = new Message();
