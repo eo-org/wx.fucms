@@ -29,7 +29,7 @@ class Module implements BootstrapListenerInterface
 		$config->setHydratorNamespace('DoctrineMongoHydrator');
 		$config->setMetadataDriverImpl(AnnotationDriver::create(__DIR__ . '/../../doctrineCache/class'));
 // 		die($env['usage']['server']);
-		if($env['usage']['server'] == 'production') {
+		if($env['usage']['server'] == 'production' && false) {
 			$config->setAutoGenerateHydratorClasses(false);
 			$config->setAutoGenerateProxyClasses(false);
 		}

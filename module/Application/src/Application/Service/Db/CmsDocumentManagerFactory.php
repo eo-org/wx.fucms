@@ -62,7 +62,7 @@ class CmsDocumentManagerFactory implements FactoryInterface
 		$config->setHydratorDir(BASE_PATH . '/fucms/doctrineCache');
 		$config->setHydratorNamespace('DoctrineMongoHydrator');
 		$config->setMetadataDriverImpl(AnnotationDriver::create(BASE_PATH . '/class'));
-		if($env['usage']['server'] == 'production') {
+		if($env['usage']['server'] == 'production' && false) {
 			$config->setAutoGenerateHydratorClasses(false);
 			$config->setAutoGenerateProxyClasses(false);
 		}
