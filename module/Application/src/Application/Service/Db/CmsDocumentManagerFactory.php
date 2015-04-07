@@ -40,9 +40,6 @@ class CmsDocumentManagerFactory implements FactoryInterface
     	));
     	$internalIpAddress = $server['internalIpAddress'];
     	
-    	
-    	echo $internalIpAddress.' is the ip address<br />';
-    	
 		$sm = $serviceLocator;
 		
 		$fileConfig = $sm->get('Config');
@@ -50,8 +47,6 @@ class CmsDocumentManagerFactory implements FactoryInterface
 		
 		$host = $internalIpAddress;
 		$dbName = 'cms_' . $globalId;
-		
-		echo $dbName.' is the db name<br />';
 		
 		AnnotationDriver::registerAnnotationClasses();
 		$config = new Configuration();
@@ -74,10 +69,6 @@ class CmsDocumentManagerFactory implements FactoryInterface
 		$connection->initialize();
 		$dm = DocumentManager::create($connection, $config);
 		PersistentObject::setObjectManager($dm);
-		
-		
-		echo "dm created successfully<br />";
-		
 		
 		return $dm;
     }

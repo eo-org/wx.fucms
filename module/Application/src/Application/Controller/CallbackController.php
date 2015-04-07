@@ -130,13 +130,10 @@ class CallbackController extends AbstractActionController
     	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
-    	//$wxEncrypt = new Encrypt($sm, $q);
+    	$wxEncrypt = new Encrypt($sm, $q);
     	
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
-    	
-    	
-    	die('action finished');
     	
     	
     	$messageDoc = new Message();
