@@ -137,7 +137,7 @@ class CallbackController extends AbstractActionController
     	
     	
     	$messageDoc = new Message();
-//     	$postData = $wxEncrypt->Decrypt($postData);
+    	$postData = $wxEncrypt->Decrypt($postData);
 
 //     	$postObj = simplexml_load_string($demo, 'SimpleXMLElement', LIBXML_NOCDATA);
 //     	$wxNumber = $postObj->ToUserName;
