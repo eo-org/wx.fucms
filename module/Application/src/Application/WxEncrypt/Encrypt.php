@@ -67,7 +67,7 @@ class Encrypt
 		 * 
 		 */
 		$encryptMsg = '';
-		$errCode = $pc->encryptMsg($replyMsg, $this->timeStamp, $this->nonce, $encryptMsg);
+		$errCode = $this->pc->encryptMsg($replyMsg, $this->timeStamp, $this->nonce, $encryptMsg);
 		if ($errCode == 0) {
 			return array(
 				'status'=> true,
