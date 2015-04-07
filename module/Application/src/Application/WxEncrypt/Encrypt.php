@@ -26,9 +26,11 @@ class Encrypt
 		$appId = $wx['appId'];
 		$this->pc = new \WXBizMsgCrypt($token, $encodingAesKey, $appId);
 				
-		if(isset($data['signature'])){
+		if(isset($q['signature'])){
 			$this->msg_sign = $q['signature'];
-		}else {
+		}
+		
+		if(isset($q['msg_signature'])){
 			$this->msg_sign = $q['msg_signature'];
 		}
 		$this->timeStamp = $q['timestamp'];
@@ -43,7 +45,7 @@ class Encrypt
 		*
 		*/
 		$msg = '';
-		$errCode = $this->pc->decryptMsg($this->msg_sign, $this->timeStamp, $this->nonce, $format, $msg);		
+		$errCode = $this->pc->decryptMsg($this->msg_sign, $this->timeStamp, $this->nonce, $format, $msg);
 		if ($errCode == 0) {
 			return array(
 				'status'=> true,
@@ -64,7 +66,7 @@ class Encrypt
 		 * @params $replyMsg String 回复消息，XML格式的字符串
 		 * 
 		 */
-		$encryptMsg = '';		
+		$encryptMsg = '';
 		$errCode = $pc->encryptMsg($replyMsg, $this->timeStamp, $this->nonce, $encryptMsg);
 		if ($errCode == 0) {
 			return array(
