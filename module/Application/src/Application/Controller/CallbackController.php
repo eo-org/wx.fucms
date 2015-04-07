@@ -147,6 +147,7 @@ class CallbackController extends AbstractActionController
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
     	);
+
     	if($msgType != 'event') {
     		
     	} else {
