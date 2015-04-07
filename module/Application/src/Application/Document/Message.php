@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * @ODM\Document(
- * collection="message"
+ * collection="wx_message"
  * )
  */
 class Message extends AbstractDocument
