@@ -134,6 +134,11 @@ class CallbackController extends AbstractActionController
     	
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
+    	
+    	
+    	die('action finished');
+    	
+    	
     	$messageDoc = new Message();
 //     	$postData = $wxEncrypt->Decrypt($postData);
 
