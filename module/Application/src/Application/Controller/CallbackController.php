@@ -173,7 +173,7 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'image':
     				$picUrl = $postObj->PicUrl;
-    				$mediaId = $picUrl->MediaId;
+    				$mediaId = $postObj->MediaId;
     				$messageData['picUrl'] = $picUrl;
     				$messageData['mediaId'] = $mediaId;
     				break;
