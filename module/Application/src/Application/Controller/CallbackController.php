@@ -171,18 +171,18 @@ class CallbackController extends AbstractActionController
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
     				break;
-//     			case 'image':
-//     				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
-//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-//     				$messageData['picUrl'] = $picUrl;
-//     				$messageData['mediaId'] = $mediaId;
-//     				break;
-//     			case 'voice':
-//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-//     				$format = $this->getXmlNode($xmlData, 'Format');
-//     				$messageData['format'] = $format;
-//     				$messageData['mediaId'] = $mediaId;
-//     				break;
+    			case 'image':
+    				$picUrl = $postObj->PicUrl;
+    				$mediaId = $picUrl->MediaId;
+    				$messageData['picUrl'] = $picUrl;
+    				$messageData['mediaId'] = $mediaId;
+    				break;
+    			case 'voice':
+    				$mediaId = $postObj->MediaId;
+    				$format = $postObj->Format;
+    				$messageData['format'] = $format;
+    				$messageData['mediaId'] = $mediaId;
+    				break;
 //     			case 'video':
 //     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
 //     				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
