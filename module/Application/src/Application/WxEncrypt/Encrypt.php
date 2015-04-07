@@ -15,8 +15,8 @@ class Encrypt
 	{
 		/*
 		*
-		* @params $sl Object serviceLocator,获取第三方平台的配置参数
-		* @params $q Array 公众平台发出消息的URL所带参数，以获取时间戳等参数进行验证解密
+		* @params $sl Object serviceLocator
+		* @params $q Array 
 		*
 		*/
 		$config = $sm->get('Config');
@@ -40,8 +40,8 @@ class Encrypt
 	public function Decrypt($format)
 	{
 		/*
-		 * 公众平台发出消息解密
-		* @params $format String 公众平台发出的消息，XML格式的字符串
+		 *
+		* @params $format String 
 		*
 		*/
 		$msg = '';
@@ -62,8 +62,8 @@ class Encrypt
 	public function Encrypt($replyMsg)
 	{
 		/*
-		 * 回复消息加密打包
-		 * @params $replyMsg String 回复消息，XML格式的字符串
+		 *
+		 * @params $replyMsg String 
 		 * 
 		 */
 		$encryptMsg = '';

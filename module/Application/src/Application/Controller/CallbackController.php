@@ -122,9 +122,9 @@ class CallbackController extends AbstractActionController
     	$xmlData = new \DOMDocument();
     	$xmlData->loadXML($postData['msg']);
     	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
-    	$msgContent = $this->getXmlNode($xmlData, 'Content');//消息内容
-    	$openId = $this->getXmlNode($xmlData, 'FromUserName');//用户与公众号间唯一识别码
-    	$msgType = $this->getXmlNode($xmlData, 'MsgType');//消息类型
+    	$msgContent = $this->getXmlNode($xmlData, 'Content');
+    	$openId = $this->getXmlNode($xmlData, 'FromUserName');
+    	$msgType = $this->getXmlNode($xmlData, 'MsgType');
     	
     	$messageData = array(
     		'appId' => $appId,
@@ -188,7 +188,7 @@ class CallbackController extends AbstractActionController
     		}
     	}
     	
-    	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    	$returnData['Content'] = '鐑儓娆㈣繋鎮╩o-榧撴帉mo-榧撴帉mo-榧撴帉鍏虫敞姝︽眽闀挎睙鑱斿悎瀹樻柟寰俊璐﹀彿锛屾垜浠彧鎻愪緵棰嗗厛鐨勪俊鎭寲瑙ｅ喅鏂规锛屽鏋滄偍瀵瑰缓绔欐湁浠讳綍鐨勭枒闂紝鍙殢鏃跺挩璇紝鎴戜滑灏嗗強鏃舵姤浠ユ渶涓撲笟鐨勭瓟澶嶏紝鎮ㄧ殑鍗佸垎婊℃剰鏄垜浠敮涓�鐨勬湇鍔″畻鏃╩o-寰楁剰~~';
     	$returnData['MsgType'] = 'text';
     	$result = $this->getResultXml($returnData);
     	$enResult = $wxEncrypt->Encrypt($result);
