@@ -123,7 +123,7 @@ class CallbackController extends AbstractActionController
     	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
     	if($authDoc == null) {
-    		return new ConsoleModel();
+    		return new ConsoleModel(array('result' => "数据没有绑定"));
     	}
     	$websiteId = $authDoc->getWebsiteId();
     	SiteInfo::setWebsiteId($websiteId);
@@ -163,7 +163,7 @@ class CallbackController extends AbstractActionController
     		'FromUserName' => $wxNumber,
     	);
 
-    	if($msgType != 'event') {
+    	if($msgType == 'event') {
     		
     	} else {
     		switch ($msgType) {
@@ -234,6 +234,4 @@ class CallbackController extends AbstractActionController
     	
     	return new ConsoleModel(array('result' => $resultStr));
     }
-    
-    
 }
