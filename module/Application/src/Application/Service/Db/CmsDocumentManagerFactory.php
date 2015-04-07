@@ -22,7 +22,7 @@ class CmsDocumentManagerFactory implements FactoryInterface
     	$host = $config['env']['account_fucms_db']['host'];
     	$username = $config['env']['account_fucms_db']['username'];
     	$password = $config['env']['account_fucms_db']['password'];
-    	$m = new MongoClient($host, array(
+    	$m = new \MongoClient($host, array(
     		'username' => $username,
     		'password' => $password,
     		'db' => 'admin'
@@ -30,7 +30,7 @@ class CmsDocumentManagerFactory implements FactoryInterface
     	
     	$db = $m->selectDb('account_fucms');
     	$siteArr = $db->website->findOne(array(
-    		'_id' => new MongoId(SiteInfo::getWebsiteId())
+    		'_id' => new \MongoId(SiteInfo::getWebsiteId())
     	));
     	
     	$globalId = $siteArr['globalSiteId'];
