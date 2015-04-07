@@ -139,19 +139,19 @@ class CallbackController extends AbstractActionController
     	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
 
-//     	$postObj = simplexml_load_string($demo, 'SimpleXMLElement', LIBXML_NOCDATA);
-//     	$wxNumber = $postObj->ToUserName;
-//     	$msgContent = $postObj->Content;
-//     	$openId = $postObj->FromUserName;
-//     	$msgType = $postObj->MsgType;
+    	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
+    	$wxNumber = $postObj->ToUserName;
+    	$msgContent = $postObj->Content;
+    	$openId = $postObj->FromUserName;
+    	$msgType = $postObj->MsgType;
     	
     	
-    	$xmlData = new \DOMDocument();
-    	$xmlData->loadXML($postData['msg']);
-    	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
-    	$msgContent = $this->getXmlNode($xmlData, 'Content');
-    	$openId = $this->getXmlNode($xmlData, 'FromUserName');
-    	$msgType = $this->getXmlNode($xmlData, 'MsgType');
+//     	$xmlData = new \DOMDocument();
+//     	$xmlData->loadXML($postData['msg']);
+//     	$wxNumber = $this->getXmlNode($xmlData, 'ToUserName');
+//     	$msgContent = $this->getXmlNode($xmlData, 'Content');
+//     	$openId = $this->getXmlNode($xmlData, 'FromUserName');
+//     	$msgType = $this->getXmlNode($xmlData, 'MsgType');
     	
     	$messageData = array(
     		'appId' => $appId,
@@ -168,51 +168,51 @@ class CallbackController extends AbstractActionController
     	} else {
     		switch ($msgType) {
     			case 'text':
-    				$content = $this->getXmlNode($xmlData, 'Content');
+    				$content = $postObj->Content;
     				$messageData['content'] = $content;
     				break;
-    			case 'image':
-    				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$messageData['picUrl'] = $picUrl;
-    				$messageData['mediaId'] = $mediaId;
-    				break;
-    			case 'voice':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$format = $this->getXmlNode($xmlData, 'Format');
-    				$messageData['format'] = $format;
-    				$messageData['mediaId'] = $mediaId;
-    				break;
-    			case 'video':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-    				$messageData['mediaId'] = $mediaId;
-    				$messageData['thumbMediaId'] = $thumbMediaId;
-    				break;
-    			case 'shortvideo':
-    				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
-    				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
-    				$messageData['mediaId'] = $mediaId;
-    				$messageData['thumbMediaId'] = $thumbMediaId;
-    				break;
-    			case 'location':
-    				$locationX = $this->getXmlNode($xmlData, 'Location_X');
-    				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
-    				$scale = $this->getXmlNode($xmlData, 'Scale');
-    				$label = $this->getXmlNode($xmlData, 'Label');
-    				$messageData['locationX'] = $locationX;
-    				$messageData['locationY'] = $locationY;
-    				$messageData['scale'] = $scale;
-    				$messageData['label'] = $label;
-    				break;
-    			case 'link':
-    				$title = $this->getXmlNode($xmlData, 'Title');
-    				$description = $this->getXmlNode($xmlData, 'Description');
-    				$url = $this->getXmlNode($xmlData, 'Url');
-    				$messageData['title'] = $title;
-    				$messageData['description'] = $description;
-    				$messageData['url'] = $url;
-    				break;
+//     			case 'image':
+//     				$picUrl = $this->getXmlNode($xmlData, 'PicUrl');
+//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+//     				$messageData['picUrl'] = $picUrl;
+//     				$messageData['mediaId'] = $mediaId;
+//     				break;
+//     			case 'voice':
+//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+//     				$format = $this->getXmlNode($xmlData, 'Format');
+//     				$messageData['format'] = $format;
+//     				$messageData['mediaId'] = $mediaId;
+//     				break;
+//     			case 'video':
+//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+//     				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+//     				$messageData['mediaId'] = $mediaId;
+//     				$messageData['thumbMediaId'] = $thumbMediaId;
+//     				break;
+//     			case 'shortvideo':
+//     				$mediaId = $this->getXmlNode($xmlData, 'MediaId');
+//     				$thumbMediaId = $this->getXmlNode($xmlData, 'ThumbMediaId');
+//     				$messageData['mediaId'] = $mediaId;
+//     				$messageData['thumbMediaId'] = $thumbMediaId;
+//     				break;
+//     			case 'location':
+//     				$locationX = $this->getXmlNode($xmlData, 'Location_X');
+//     				$locationY = $this->getXmlNode($xmlData, 'Location_Y');
+//     				$scale = $this->getXmlNode($xmlData, 'Scale');
+//     				$label = $this->getXmlNode($xmlData, 'Label');
+//     				$messageData['locationX'] = $locationX;
+//     				$messageData['locationY'] = $locationY;
+//     				$messageData['scale'] = $scale;
+//     				$messageData['label'] = $label;
+//     				break;
+//     			case 'link':
+//     				$title = $this->getXmlNode($xmlData, 'Title');
+//     				$description = $this->getXmlNode($xmlData, 'Description');
+//     				$url = $this->getXmlNode($xmlData, 'Url');
+//     				$messageData['title'] = $title;
+//     				$messageData['description'] = $description;
+//     				$messageData['url'] = $url;
+//     				break;
     		}
     	}
     	
