@@ -214,15 +214,15 @@ class CallbackController extends AbstractActionController
     		}
     	}
     	
-    	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-    	$returnData['MsgType'] = 'text';
-    	$result = $this->getResultXml($returnData);
-    	$enResult = $wxEncrypt->Encrypt($result);
-    	if($enResult['status']) {
-    		$resultStr = $enResult['msg'];
-    	} else {
-    		$resultStr= 'success';
-    	}
+//     	$returnData['Content'] = '热烈欢迎您mo-鼓掌mo-鼓掌mo-鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+//     	$returnData['MsgType'] = 'text';
+//     	$result = $this->getResultXml($returnData);
+//     	$enResult = $wxEncrypt->Encrypt($result);
+//     	if($enResult['status']) {
+//     		$resultStr = $enResult['msg'];
+//     	} else {
+//     		$resultStr= 'success';
+//     	}
     	
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
