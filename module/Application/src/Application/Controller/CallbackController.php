@@ -161,17 +161,13 @@ class CallbackController extends AbstractActionController
     				$content = $postObj->Content;
     				$messageData['content'] = $content;    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals('0')
-					    					->getQuery()->getSingleResult();    					
+					    					->field('keywords')->equals($content)
+					    					->getQuery()->getSingleResult();
     				if(!is_null($keywordsDoc)) {
+    					$keywordsData = $keywordsDoc->getArrayCopy();    					
     					$matchData = array(
-    					 'type'=> 'text',
-    					  'content' =>'找到',
-    					);
-    				}else {
-    					$matchData = array(
-    						'type'=> 'text',
-    						'content' =>'没找到',
+    					 'type'=> $keywordsData['type'],
+    					 'content' => $keywordsData['content'],
     					);
     				}
     				if($matchData){
