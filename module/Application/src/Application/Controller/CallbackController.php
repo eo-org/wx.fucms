@@ -168,14 +168,16 @@ class CallbackController extends AbstractActionController
     							'websiteId' => $websiteId,
     							'sss' => $keywordsDoc->getId(),
     						);
-    					}    				
+    					}else {
+    						$messageData['data'] = array(
+    							'key' => $content,
+    							'websiteId' => $websiteId,
+    						);
+    					}
     				$matchData = '';
     				if(!is_null($keywordsDoc)) {
     					$matchData['type'] = 'text';
-    					$matchData['content'] = $keywordsDoc->getType();
-    				}else {
-    					$matchData['type'] = 'text';
-    					$matchData['content'] = $websiteId;
+    					$matchData['content'] = $keywordsDoc->getContent();
     				}
     				if($matchData){
     					switch ($matchData['type']) {
@@ -268,8 +270,8 @@ class CallbackController extends AbstractActionController
     public function demoAction()
     {
     	
-    	$websiteId = '547e6e60ce2350a00d000029';
-//     	$websiteId = '547d70e3ce2350bc0d000029';
+//     	$websiteId = '547e6e60ce2350a00d000029';
+    	$websiteId = '547d70e3ce2350bc0d000029';
     	SiteInfo::setWebsiteId($websiteId);
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
@@ -277,7 +279,12 @@ class CallbackController extends AbstractActionController
 					    	->getQuery()->getSingleResult();
     	
     	
-    	print_r($keywordsDoc->getArrayCopy());
+    	if(is_null($keywordsDoc)){
+    		die('ok');
+    	}else {
+    		die('no');
+    	}
+//     	print_r($keywordsDoc->getArrayCopy());
     	die();
     	
     	return new jsonModel();
