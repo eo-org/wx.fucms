@@ -44,6 +44,16 @@ return array(
                   			)
             			)
             		),
+            		'callback' => array(
+            			'type' => 'segment',
+            			'options' => array(
+            				'route' => 'call-demo',
+            				'defaults' => array(
+            					'controller'    => 'Application\Controller\CallbackController',
+            					'action'        => 'demo',
+            				)
+            			)
+            		),
             		'msg-callback' => array(
             			'type' => 'segment',
             			'options' => array(

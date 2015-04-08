@@ -155,21 +155,18 @@ class CallbackController extends AbstractActionController
     	if($msgType == 'event') {
     		
     	} else {
-    		try {
     		switch ($msgType) {
     			case 'text':
     				$content = $postObj->Content;
-    				$messageData['content'] = $content;
-    				
-    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-    					->field('keywords')->equals($content)
-    					->getQuery()->getSingleResult();
-    					 
+    				$messageData['content'] = $content;    				
+//     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+// 					    					->field('keywords')->equals($content)
+// 					    					->getQuery()->getSingleResult();
     					if(is_null($keywordsDoc)){
     						$messageData['data'] = array(
     							'key' => $content,
     							'websiteId' => $websiteId,
-    							'sss' => $keywordsDoc->getId(),
+//     							'sss' => $keywordsDoc->getId(),
     						);
     					}
     				
@@ -201,8 +198,8 @@ class CallbackController extends AbstractActionController
     					}
     					$returnData['MsgType'] = $matchData['type'];
     				}else {
-//     					$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-//     					$returnData['MsgType'] = 'text';
+    					$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    					$returnData['MsgType'] = 'text';
     				}
     				break;
     			case 'image':
@@ -248,18 +245,6 @@ class CallbackController extends AbstractActionController
     				$messageData['url'] = $url;
     				break;
     		}
-    		} catch (\Exception $e){
-    			$returnData['Content'] = $e->getMessage();
-    			$returnData['MsgType'] = 'text';
-    			$result = $this->getResultXml($returnData);
-    			$enResult = $wxEncrypt->Encrypt($result);
-    			if($enResult['status']) {
-    				$resultStr = $enResult['msg'];
-    			} else {
-    				$resultStr= 'success';
-    			}
-    			echo $resultStr;
-    		}
     	}
     	$result = $this->getResultXml($returnData);
     	$enResult = $wxEncrypt->Encrypt($result);
@@ -276,5 +261,23 @@ class CallbackController extends AbstractActionController
     	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
+    }
+    
+    public function demoAction()
+    {
+    	
+    	$websiteId = '547e6e60ce2350a00d000029';
+//     	$websiteId = '547d70e3ce2350bc0d000029';
+    	SiteInfo::setWebsiteId($websiteId);
+    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
+    	$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+					    	->field('keywords')->equals('我')
+					    	->getQuery()->getSingleResult();
+    	
+    	
+    	print_r($keywordsDoc->getArrayCopy());
+    	die();
+    	
+    	return new jsonModel();
     }
 }
