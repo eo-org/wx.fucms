@@ -163,6 +163,10 @@ class Message extends AbstractDocument
 		if(isset($data['url'])){
 			$this->url = $data['url'];
 		}
+		
+		if(isset($data['data'])){			
+			$this->data = $data['data'];
+		}
 	}
 	public function getArrayCopy()
 	{
