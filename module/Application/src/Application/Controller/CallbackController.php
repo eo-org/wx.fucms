@@ -178,8 +178,10 @@ class CallbackController extends AbstractActionController
     					}
     				$matchData = '';
     				if(!is_null($keywordsDoc)) {
-    					$matchData['type'] = 'text';
-    					$matchData['content'] = '找到数据了';
+    					$matchData = array(
+    						'type'=> $keywordsDoc->getType(),
+    						'content' => $keywordsDoc->getContent(),
+    					);
     				}
     				if($matchData){
     					switch ($matchData['type']) {
