@@ -251,6 +251,14 @@ class CallbackController extends AbstractActionController
     		} catch (\Exception $e){
     			$returnData['Content'] = $e->getMessage();
     			$returnData['MsgType'] = 'text';
+    			$result = $this->getResultXml($returnData);
+    			$enResult = $wxEncrypt->Encrypt($result);
+    			if($enResult['status']) {
+    				$resultStr = $enResult['msg'];
+    			} else {
+    				$resultStr= 'success';
+    			}
+    			echo $resultStr;
     		}
     	}
     	$result = $this->getResultXml($returnData);
