@@ -159,26 +159,28 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;    				
-    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals($content)
-					    					->getQuery()->getSingleResult();
-    					if(!is_null($keywordsDoc)){
-    						$messageData['data'] = array(
-    							'key' => $content,
-    							'websiteId' => $websiteId,
-    							'sss' => $keywordsDoc->getId(),
-    						);
-    					}
+//     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+// 					    					->field('keywords')->equals($content)
+// 					    					->getQuery()->getSingleResult();
+//     					if(!is_null($keywordsDoc)){
+//     						$messageData['data'] = array(
+//     							'key' => $content,
+//     							'websiteId' => $websiteId,
+//     							'sss' => $keywordsDoc->getId(),
+//     						);
+//     					}
     				
     				
     				$matchData = '';
-    				if(!is_null($keywordsDoc)) {
-    					$matchData['type'] = 'text';
-    					$matchData['Content'] = $keywordsDoc->getType();
-    				}else {
-    					$matchData['type'] = 'text';
-    					$matchData['Content'] = $websiteId;
-    				}
+    				$matchData['type'] = 'text';
+    				$matchData['Content'] = $websiteId;
+//     				if(!is_null($keywordsDoc)) {
+//     					$matchData['type'] = 'text';
+//     					$matchData['Content'] = $keywordsDoc->getType();
+//     				}else {
+//     					$matchData['type'] = 'text';
+//     					$matchData['Content'] = $websiteId;
+//     				}
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
