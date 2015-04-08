@@ -152,9 +152,11 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
-    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    				->field('keywords')->equals($content)
-					    				->getQuery()->getSingleResult();
+//     				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+// 					    				->field('keywords')->equals($content)
+// 					    				->getQuery()->getSingleResult();
+    				$id = '552502b8bd04bfb0128b4567';
+    				$keywordsDoc = $cdm->getRepository('Application\Document\Query')->findOneById($id);
     				$messageData['data'] = array(
     					'key' => $content,
     					'sss' => $keywordsDoc->getContent(),
