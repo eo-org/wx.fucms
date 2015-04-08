@@ -178,9 +178,11 @@ class CallbackController extends AbstractActionController
     					}
     				$matchData = '';
     				if(!is_null($keywordsDoc)) {
+    					$keywordsData = $keywordsDoc->getArrayCopy();
+    					
     					$matchData = array(
-    						'type'=> $keywordsDoc->getType(),
-    						'content' => $keywordsDoc->getContent(),
+    						'type'=> $keywordsData['type'],
+    						'content' => $keywordsData['content'],
     					);
     				}
     				if($matchData){
