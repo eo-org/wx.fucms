@@ -168,7 +168,7 @@ class CallbackController extends AbstractActionController
     						$messageData['data'] = array(
     							'key' => $content,
     							'websiteId' => $websiteId,
-    							'sss' => $keywordsDoc->getId(),
+    							'sss' => $keywordsDoc->getArrayCopy(),
     						);
     					}else {
     						$messageData['data'] = array(
@@ -179,7 +179,7 @@ class CallbackController extends AbstractActionController
     				$matchData = '';
     				if(!is_null($keywordsDoc)) {
     					$matchData['type'] = 'text';
-    					$matchData['content'] = $keywordsDoc->getContent();
+    					$matchData['content'] = '找到数据了';
     				}
     				if($matchData){
     					switch ($matchData['type']) {
