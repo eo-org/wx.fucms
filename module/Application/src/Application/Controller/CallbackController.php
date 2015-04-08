@@ -100,6 +100,10 @@ class CallbackController extends AbstractActionController
     
     public function msgAction()
     {
+    	
+    	
+    	
+    	
     	$resultStr = 'success';
     	
 //     	$demo = '<xml>
@@ -151,11 +155,12 @@ class CallbackController extends AbstractActionController
     	if($msgType == 'event') {
     		
     	} else {
+    		try {
     		switch ($msgType) {
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
-    				try {
+    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
     					->field('keywords')->equals($content)
     					->getQuery()->getSingleResult();
@@ -167,10 +172,7 @@ class CallbackController extends AbstractActionController
     							'sss' => $keywordsDoc->getId(),
     						);
     					}
-    				}catch (\Exception $e){
-    					$returnData['Content'] = $e->getMessage();
-    					$returnData['MsgType'] = 'text';
-    				}
+    				
     				
     				$matchData = '';
 //     				if($keywordsDoc) {
@@ -245,6 +247,10 @@ class CallbackController extends AbstractActionController
     				$messageData['description'] = $description;
     				$messageData['url'] = $url;
     				break;
+    		}
+    		} catch (\Exception $e){
+    			$returnData['Content'] = $e->getMessage();
+    			$returnData['MsgType'] = 'text';
     		}
     	}
     	$result = $this->getResultXml($returnData);
