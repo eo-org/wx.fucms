@@ -180,9 +180,12 @@ class CallbackController extends AbstractActionController
     							'websiteId' => $websiteId,
     						);
     					}
+    					
+    					
+    					
     					$matchData = array(
-    					 'type'=> $keywordsData['type'],
-    					  'content' => $keywordsData['content'],
+    					 'type'=> 'text',
+    					  'content' =>'zabc',
     					);
 //     				if(!is_null($keywordsDoc)) {
 //     					$keywordsData = $keywordsDoc->getArrayCopy();
