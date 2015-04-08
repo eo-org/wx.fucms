@@ -120,7 +120,6 @@ class CallbackController extends AbstractActionController
     		return new ConsoleModel(array('result' => "数据没有绑定"));
     	}
     	$websiteId = $authDoc->getWebsiteId();
-
 //     	$websiteId = '547d70e3ce2350bc0d000029';
     	SiteInfo::setWebsiteId($websiteId);
     	
@@ -156,13 +155,13 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
-//     				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-// 					    				->field('keywords')->equals($content)
-// 					    				->getQuery()->getSingleResult();
+    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+					    				->field('keywords')->equals($content)
+					    				->getQuery()->getSingleResult();
 					    				
     				$messageData['data'] = array(
     					'key' => $content,
-//     					'sss' => $keywordsDoc->getContent(),
+    					'sss' => $keywordsDoc->getId(),
     				);
     				$matchData = '';
 //     				if($keywordsDoc) {
