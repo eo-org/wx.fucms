@@ -161,7 +161,7 @@ class CallbackController extends AbstractActionController
     				$content = $postObj->Content;
     				$messageData['content'] = $content;    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals($content)
+					    					->field('keywords')->equals('0')
 					    					->getQuery()->getSingleResult();    					
     				if(!is_null($keywordsDoc)) {
     					$matchData = array(
