@@ -52,9 +52,9 @@ class CmsDocumentManagerFactory implements FactoryInterface
 		$config = new Configuration();
 		$config->setDefaultDB($dbName);
 		
-		$config->setProxyDir(BASE_PATH . '/fucms/doctrineCache');
+		$config->setProxyDir(BASE_PATH . '/wx.fucms/doctrineCache');
 		$config->setProxyNamespace('DoctrineMongoProxy');
-		$config->setHydratorDir(BASE_PATH . '/fucms/doctrineCache');
+		$config->setHydratorDir(BASE_PATH . '/wx.fucms/doctrineCache');
 		$config->setHydratorNamespace('DoctrineMongoHydrator');
 		$config->setMetadataDriverImpl(AnnotationDriver::create(BASE_PATH . '/class'));
 		if($env['usage']['server'] == 'production' && false) {
