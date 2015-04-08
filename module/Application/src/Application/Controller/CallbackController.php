@@ -163,38 +163,21 @@ class CallbackController extends AbstractActionController
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    					->field('keywords')->equals('0')
 					    					->getQuery()->getSingleResult();
-    					if(!is_null($keywordsDoc)){
-    						$keywordsData = $keywordsDoc->getArrayCopy();
-    						$messageData['data'] = array(
-    							'key' => $content,
-    							'websiteId' => $websiteId,
-    							'sss' => $keywordsData,
-    						);
-    					}else {
-    						$keywordsData = array(
-    							'type'=>'text',
-    							'content' => '没有找到匹配的关键字',
-    						);
-    						$messageData['data'] = array(
-    							'key' => $content,
-    							'websiteId' => $websiteId,
-    						);
-    					}
     					
     					
     					
+    					
+    				if(!is_null($keywordsDoc)) {
     					$matchData = array(
     					 'type'=> 'text',
-    					  'content' =>'zabc',
+    					  'content' =>'找到',
     					);
-//     				if(!is_null($keywordsDoc)) {
-//     					$keywordsData = $keywordsDoc->getArrayCopy();
-    					
-//     					$matchData = array(
-//     						'type'=> $keywordsData['type'],
-//     						'content' => $keywordsData['content'],
-//     					);
-//     				}
+    				}else {
+    					$matchData = array(
+    						'type'=> 'text',
+    						'content' =>'没找到',
+    					);
+    				}
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
