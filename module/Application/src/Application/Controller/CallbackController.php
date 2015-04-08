@@ -173,7 +173,7 @@ class CallbackController extends AbstractActionController
     				
     				$matchData = '';
     				$matchData['type'] = 'text';
-    				$matchData['Content'] = $websiteId;
+    				$matchData['content'] = $websiteId;
 //     				if(!is_null($keywordsDoc)) {
 //     					$matchData['type'] = 'text';
 //     					$matchData['Content'] = $keywordsDoc->getType();
