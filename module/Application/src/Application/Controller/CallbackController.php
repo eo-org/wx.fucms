@@ -7,6 +7,7 @@ use Application\WxEncrypt\Encrypt;
 
 use Application\Document\Ticket;
 use Application\Document\Message;
+use Application\Document\Query;
 
 use Application\SiteInfo;
 
@@ -101,7 +102,6 @@ class CallbackController extends AbstractActionController
     {
     	$resultStr = 'success';
     	
-    	
 //     	$demo = '<xml>
 //                 <ToUserName><![CDATA[ocjKfuG0RpHa_PJUMOEB1L9LOkzU]]></ToUserName>
 //                 <FromUserName><![CDATA[wx536a9272e58807e7]]></FromUserName>
@@ -112,7 +112,6 @@ class CallbackController extends AbstractActionController
     	
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
-    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	$appId = $this->params()->fromRoute('appId');
     	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
@@ -122,19 +121,11 @@ class CallbackController extends AbstractActionController
     	$websiteId = $authDoc->getWebsiteId();
     	SiteInfo::setWebsiteId($websiteId);
     	
-    	$keywordsDocs = $cdm->createQueryBuilder('Application\Document\Query')
-					    	->field('keywords')->equals('我')
-					    	->getQuery()->execute();
-					    	 
-    	foreach ($keywordsDocs as $a ){
-    		print_r($a->getArrayCopy());
-    	}
-    	die();
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
     	$wxEncrypt = new Encrypt($sm, $q);
     	
-    	
+    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
 
@@ -161,8 +152,14 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$content = $postObj->Content;
     				$messageData['content'] = $content;
+    				$keywordsDoc = $dm->createQueryBuilder('Application\Document\Query')
+			    				->field('keywords')->equals($content)
+			    				->getQuery()->getSingleResult();
     				
-    				
+    				$matchData = '';
+    				if($keywordsDoc) {
+    					$matchData = $keywordsDoc->getArrayCopy();
+    				}
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
