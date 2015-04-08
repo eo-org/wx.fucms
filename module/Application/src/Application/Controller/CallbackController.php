@@ -162,7 +162,7 @@ class CallbackController extends AbstractActionController
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    					->field('keywords')->equals($content)
 					    					->getQuery()->getSingleResult();
-    					if(is_null($keywordsDoc)){
+    					if(!is_null($keywordsDoc)){
     						$messageData['data'] = array(
     							'key' => $content,
     							'websiteId' => $websiteId,
@@ -172,8 +172,12 @@ class CallbackController extends AbstractActionController
     				
     				
     				$matchData = '';
-    				if($keywordsDoc) {
-    					$matchData = $keywordsDoc->getArrayCopy();
+    				if(!is_null($keywordsDoc)) {
+    					$matchData['type'] = 'text';
+    					$matchData['Content'] = $keywordsDoc->getType();
+    				}else {
+    					$matchData['type'] = 'text';
+    					$matchData['Content'] = $websiteId;
     				}
     				if($matchData){
     					switch ($matchData['type']) {
