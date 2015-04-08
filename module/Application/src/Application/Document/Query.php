@@ -18,9 +18,9 @@ class Query extends AbstractDocument
 	protected $id;
 	
 	/**
-	 * @ODM\Field(type="string")
+	 * @ODM\Field(type="hash")
 	 */
-	protected $label;
+	protected $keywords;
 	
 	/**
 	 * @ODM\Field(type="int")
@@ -64,8 +64,8 @@ class Query extends AbstractDocument
 	
 	public function exchangeArray($data)
 	{
-		if(isset($data['label'])){
-			$this->label = $data['label'];
+		if(isset($data['keywords'])){
+			$this->keywords = $data['keywords'];
 		}
 		
 		if(isset($data['match'])){
@@ -99,7 +99,7 @@ class Query extends AbstractDocument
 	public function getArrayCopy()
 	{
 		return array(
-			'label' => $this->label,
+			'keywords' => $this->keywords,
 			'match' => $this->match,
 			'type' => $this->type,
 			'content' => $this->content,
