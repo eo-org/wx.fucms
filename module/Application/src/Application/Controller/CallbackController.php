@@ -263,6 +263,7 @@ class CallbackController extends AbstractActionController
     	} else {
     		$resultStr= 'success';
     	}
+    	$messageData['data']['result'] = $resultStr;
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
