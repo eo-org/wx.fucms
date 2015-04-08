@@ -161,7 +161,7 @@ class CallbackController extends AbstractActionController
     				$content = $postObj->Content;
     				$messageData['content'] = $content;    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals($content)
+					    					->field('keywords')->equals('0')
 					    					->getQuery()->getSingleResult();
     					if(!is_null($keywordsDoc)){
     						$keywordsData = $keywordsDoc->getArrayCopy();
@@ -283,30 +283,18 @@ class CallbackController extends AbstractActionController
     
     public function demoAction()
     {
-    	$demo = '<xml>
-<Encrypt><![CDATA[r/JnNYJhpBaMf7VM58P7VL2E/Xb6iOHDnZ/TTl0BdTZixusi4yd7LXKKa8kIOtYi4yRtUEAQJFvq6Tv0wAobPStsPRVMIPIJKjIqcslmx5dUAf70OM4acieyLfyMnstxcrp9e9Btf67RdlKwOXYHFfuF+xhw+we9YU3jpaL5l9VJXNLc1o7GRMBjftcAJoKamfcoIO5FacoamyTCwIDo4adRanqMJcYN8JpfQe56GM/52JuGcU7U5/nJen0FWxssYkFD2xPmD0Ok933oJf9WP2lhV0W1yAFyFjbf/cgZ0T+qd1xwAUuLwaSSZqTCO+NCnGiHHA6ZpHOoGPBV1lGoTDd47b8Ky8D8/K28dtUHONEKe77tfzaHaPCSYU3t20CBrwW/Rafp0FkSnFa7oRn8jMQoIpg4gMJlh2Efh5eyHbOX5wZ25Hgogq9r4NUOj4BSO9suCe/W/uUYLWv2H6KTyTO72Ke3qd/Zz/gyL9jicFklHx2bl87SXCGt5sB18UL5eOm5U9PubCvF/2lcesXGxPOsTqQTzLQvSyygylf+UIE=]]></Encrypt>
-<MsgSignature><![CDATA[514c692e541effe89272f40a7b02fd4428304eaa]]></MsgSignature>
-<TimeStamp>1428499472</TimeStamp>
-<Nonce><![CDATA[494531781]]></Nonce>
-</xml>';
-    	
-    	$serviceLocator = $this->getServiceLocator();
-    	$wxEncrypt = new Encrypt($serviceLocator, $q);
-    	$postData = $wxEncrypt->Decrypt($demo);
-    	
-    	print_r($postData);
-    	die();
 //     	$websiteId = '547e6e60ce2350a00d000029';
     	$websiteId = '547d70e3ce2350bc0d000029';
     	SiteInfo::setWebsiteId($websiteId);
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
+    	$content = '我';
     	$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    	->field('keywords')->equals('我')
+					    	->field('keywords')->equals($content)
 					    	->getQuery()->getSingleResult();
     	
     	
-    	if(is_null($keywordsDoc)){
-    		die('ok');
+    	if(!is_null($keywordsDoc)){
+    		print_r($content);
     	}else {
     		die('no');
     	}
