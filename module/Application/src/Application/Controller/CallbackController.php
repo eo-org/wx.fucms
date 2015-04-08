@@ -159,10 +159,13 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = $postObj->Content;
+    				$messageData['data']['pre'] = mb_detect_encoding($content);
     				$messageData['content'] = $content;    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    					->field('keywords')->equals($content)
 					    					->getQuery()->getSingleResult();
+    					
+    				$messageData['data']['query'] = mb_detect_encoding($content);
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();    					
     					$matchData = array(
@@ -261,6 +264,9 @@ class CallbackController extends AbstractActionController
     
     public function demoAction()
     {
+    	$str = '0';
+    	echo mb_detect_encoding($str);
+    	die();
 //     	$websiteId = '547e6e60ce2350a00d000029';
     	$websiteId = '547d70e3ce2350bc0d000029';
     	SiteInfo::setWebsiteId($websiteId);
