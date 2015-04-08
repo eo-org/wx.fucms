@@ -159,10 +159,13 @@ class CallbackController extends AbstractActionController
 					    				->field('keywords')->equals($content)
 					    				->getQuery()->getSingleResult();
 					    				
-    				$messageData['data'] = array(
-    					'key' => $content,
-    					'sss' => $keywordsDoc->getId(),
-    				);
+    				if(is_null($keywordsDoc)){
+    					$messageData['data'] = array(
+    						'key' => $content,
+    						'websiteId' => $websiteId,
+    						'sss' => $keywordsDoc->getId(),
+    					);
+    				}
     				$matchData = '';
 //     				if($keywordsDoc) {
 //     					$matchData = $keywordsDoc->getArrayCopy();
