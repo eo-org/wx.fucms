@@ -169,6 +169,9 @@ return array(
 		)
 	),
 	'service_manager' => array(
+		'invokables' => array(
+			'Application\Service\PublicityAuth' => 'Application\Service\PublicityAuth'
+		),
 		'factories' => array(
 			'CmsDocumentManager' => 'Application\Service\Db\CmsDocumentManagerFactory',
 		)
