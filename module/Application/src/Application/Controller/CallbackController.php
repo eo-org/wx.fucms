@@ -16,13 +16,18 @@ class CallbackController extends AbstractActionController
     public function indexAction()
     {
     	$dm = $this->getServiceLocator()->get('DocumentManager');
-    	
+    	$q = $this->params()->fromQuery();
+    	$postData = file_get_contents('php://input');
     	
     	$demoDoc = new Ticket();
     	
     	$demoDoc->exchangeArray(array(
     		'label'=>'demo',
     		'value' => 'demo',
+    		'msg' => array(
+    			'q' => $q,
+    			'post' => $postData,
+    		),
     	));
     	$currentDateTime = new \DateTime();
     	$demoDoc->setModified($currentDateTime);
