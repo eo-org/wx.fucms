@@ -26,10 +26,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		$config = $this->sm->get('Config');
 		$wx = $config['env']['wx'];
 		
-		$tokenDoc = $dm->createQueryBuilder('Application\Document\Ticket')
-			->field('label')->equals('componentAccessToken')
-			->getQuery()
-			->getSingleResult();
+		$tokenDoc = $dm->getRepository('Application\Document\Ticket')->findOneByLabel('componentAccessToken');
 		
 		$regenerateToken = false;
 		
@@ -47,10 +44,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		}
 		
 		if($regenerateToken) {
-			$ticketDoc = $dm->createQueryBuilder('Application\Document\Ticket')
-				->field('label')->equals('ticket')
-				->getQuery()
-				->getSingleResult();
+			$ticketDoc = $dm->getRepository('Application\Document\Ticket')->findOneByLabel('ticket');
 			
 			$ticket = $ticketDoc->getValue();
 			$getTokenUrl = $wx['path']['accessToken'];
