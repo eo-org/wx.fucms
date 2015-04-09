@@ -20,7 +20,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		return $this->sm;
 	}
 	
-	public function getAccessToken()
+	public function getComponentAccessToken()
 	{
 		$dm = $this->sm->get('DocumentManager');
 		$config = $this->sm->get('Config');
