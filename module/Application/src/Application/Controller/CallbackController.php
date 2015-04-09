@@ -159,7 +159,7 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = $postObj->Content;
-    				$messageData['data']['pre'] = mb_detect_encoding($content);
+    				$messageData['data']['pre'] = $postData['msg'];
     				$messageData['content'] = $content;    				
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    					->field('keywords')->equals($content)

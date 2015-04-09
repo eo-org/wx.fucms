@@ -23,7 +23,7 @@ class Query extends AbstractDocument
 	protected $keywords;
 	
 	/**
-	 * @ODM\Field(type="int")
+	 * @ODM\Field(type="boolean")
 	 */
 	protected $match;
 	
