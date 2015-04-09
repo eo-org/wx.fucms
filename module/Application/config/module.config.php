@@ -44,16 +44,6 @@ return array(
                   			)
             			)
             		),
-            		'callback' => array(
-            			'type' => 'segment',
-            			'options' => array(
-            				'route' => 'call-demo',
-            				'defaults' => array(
-            					'controller'    => 'Application\Controller\CallbackController',
-            					'action'        => 'demo',
-            				)
-            			)
-            		),
             		'msg-callback' => array(
             			'type' => 'segment',
             			'options' => array(
@@ -79,50 +69,6 @@ return array(
             		),            		
             	)
             ),
-//         	'callback' => array(
-//         		'type'    => 'literal',
-//         		'options' => array(
-//         			'route'    => '/callback',
-//         			'defaults' => array(
-//         				'controller'    => 'callback',
-//         				'action'        => 'index',
-//         			),
-//         		),
-//         		'may_terminate' => true
-//              ),
-//         	'admin' => array(
-// 				'type' => 'literal',
-//         		'options'=> array(
-//         			'route'	=> '/admin',
-//         			'defaults' => array(
-//         				'controller' => 'app',
-//         				'action' => 'index'
-//         			)
-//         		),
-//         		'may_terminate' => true,
-//         		'child_routes' => array(
-//         			'actionroutes' => array(
-//         				'type' => 'segment',
-//         				'options' => array(
-//         					'route' => '[/:controller][/:action]',
-//         					'constraints' => array(
-//         						'controller' => '[a-z-]*',
-//         						'action' => '[a-z-]*'
-//         					),
-//         					'defaults' => array(
-//         						'controller' => 'app',
-//         						'action' => 'index'
-//         					)
-//         				),
-//         				'may_terminate' => true,
-//         				'child_routes' => array(
-//         					'wildcard' => array(
-//         						'type' => 'wildcard'
-//         					)
-//         				)
-//         			)
-//         		)
-// 			),
         	'admrs' => array(
         		'type'    => 'literal',
         		'options' => array(
