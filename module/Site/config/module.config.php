@@ -32,7 +32,8 @@ return array(
     ),
 	'view_manager' => array(
 		'template_map' => array(
-			'site/index/index'	=> __DIR__ . '/../view/index/index.phtml',
+			'site/index/index'			=> __DIR__ . '/../view/index/index.phtml',
+			'site/index/get-user-code'	=> __DIR__ . '/../view/index/index.phtml'
 		)
 	),
 );
