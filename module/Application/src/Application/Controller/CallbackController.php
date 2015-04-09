@@ -16,11 +16,7 @@ class CallbackController extends AbstractActionController
     public function indexAction()
     {
     	$dm = $this->getServiceLocator()->get('DocumentManager');
-    	$currentDateTime = new \DateTime();
-    	$demoDoc->setModified($currentDateTime);
-    	$dm->persist($demoDoc);
-    	$dm->flush();
-    	
+    	    	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
     	$serviceLocator = $this->getServiceLocator();
