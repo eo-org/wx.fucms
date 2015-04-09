@@ -153,7 +153,11 @@ class CallbackController extends AbstractActionController
     	);
 
     	if($msgType == 'event') {
-    		
+    		$Event = $postObj->Event;
+    		$url = $postObj->EventKey;
+    		if($Event == 'VIEW') {
+    			$resultStr = $url.'?userId='.$openId;
+    		}
     	} else {
     		switch ($msgType) {
     			case 'text':
@@ -243,15 +247,15 @@ class CallbackController extends AbstractActionController
     				$messageData['url'] = $url;
     				break;
     		}
-    	}
-    	$result = $this->getResultXml($returnData);
-    	$enResult = $wxEncrypt->Encrypt($result);
-    	if($enResult['status']) {
-    		$resultStr = $enResult['msg'];
-    	} else {
-    		$resultStr= 'success';
-    	}
-    	$messageData['data']['result'] = $result;
+    		$result = $this->getResultXml($returnData);
+    		$enResult = $wxEncrypt->Encrypt($result);
+    		if($enResult['status']) {
+    			$resultStr = $enResult['msg'];
+    		} else {
+    			$resultStr= 'success';
+    		}
+    		$messageData['data']['result'] = $result;
+    	}    	
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);
