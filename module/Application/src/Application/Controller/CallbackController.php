@@ -18,51 +18,65 @@ class CallbackController extends AbstractActionController
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	
     	$q = $this->params()->fromQuery();
-    	$postData = file_get_contents('php://input');
+    	$postXmlStr = file_get_contents('php://input');
     	$serviceLocator = $this->getServiceLocator();
     	$wxEncrypt = new Encrypt($serviceLocator, $q);
     	
-    	$xml_tree = new \DOMDocument();
-    	$xml_tree->loadXML($postData);
-    	$array_e = $xml_tree->getElementsByTagName('Encrypt');
-    	$encrypt = $array_e->item(0)->nodeValue;
+    	$postXmlObj = simplexml_load_string($postXmlStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+    	$encrypt = $postXmlObj->Encrypt;
     	$format = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><Encrypt><![CDATA[%s]]></Encrypt></xml>";
-    	$from_xml = sprintf($format, $encrypt);
-    	$postData = $wxEncrypt->Decrypt($from_xml);
+    	$formatXmlStr = sprintf($format, $encrypt);
     	
-    	$xmlData = new \DOMDocument();
-    	$xmlData->loadXML($postData['msg']);
+    	$encryptResultArr =  $wxEncrypt->Decrypt($formatXmlStr);
+    	$encryptPostXmlObj = simplexml_load_string($encryptResultArr['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
+     	
     	
-    	$array_info_type = $xmlData->getElementsByTagName('InfoType');
-    	$infotype = $array_info_type->item(0)->nodeValue;
+//     	$xml_tree = new \DOMDocument();
+//     	$xml_tree->loadXML($postData);
+//     	$array_e = $xml_tree->getElementsByTagName('Encrypt');
+//     	$encrypt = $array_e->item(0)->nodeValue;
+//     	$format = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><Encrypt><![CDATA[%s]]></Encrypt></xml>";
+//     	$from_xml = sprintf($format, $encrypt);
+//     	$postData = $wxEncrypt->Decrypt($from_xml);
+    	
+//     	$xmlData = new \DOMDocument();
+//     	$xmlData->loadXML($postData['msg']);
+    	
+//     	$array_info_type = $xmlData->getElementsByTagName('InfoType');
+//     	$infotype = $array_info_type->item(0)->nodeValue;
+    	
+    	$infotype = $encryptPostXmlObj->InfoType;
+    	
     	if($infotype == 'component_verify_ticket') {
-    		$array_ticket = $xmlData->getElementsByTagName('ComponentVerifyTicket');
-    		$ticket = $array_ticket->item(0)->nodeValue;
+    		$ticketValue = $encryptPostXmlObj->ComponentVerifyTicket;
+    		
     		$ticketDoc = $dm->createQueryBuilder('Application\Document\Ticket')
 				    		->field('label')->equals('ticket')
 				    		->getQuery()
 				    		->getSingleResult();
     		
     		if($ticketDoc) {    			    			    			
-    			$ticketDoc->setTicket($ticket);    			
+    			$ticketDoc->setValue($ticketValue);
     		}else {    			
     			$ticketDoc = new Ticket();
     			$data = array(
     				'label' => 'ticket',
-    				'value' => $ticket,
+    				'value' => $ticketValue,
     			);
     			$ticketDoc->exchangeArray($data);    			
     		}
-    		$ticketDoc->setMsg(array(
-    			'postdata' => $postData,
-    			'time' => time(),
-    		));
     		$currentDateTime = new \DateTime();
+    		$ticketDoc->setMsg(array(
+    			'postdata' => $encryptResultArr,
+    			'time' => $currentDateTime,
+    		));
     		$ticketDoc->setModified($currentDateTime);
-    		$dm->persist($ticketDoc);    		
+    		$dm->persist($ticketDoc);
     	}else if($infotype == 'unauthorized'){
-    		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
-    		$appId = $array_appId->item(0)->nodeValue;
+//     		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
+//     		$appId = $array_appId->item(0)->nodeValue;
+
+    		$appId = $encryptPostXmlObj->AuthorizerAppid;
     		
     		$authDoc = $dm->createQueryBuilder('Application\Document\Ticket')
 				    		->field('authorizerAppid')->equals($appId)
