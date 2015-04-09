@@ -17,6 +17,18 @@ class CallbackController extends AbstractActionController
     {
     	$dm = $this->getServiceLocator()->get('DocumentManager');
     	
+    	
+    	$demoDoc = new Ticket();
+    	
+    	$demoDoc->exchangeArray(array(
+    		'label'=>'demo',
+    		'value' => 'demo',
+    	));
+    	$currentDateTime = new \DateTime();
+    	$demoDoc->setModified($currentDateTime);
+    	$dm->persist($demoDoc);
+    	$dm->flush();
+    	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
     	$serviceLocator = $this->getServiceLocator();
@@ -43,7 +55,7 @@ class CallbackController extends AbstractActionController
 				    		->getQuery()
 				    		->getSingleResult();
     		
-    		if($ticketDoc) {    			    			    			
+    		if($ticketDoc) {
     			$ticketDoc->setValue($ticket);    			
     		}else {    			
     			$ticketDoc = new Ticket();
