@@ -35,7 +35,7 @@ class Module
     	$matchedRouteName = $rm->getMatchedRouteName();
     	
     	if($matchedRouteName == 'site') {
-    		header("Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2ce4babba45b702d&redirect_uri=http%3a%2f%2fwxs.fucmsweb.com%2fget-user-code&response_type=code&scope=snsapi_base&state=gavin&connect_redirect=1#wechat_redirect");
+    		header("Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx536a9272e58807e7&redirect_uri=http%3a%2f%2fwxs.fucmsweb.com%2fget-user-code&response_type=code&scope=snsapi_base&state=gavin&connect_redirect=1#wechat_redirect");
     		exit(0);
     	}
     }
