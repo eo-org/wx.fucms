@@ -100,4 +100,18 @@ class Auth extends AbstractDocument
 			'funcInfo' => $this->funcInfo,
 		);
 	}
+	
+	public function refreshTokenExpired()
+	{
+		$created = $this->created->getTimestamp();
+		$now = time();
+		return $now - $created > 2400000;
+	}
+	
+	public function tokenExpired()
+	{
+		$created = $this->tokenModified->getTimestamp();
+		$now = time();
+		return $now - $created > 7000;
+	}
 }
