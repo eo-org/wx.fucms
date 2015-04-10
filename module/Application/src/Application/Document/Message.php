@@ -102,6 +102,11 @@ class Message extends AbstractDocument
 	 */
 	protected $created;
 	
+	public function getId()
+	{
+		return $this->id;
+	}
+	
 	public function exchangeArray($data)
 	{
 		if(isset($data['appId'])){

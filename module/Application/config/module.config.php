@@ -3,9 +3,10 @@ return array(
 	'controllers' => array(
         'invokables' => array(
             'app'			=> 'Application\Controller\IndexController',
-        	'Application\Controller\AuthController'		=> 'Application\Controller\AuthController',
+        	'Application\Controller\ApiController'			=> 'Application\Controller\ApiController',
+        	'Application\Controller\AuthController'			=> 'Application\Controller\AuthController',
         	'Application\Controller\CallbackController'		=> 'Application\Controller\CallbackController',
-        	'Application\Controller\RedirecturiController'		=> 'Application\Controller\RedirecturiController',
+        	'Application\Controller\RedirecturiController'	=> 'Application\Controller\RedirecturiController',
         ),
     ),
     'router' => array(
@@ -21,6 +22,16 @@ return array(
                 ),
             	'may_terminate' => true,
             	'child_routes' => array(
+            		'api' => array(
+            			'type' => 'segment',
+            			'options' => array(
+            				'route' => 'api/[:action]',
+            				'defaults' => array(
+            					'controller'    => 'Application\Controller\ApiController',
+            					'action'        => 'index',
+            				)
+            			)
+            		),
             		'auth' => array(
             			'type' => 'segment',
             			'options' => array(
