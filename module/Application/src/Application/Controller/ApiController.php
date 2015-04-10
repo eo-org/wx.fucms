@@ -11,7 +11,7 @@ class ApiController extends AbstractActionController
     	return new JsonModel(array('msg' => 'api action required'));
     }
     
-    public function componentAccessToken()
+    public function componentAccessTokenAction()
     {
     	$pa = $this->getServiceLocator()->get('PublicityAuth');
     	
