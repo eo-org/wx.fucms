@@ -126,10 +126,6 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			$dm->persist($authDoc);
 			$dm->flush();
 			$authData = $authDoc->getArrayCopy();
-		}else {
-			
-			echo $regenerateToken;
-			die('ok');
 		}
 		
 		return $authData['authorizerAccessToken'];
