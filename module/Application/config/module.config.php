@@ -25,7 +25,7 @@ return array(
             		'api' => array(
             			'type' => 'segment',
             			'options' => array(
-            				'route' => 'api/[:action]',
+            				'route' => 'api[/:action]',
             				'defaults' => array(
             					'controller'    => 'Application\Controller\ApiController',
             					'action'        => 'index',
