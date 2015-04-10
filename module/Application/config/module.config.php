@@ -25,12 +25,12 @@ return array(
             		'api' => array(
             			'type' => 'segment',
             			'options' => array(
-            				'route' => 'api[/:action]',
+            				'route' => 'api/:action[/:websiteId]',
             				'defaults' => array(
             					'controller'    => 'Application\Controller\ApiController',
             					'action'        => 'index',
             				)
-            			)
+            			),
             		),
             		'auth' => array(
             			'type' => 'segment',
@@ -41,7 +41,7 @@ return array(
             					'action'        => 'index',
             				),
             				'constraints' => array(
-            					'appId' => '[a-z0-9]*',
+            					'websiteId' => '[a-z0-9]*',
             				)
             			)
             		),

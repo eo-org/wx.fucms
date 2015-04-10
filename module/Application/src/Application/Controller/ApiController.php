@@ -19,4 +19,14 @@ class ApiController extends AbstractActionController
     	
     	return new JsonModel(array('componentAccessToken' => $accessToken));
     }
+    
+    public function authorizerAccessTokenAction()
+    {
+    	$websiteId = $this->params()->fromRoute('websiteId');
+    	
+    	$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
+    	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    	
+    	return new JsonModel(array('authorizerAccessToken' => $authorizerAccessToken));   	
+    }
 }

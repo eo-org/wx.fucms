@@ -29,6 +29,7 @@ return array(
 				'accessToken' => 'https://api.weixin.qq.com/cgi-bin/component/api_component_token',
 				'preAuthCode' => 'https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=',				
 				'authInfo' => 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=',
+				'authorizerAccessToken' => 'https:// api.weixin.qq.com /cgi-bin/component/api_authorizer_token?component_access_token=',
 			),
 		),
 	),

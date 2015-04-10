@@ -86,7 +86,11 @@ class Auth extends AbstractDocument
 		
 		if(isset($data['func_info'])){
 			$this->funcInfo = $data['func_info'];
-		}		
+		}
+		
+		if(isset($data['tokenModified'])){
+			$this->tokenModified = $data['tokenModified'];
+		}
 	}
 	public function getArrayCopy()
 	{
