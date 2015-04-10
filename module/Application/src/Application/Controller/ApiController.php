@@ -13,7 +13,7 @@ class ApiController extends AbstractActionController
     
     public function componentAccessTokenAction()
     {
-    	$pa = $this->getServiceLocator()->get('PublicityAuth');
+    	$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
     	
     	$accessToken = $pa->getComponentAccessToken();
     	
