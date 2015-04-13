@@ -58,6 +58,11 @@ class Auth extends AbstractDocument
 	protected $funcInfo;
 	
 	/**
+	 * @ODM\Field(type="msg")
+	 */
+	protected $msg;
+	
+	/**
 	 * @ODM\Field(type="date")
 	 */
 	protected $created;
@@ -90,6 +95,10 @@ class Auth extends AbstractDocument
 		
 		if(isset($data['tokenModified'])){
 			$this->tokenModified = $data['tokenModified'];
+		}
+		
+		if(isset($data['msg'])){
+			$this->msg = $data['msg'];
 		}
 	}
 	public function getArrayCopy()
