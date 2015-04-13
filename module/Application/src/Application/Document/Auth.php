@@ -58,7 +58,7 @@ class Auth extends AbstractDocument
 	protected $funcInfo;
 	
 	/**
-	 * @ODM\Field(type="msg")
+	 * @ODM\Field(type="hash")
 	 */
 	protected $msg;
 	
