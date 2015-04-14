@@ -96,6 +96,10 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		$config = $this->sm->get('Config');
 		$wx = $config['env']['wx'];
 		$componentAccessToken= $this->getComponentAccessToken();
+		
+		print($componentAccessToken);
+		echo '<br>'.$componentAccessToken;
+		die('ok');
 		$getAuthorizerAccessTokenUrl = $wx['path']['authorizerAccessToken'].$componentAccessToken;
 		
 		$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByWebsiteId($websiteId);
