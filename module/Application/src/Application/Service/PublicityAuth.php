@@ -97,9 +97,6 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		$wx = $config['env']['wx'];
 		$componentAccessToken= $this->getComponentAccessToken();
 		
-		print($componentAccessToken);
-		echo '<br>'.$componentAccessToken;
-		die('ok');
 		$getAuthorizerAccessTokenUrl = $wx['path']['authorizerAccessToken'].$componentAccessToken;
 		
 		$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByWebsiteId($websiteId);
@@ -123,12 +120,13 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			curl_close($ch);
 				
 			$authorizerAccessTokenResultStr = $output;
-			$authorizerAccessTokenResultArr = json_decode($authorizerAccessTokenResultStr, true);			
+			$authorizerAccessTokenResultArr = json_decode($authorizerAccessTokenResultStr, true);
 			$currentDateTime = new \DateTime();
-// 			$authorizerAccessTokenResultArr['tokenModified'] = $currentDateTime;
+			$authorizerAccessTokenResultArr['tokenModified'] = $currentDateTime;
 			$authorizerAccessTokenResultArr['msg'] = array(
 				'a'=>$authorizerAccessTokenResultArr,
 				'b' => $authorizerAccessTokenResultStr,
+				'url' => $getAuthorizerAccessTokenUrl,
 			);
 			$authDoc->exchangeArray($authorizerAccessTokenResultArr);
 			$dm->persist($authDoc);
