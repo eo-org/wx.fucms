@@ -178,10 +178,18 @@ class CallbackController extends AbstractActionController
 					    				->field('keywords')->equals($content)
 					    				->getQuery()->getSingleResult();
     					
-    				$messageData['data']['query'] = mb_detect_encoding($content);
+    				$messageData['data']['query'] = $content;
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();    					
     					$matchData = $keywordsData;
+    				}else {
+    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+					    					->field('keywords')->equals('我')
+					    					->getQuery()->getSingleResult();
+    					if(!is_null($keywordsDoc)) {
+    						$keywordsData = $keywordsDoc->getArrayCopy();
+    						$matchData = $keywordsData;
+    					}
     				}
     				if($matchData){
     					switch ($matchData['type']) {
@@ -201,7 +209,12 @@ class CallbackController extends AbstractActionController
     							break;
     						case 'news':
     							$returnData['ArticleCount'] = count($matchData['newsId']);
-    							$returnData['Articles'] = $matchData['articles'];
+    							$newsDocs = $cdm->createQueryBuilder('Application\Document\Query')
+    											->field('id')->in($matchData['newsId'])
+    											->getQuery()->execute();
+    							foreach ($newsDocs as $newsDoc){
+    								$returnData['Articles'][] = $newsDoc->getArrayCopy();
+    							}
     							break;
     					}
     					$returnData['MsgType'] = $matchData['type'];
