@@ -87,12 +87,36 @@ class CallbackController extends AbstractActionController
                 <MsgType><![CDATA[text]]></MsgType>
                 <Content><![CDATA[%s]]></Content>
                 </xml>";
+    	$newsItemTpl = '<item>
+						<Title><![CDATA[%s]]></Title>
+						<Description><![CDATA[%s]]></Description>
+						<PicUrl><![CDATA[%s]]></PicUrl>
+						<Url><![CDATA[%s]]></Url>
+					</item>';
+    	$newsTpl = '<xml>
+					<ToUserName><![CDATA[%s]]></ToUserName>
+					<FromUserName><![CDATA[%s]]></FromUserName>
+					<CreateTime>%s</CreateTime>
+					<MsgType><![CDATA[news]]></MsgType>
+					<ArticleCount>%s</ArticleCount>
+					<Articles>%s</Articles>
+					</xml>';
     	if(isset($data['MsgType'])) {
     		switch ($data['MsgType'])
     		{
     			case 'text':
     				$resultStr = sprintf($textTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['Content']);
     				break;
+    			case 'news':
+    				$articlesStr = '';
+    				foreach ($data['Articles'] as $item){
+    					if(isset($item['url'])) {
+    						$item['url'] = $item['selfUrl'];
+    					}
+    					$articlesStr.= sprintf($newsItemTpl, $item['title'], $item['description'], $item['picUrl'], $item['url']);
+    				}
+    				$resultStr = sprintf($newsTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['ArticleCount'], $articlesStr);
+    				break;    				
     		}
     	}
     	return $resultStr;
@@ -182,14 +206,6 @@ class CallbackController extends AbstractActionController
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();    					
     					$matchData = $keywordsData;
-    				}else {
-    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals('我')
-					    					->getQuery()->getSingleResult();
-    					if(!is_null($keywordsDoc)) {
-    						$keywordsData = $keywordsDoc->getArrayCopy();
-    						$matchData = $keywordsData;
-    					}
     				}
     				if($matchData){
     					switch ($matchData['type']) {
@@ -209,7 +225,7 @@ class CallbackController extends AbstractActionController
     							break;
     						case 'news':
     							$returnData['ArticleCount'] = count($matchData['newsId']);
-    							$newsDocs = $cdm->createQueryBuilder('Application\Document\Query')
+    							$newsDocs = $cdm->createQueryBuilder('Application\Document\News')
     											->field('id')->in($matchData['newsId'])
     											->getQuery()->execute();
     							foreach ($newsDocs as $newsDoc){
