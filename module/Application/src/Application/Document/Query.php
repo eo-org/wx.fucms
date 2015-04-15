@@ -40,7 +40,7 @@ class Query extends AbstractDocument
 	/**
 	 * @ODM\Field(type="hash")
 	 */
-	protected $articles;
+	protected $newsId;
 	
 	/**
 	 * @ODM\Field(type="string")
@@ -80,21 +80,21 @@ class Query extends AbstractDocument
 			$this->content = $data['content'];
 		}
 		
-		if(isset($data['articles'])){
-			$this->articles = $data['articles'];
+		if(isset($data['newsId'])){
+			$this->newsId = $data['newsId'];
 		}
 		
-		if(isset($data['mediaId'])){
-			$this->mediaId = $data['mediaId'];
-		}
+// 		if(isset($data['mediaId'])){
+// 			$this->mediaId = $data['mediaId'];
+// 		}
 		
-		if(isset($data['title'])){
-			$this->title = $data['title'];
-		}
+// 		if(isset($data['title'])){
+// 			$this->title = $data['title'];
+// 		}
 		
-		if(isset($data['description'])){
-			$this->description = $data['description'];
-		}
+// 		if(isset($data['description'])){
+// 			$this->description = $data['description'];
+// 		}
 	}
 	public function getArrayCopy()
 	{
@@ -103,10 +103,10 @@ class Query extends AbstractDocument
 			'match' => $this->match,
 			'type' => $this->type,
 			'content' => $this->content,
-			'articles' => $this->articles,
-			'mediaId' => $this->mediaId,
-			'title' => $this->title,
-			'description' => $this->description,
+			'newsId' => $this->newsId,
+// 			'mediaId' => $this->mediaId,
+// 			'title' => $this->title,
+// 			'description' => $this->description,
 		);
 	}
 }

@@ -124,7 +124,6 @@ class CallbackController extends AbstractActionController
     		return new ConsoleModel(array('result' => "数据没有绑定"));
     	}
     	$websiteId = $authDoc->getWebsiteId();
-//     	$websiteId = '547d70e3ce2350bc0d000029';
     	SiteInfo::setWebsiteId($websiteId);
     	
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
@@ -154,9 +153,19 @@ class CallbackController extends AbstractActionController
 
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
-    		$url = $postObj->EventKey;
-    		if($Event == 'VIEW') {
-    			$resultStr = $url.'?userId='.$openId;
+    		if($Event == 'subscribe') {
+    			$openId = $postObj->FromUserName;
+    			$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
+    			$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    			$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
+    			
+    			$ch = curl_init();
+    			curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
+    			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    			curl_setopt($ch, CURLOPT_HEADER, 0);
+    			$output = curl_exec($ch);
+    			curl_close($ch);
+    			$userData = json_decode($output, true);
     		}
     	} else {
     		switch ($msgType) {
@@ -165,17 +174,14 @@ class CallbackController extends AbstractActionController
     				$content = $postObj->Content;
     				$messageData['data']['pre'] = $postData['msg'];
     				$messageData['content'] = $content;    				
-    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    					->field('keywords')->equals($content)
-					    					->getQuery()->getSingleResult();
+    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+					    				->field('keywords')->equals($content)
+					    				->getQuery()->getSingleResult();
     					
     				$messageData['data']['query'] = mb_detect_encoding($content);
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();    					
-    					$matchData = array(
-    					 'type'=> $keywordsData['type'],
-    					 'content' => $keywordsData['content'],
-    					);
+    					$matchData = $keywordsData;
     				}
     				if($matchData){
     					switch ($matchData['type']) {
@@ -194,7 +200,7 @@ class CallbackController extends AbstractActionController
     							$returnData['Description'] = $matchData['description'];
     							break;
     						case 'news':
-    							$returnData['ArticleCount'] = count($matchData['articles']);
+    							$returnData['ArticleCount'] = count($matchData['newsId']);
     							$returnData['Articles'] = $matchData['articles'];
     							break;
     					}
