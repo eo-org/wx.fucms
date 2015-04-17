@@ -91,12 +91,36 @@ class ApplicationDocumentAuthHydrator implements HydratorInterface
             $hydratedData['tokenModified'] = $return;
         }
 
+        /** @Field(type="string") */
+        if (isset($data['jsApiTicket'])) {
+            $value = $data['jsApiTicket'];
+            $return = (string) $value;
+            $this->class->reflFields['jsApiTicket']->setValue($document, $return);
+            $hydratedData['jsApiTicket'] = $return;
+        }
+
+        /** @Field(type="date") */
+        if (isset($data['jsApiTicketModified'])) {
+            $value = $data['jsApiTicketModified'];
+            if ($value instanceof \MongoDate) { $date = new \DateTime(); $date->setTimestamp($value->sec); $return = $date; } else { $return = new \DateTime($value); }
+            $this->class->reflFields['jsApiTicketModified']->setValue($document, clone $return);
+            $hydratedData['jsApiTicketModified'] = $return;
+        }
+
         /** @Field(type="hash") */
         if (isset($data['funcInfo'])) {
             $value = $data['funcInfo'];
             $return = $value;
             $this->class->reflFields['funcInfo']->setValue($document, $return);
             $hydratedData['funcInfo'] = $return;
+        }
+
+        /** @Field(type="hash") */
+        if (isset($data['msg'])) {
+            $value = $data['msg'];
+            $return = $value;
+            $this->class->reflFields['msg']->setValue($document, $return);
+            $hydratedData['msg'] = $return;
         }
 
         /** @Field(type="date") */

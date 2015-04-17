@@ -53,6 +53,16 @@ class Auth extends AbstractDocument
 	protected $tokenModified;
 	
 	/**
+	 * @ODM\Field(type="string")
+	 */
+	protected $jsApiTicket;
+	
+	/**
+	 * @ODM\Field(type="date")
+	 */
+	protected $jsApiTicketModified;
+	
+	/**
 	 * @ODM\Field(type="hash")
 	 */
 	protected $funcInfo;
@@ -97,6 +107,14 @@ class Auth extends AbstractDocument
 			$this->tokenModified = $data['tokenModified'];
 		}
 		
+		if(isset($data['jsApiTicket'])){
+			$this->jsApiTicket = $data['jsApiTicket'];
+		}
+		
+		if(isset($data['jsApiTicketModified'])){
+			$this->jsApiTicketModified = $data['jsApiTicketModified'];
+		}
+		
 		if(isset($data['msg'])){
 			$this->msg = $data['msg'];
 		}
@@ -111,6 +129,8 @@ class Auth extends AbstractDocument
 			'expiresIn'	=> $this->expiresIn,
 			'authorizerRefreshToken'		=> $this->authorizerRefreshToken,
 			'funcInfo' => $this->funcInfo,
+			'jsApiTicket' => $this->jsApiTicket,
+			'jsApiTicketModified' => $this->jsApiTicketModified,
 		);
 	}
 	
@@ -126,5 +146,16 @@ class Auth extends AbstractDocument
 		$created = $this->tokenModified->getTimestamp();
 		$now = time();
 		return $now - $created > 7000;
+	}
+	
+	public function jsApiTicketExpired()
+	{
+		if(empty($this->jsApiTicketModified)){
+			return true;
+		}else {
+			$created = $this->jsApiTicketModified->getTimestamp();
+			$now = time();
+			return $now - $created > 7000;
+		}		
 	}
 }
