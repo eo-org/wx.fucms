@@ -300,8 +300,6 @@ class CallbackController extends AbstractActionController
     	
     	$messageDoc = new Message();
     	$messageDoc->exchangeArray($messageData);
-    	$currentDateTime = new \DateTime();
-    	$messageDoc->setCreated($currentDateTime);
     	
     	$cdm->persist($messageDoc);
     	$cdm->flush();
