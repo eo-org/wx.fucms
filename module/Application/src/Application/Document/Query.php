@@ -1,8 +1,6 @@
 <?php
-
 namespace Application\Document;
 
-use Core\AbstractDocument;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
@@ -10,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * collection="wx_query"
  * )
  */
-class Query extends AbstractDocument
+class Query
 {
 	/**
 	 * @ODM\Id
@@ -57,11 +55,6 @@ class Query extends AbstractDocument
 	 */
 	protected $description;
 	
-	/**
-	 * @ODM\Field(type="date")
-	 */
-	protected $created;
-	
 	public function exchangeArray($data)
 	{
 		if(isset($data['keywords'])){
@@ -83,18 +76,6 @@ class Query extends AbstractDocument
 		if(isset($data['newsId'])){
 			$this->newsId = $data['newsId'];
 		}
-		
-// 		if(isset($data['mediaId'])){
-// 			$this->mediaId = $data['mediaId'];
-// 		}
-		
-// 		if(isset($data['title'])){
-// 			$this->title = $data['title'];
-// 		}
-		
-// 		if(isset($data['description'])){
-// 			$this->description = $data['description'];
-// 		}
 	}
 	public function getArrayCopy()
 	{
@@ -104,9 +85,6 @@ class Query extends AbstractDocument
 			'type' => $this->type,
 			'content' => $this->content,
 			'newsId' => $this->newsId,
-// 			'mediaId' => $this->mediaId,
-// 			'title' => $this->title,
-// 			'description' => $this->description,
 		);
 	}
 }

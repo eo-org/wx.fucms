@@ -1,8 +1,6 @@
 <?php
-
 namespace Application\Document;
 
-use Core\AbstractDocument;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
@@ -10,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * collection="wx_message"
  * )
  */
-class Message extends AbstractDocument
+class Message
 {
 	/**
 	 * @ODM\Id
@@ -96,11 +94,6 @@ class Message extends AbstractDocument
 	 * @ODM\Field(type="hash")
 	 */
 	protected $data;
-	
-	/**
-	 * @ODM\Field(type="date")
-	 */
-	protected $created;
 	
 	public function getId()
 	{

@@ -60,7 +60,7 @@ class CallbackController extends AbstractActionController
     		$currentDateTime = new \DateTime();
     		$ticketDoc->setModified($currentDateTime);
     		$dm->persist($ticketDoc);    		
-    	}else if($infotype == 'unauthorized'){
+    	} else if($infotype == 'unauthorized') {
     		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
     		$appId = $array_appId->item(0)->nodeValue;
     		
@@ -124,11 +124,10 @@ class CallbackController extends AbstractActionController
     
     public function msgAction()
     {
-    	
-    	
-    	
-    	
     	$resultStr = 'success';
+    	
+    	
+    	
     	
 //     	$demo = '<xml>
 //                 <ToUserName><![CDATA[ocjKfuG0RpHa_PJUMOEB1L9LOkzU]]></ToUserName>
@@ -154,10 +153,13 @@ class CallbackController extends AbstractActionController
     	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
+    	
+    	
+    	
+    	
+    	
     	$wxEncrypt = new Encrypt($sm, $q);
     	
-    	
-    	$messageDoc = new Message();
     	$postData = $wxEncrypt->Decrypt($postData);
     	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
     	$wxNumber = $postObj->ToUserName;
@@ -196,12 +198,16 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = $postObj->Content;
-    				$messageData['data']['pre'] = $postData['msg'];
-    				$messageData['content'] = $content;    				
+    				
+    				//throw new \Exception('query is '. $content);
+    				
     				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    				->field('keywords')->equals($content)
-					    				->getQuery()->getSingleResult();
-    					
+					    				->getQuery()
+    									->getSingleResult();
+    				
+    				$messageData['data']['pre'] = $postData['msg'];
+    				$messageData['content'] = $content;
     				$messageData['data']['query'] = $content;
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();    					
@@ -234,7 +240,7 @@ class CallbackController extends AbstractActionController
     							break;
     					}
     					$returnData['MsgType'] = $matchData['type'];
-    				}else {
+    				} else {
     					$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
     					$returnData['MsgType'] = 'text';
     				}
@@ -290,7 +296,9 @@ class CallbackController extends AbstractActionController
     			$resultStr= 'success';
     		}
     		$messageData['data']['result'] = $result;
-    	}    	
+    	}
+    	
+    	$messageDoc = new Message();
     	$messageDoc->exchangeArray($messageData);
     	$currentDateTime = new \DateTime();
     	$messageDoc->setCreated($currentDateTime);

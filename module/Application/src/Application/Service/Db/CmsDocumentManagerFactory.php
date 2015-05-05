@@ -68,7 +68,7 @@ class CmsDocumentManagerFactory implements FactoryInterface
 		));
 		$connection->initialize();
 		$dm = DocumentManager::create($connection, $config);
-		PersistentObject::setObjectManager($dm);
+		//PersistentObject::setObjectManager($dm);
 		
 		return $dm;
     }
