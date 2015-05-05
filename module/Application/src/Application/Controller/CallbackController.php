@@ -197,9 +197,7 @@ class CallbackController extends AbstractActionController
     		switch ($msgType) {
     			case 'text':
     				$matchData = '';
-    				$content = $postObj->Content;
-    				
-    				//throw new \Exception('query is '. $content);
+    				$content = (string)$postObj->Content;
     				
     				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
 					    				->field('keywords')->equals($content)
