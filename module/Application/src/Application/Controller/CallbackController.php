@@ -113,7 +113,9 @@ class CallbackController extends AbstractActionController
     					if(isset($item['url'])) {
     						$item['url'] = $item['selfUrl'];
     					}
-    					$articlesStr.= sprintf($newsItemTpl, $item['title'], $item['description'], $item['picUrl'], $item['url']);
+    					$itemStr = sprintf($newsItemTpl, $item['title'], $item['description'], $item['picUrl'], $item['url']);
+    					$articlesStr = $articlesStr.$itemStr;
+    					
     				}
     				$resultStr = sprintf($newsTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['ArticleCount'], $articlesStr);
     				break;    				
