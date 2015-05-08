@@ -218,15 +218,17 @@ class CallbackController extends AbstractActionController
     							$returnData['Description'] = $matchData['description'];
     							break;
     						case 'news':
-    							$returnData['ArticleCount'] = count($matchData['newsId']);
+    							$articleCount = 0;
     							$newsDocs = $cdm->createQueryBuilder('Application\Document\News')
     											->field('id')->in($matchData['newsId'])
     											->getQuery()->execute();
-    							$returnData['Articles'] = array();
+    							$articles = array();
     							foreach ($newsDocs as $newsDoc){
-    								$returnData['Articles'][] = $newsDoc->getArrayCopy();
+    								$articles[] = $newsDoc->getArrayCopy();
+    								$articleCount = $articleCount + 1;
     							}
-    							$messageData['data']['articles'] = $returnData['Articles'];
+    							$returnData['ArticleCount'] = $articleCount;
+    							$returnData['Articles'] = $articles;
     							break;
     					}
     					$returnData['MsgType'] = $matchData['type'];
