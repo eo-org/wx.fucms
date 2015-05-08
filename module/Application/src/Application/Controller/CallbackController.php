@@ -59,7 +59,7 @@ class CallbackController extends AbstractActionController
     		));
     		$currentDateTime = new \DateTime();
     		$ticketDoc->setModified($currentDateTime);
-    		$dm->persist($ticketDoc);    		
+    		$dm->persist($ticketDoc);
     	} else if($infotype == 'unauthorized') {
     		$array_appId = $xmlData->getElementsByTagName('AuthorizerAppid');
     		$appId = $array_appId->item(0)->nodeValue;
@@ -115,10 +115,9 @@ class CallbackController extends AbstractActionController
     					}
     					$itemStr = sprintf($newsItemTpl, $item['title'], $item['description'], $item['picUrl'], $item['url']);
     					$articlesStr = $articlesStr.$itemStr;
-    					
     				}
     				$resultStr = sprintf($newsTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['ArticleCount'], $articlesStr);
-    				break;    				
+    				break;
     		}
     	}
     	return $resultStr;
@@ -127,17 +126,6 @@ class CallbackController extends AbstractActionController
     public function msgAction()
     {
     	$resultStr = 'success';
-    	
-    	
-    	
-    	
-//     	$demo = '<xml>
-//                 <ToUserName><![CDATA[ocjKfuG0RpHa_PJUMOEB1L9LOkzU]]></ToUserName>
-//                 <FromUserName><![CDATA[wx536a9272e58807e7]]></FromUserName>
-//                 <CreateTime>1428374648</CreateTime>
-//                 <MsgType><![CDATA[text]]></MsgType>
-//                 <Content><![CDATA[text]]></Content>
-//                 </xml>';
     	
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
@@ -234,9 +222,11 @@ class CallbackController extends AbstractActionController
     							$newsDocs = $cdm->createQueryBuilder('Application\Document\News')
     											->field('id')->in($matchData['newsId'])
     											->getQuery()->execute();
+    							$returnData['Articles'] = array();
     							foreach ($newsDocs as $newsDoc){
     								$returnData['Articles'][] = $newsDoc->getArrayCopy();
     							}
+    							$messageData['data']['articles'] = $returnData['Articles'];
     							break;
     					}
     					$returnData['MsgType'] = $matchData['type'];
