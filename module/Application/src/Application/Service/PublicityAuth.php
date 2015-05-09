@@ -122,6 +122,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			$authorizerAccessTokenResultStr = $output;
 			$authorizerAccessTokenResultArr = json_decode($authorizerAccessTokenResultStr, true);
 			$currentDateTime = new \DateTime();
+			$authorizerAccessTokenResultArr['msg'] = array('str' => $authorizerAccessTokenResultStr,'array'=>$authorizerAccessTokenResultArr);
 			$authorizerAccessTokenResultArr['tokenModified'] = $currentDateTime;
 			$authDoc->exchangeArray($authorizerAccessTokenResultArr);
 			$dm->persist($authDoc);
