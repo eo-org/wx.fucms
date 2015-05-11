@@ -96,7 +96,7 @@ class AuthController extends AbstractActionController
     	
     	$authDoc = new Auth();
     	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
-    	$authInfoResult['authorization_info']['msg'] = $q;
+    	$authInfoResult['authorization_info']['msg'] = array('q'=>$q, 'authCode'=>$authCode);
     	$authDoc->exchangeArray($authInfoResult['authorization_info']);
     	$currentDateTime = new \DateTime();
     	$authDoc->setTokenModified($currentDateTime);

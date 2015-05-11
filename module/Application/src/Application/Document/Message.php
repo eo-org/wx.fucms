@@ -189,6 +189,6 @@ class Message
 	
 	public function getOpenId()
 	{
-		return $this->opendId;
+		return $this->openId;
 	}
 }

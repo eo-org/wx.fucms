@@ -39,4 +39,9 @@ class IndexController extends AbstractActionController
     		die('error');
     	}
     }
+    
+    public function loginAction()
+    {
+    	return array();
+    }
 }
