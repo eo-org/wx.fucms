@@ -169,6 +169,20 @@ class CallbackController extends AbstractActionController
 
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
+    		//全网发布反馈
+    		if($appId == 'wx570bc396a51b8ff8'){
+    			$returnData['MsgType'] = 'text';
+    			$returnData['Content'] = (string)$Event.'from_callback';
+    			$result = $this->getResultXml($returnData);
+    			$enResult = $wxEncrypt->Encrypt($result);
+    			if($enResult['status']) {
+    				$resultStr = $enResult['msg'];
+    			} else {
+    				$resultStr= 'success';
+    			}
+    			return new ConsoleModel(array('result' => $resultStr));
+    		}
+    		//全网发布反馈结束
     		if($Event == 'subscribe') {
     			$openId = $postObj->FromUserName;
     			$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
@@ -188,19 +202,25 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = (string)$postObj->Content;
-    				
-    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-					    				->field('keywords')->equals($content)
-					    				->getQuery()
-    									->getSingleResult();
-    				
-    				$messageData['data']['pre'] = $postData['msg'];
-    				$messageData['content'] = $content;
-    				$messageData['data']['query'] = $content;
-    				if(!is_null($keywordsDoc)) {
-    					$keywordsData = $keywordsDoc->getArrayCopy();    					
-    					$matchData = $keywordsData;
-    				}
+    				if($content == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
+    					$matchData = array(
+    						'type' => 'text',
+    						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
+    					);
+    				}else {
+    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+    					->field('keywords')->equals($content)
+    					->getQuery()
+    					->getSingleResult();
+    					
+    					$messageData['data']['pre'] = $postData['msg'];
+    					$messageData['content'] = $content;
+    					$messageData['data']['query'] = $content;
+    					if(!is_null($keywordsDoc)) {
+    						$keywordsData = $keywordsDoc->getArrayCopy();
+    						$matchData = $keywordsData;
+    					}
+    				}    				
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
