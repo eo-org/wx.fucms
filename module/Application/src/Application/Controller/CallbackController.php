@@ -203,6 +203,12 @@ class CallbackController extends AbstractActionController
     						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
     					);
     				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
+    					$messageData['content'] = 'publictest';
+    					$messageData['type'] = 'text';
+    					$messageDoc = new Message();
+    					$messageDoc->exchangeArray($messageData);    					 
+    					$cdm->persist($messageDoc);
+    					$cdm->flush();
     					return new ConsoleModel(array('result' => ''));
     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
