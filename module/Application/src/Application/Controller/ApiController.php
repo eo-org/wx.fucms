@@ -68,4 +68,19 @@ class ApiController extends AbstractActionController
     	
     }
     
+    public function getTestOpenId()
+    {
+    	//针对全网发布所用的action，全网发布后，无用
+    	$sm = $this->getServiceLocator();
+    	$dm = $sm->get('DocumentManager');
+    	
+    	$content = 'QUERY_AUTH_CODE:$query_auth_code$';
+    	$messageDoc = $dm->getRepository('Application\Document\Message')->findOneByContent($content);
+    	$openId = $messageDoc->getOpenId();
+    	return new JsonModel(array(
+    		'openId' => $openId,
+    		)
+    	);
+    }
+    
 }

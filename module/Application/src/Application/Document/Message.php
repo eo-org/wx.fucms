@@ -186,4 +186,9 @@ class Message
 			'url' => $this->url,
 		);
 	}
+	
+	public function getOpenId()
+	{
+		return $this->opendId;
+	}
 }

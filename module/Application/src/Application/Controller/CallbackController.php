@@ -207,8 +207,8 @@ class CallbackController extends AbstractActionController
     					$messageData['type'] = 'text';
     					$messageDoc = new Message();
     					$messageDoc->exchangeArray($messageData);    					 
-    					$cdm->persist($messageDoc);
-    					$cdm->flush();
+    					$dm->persist($messageDoc);
+    					$dm->flush();
     					return new ConsoleModel(array('result' => ''));
     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
