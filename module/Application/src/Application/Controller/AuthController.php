@@ -21,7 +21,9 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
     	$websiteId = $this->params()->fromRoute('websiteId');
-    	
+    	if(is_null($websiteId)) {
+    		$websiteId = 'test';
+    	}
     	$config = $this->getServiceLocator()->get('Config');
     	$wx = $config['env']['wx'];
     	$dm = $this->getServiceLocator()->get('DocumentManager');
@@ -94,6 +96,7 @@ class AuthController extends AbstractActionController
     	
     	$authDoc = new Auth();
     	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
+    	$authInfoResult['authorization_info']['msg'] = $q;
     	$authDoc->exchangeArray($authInfoResult['authorization_info']);
     	$currentDateTime = new \DateTime();
     	$authDoc->setTokenModified($currentDateTime);

@@ -142,12 +142,7 @@ class CallbackController extends AbstractActionController
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
     	$q = $this->params()->fromQuery();
-    	$postData = file_get_contents('php://input');
-    	
-    	
-    	
-    	
-    	
+    	$postData = file_get_contents('php://input');    	
     	$wxEncrypt = new Encrypt($sm, $q);
     	
     	$postData = $wxEncrypt->Decrypt($postData);
@@ -207,6 +202,9 @@ class CallbackController extends AbstractActionController
     						'type' => 'text',
     						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
     					);
+    				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
+    					$matchData['type'] = 'text';
+    					$matchData['content'] = '';
     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
     					->field('keywords')->equals($content)
