@@ -152,11 +152,11 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-//     	$messageData = array(
-//     		'appId' => $appId,
-//     		'openId' => $openId,
-//     		'type' => $msgType,
-//     	);
+    	$messageData = array(
+    		'appId' => $appId,
+    		'openId' => $openId,
+    		'type' => $msgType,
+    	);
     	$returnData = array(
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
@@ -164,8 +164,10 @@ class CallbackController extends AbstractActionController
     	
     	//全网发布事件信息反馈
     	if($wxNumber == 'gh_3c884a361561'){
+    		$Event = $postObj->Event;
     		$returnData['MsgType'] = 'text';
     		$Event = (string)$Event;
+    		$content = (string)$postObj->Content;
     		$returnData['Content'] = $Event.'from_callback';
     		$result = $this->getResultXml($returnData);
     		$enResult = $wxEncrypt->Encrypt($result);
@@ -174,6 +176,13 @@ class CallbackController extends AbstractActionController
     		} else {
     			$resultStr= 'success';
     		}
+    		$messageData['content'] = $content;
+    		$messageData['data'] = array();
+    		$messageData['data']['res'] = $postObj;
+    		$messageDoc = new Message();
+    		$messageDoc->exchangeArray($messageData);
+    		$dm->persist($messageDoc);
+    		$dm->flush();
     		return new ConsoleModel(array('result' => $resultStr));
     	}
     	//全网发布反馈结束
@@ -189,6 +198,13 @@ class CallbackController extends AbstractActionController
     		} else {
     			$resultStr= 'success';
     		}
+    		$messageData['content'] = '自己测试发送消息';
+    		$messageData['data'] = array();
+    		$messageData['data']['res'] = $postObj;
+    		$messageDoc = new Message();
+    		$messageDoc->exchangeArray($messageData);
+    		$dm->persist($messageDoc);
+    		$dm->flush();
     		return new ConsoleModel(array('result' => $resultStr));
     	}
 
@@ -218,9 +234,19 @@ class CallbackController extends AbstractActionController
     						'type' => 'text',
     						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
     					);
-    				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
-    					$messageData['content'] = 'publictest';
+    					$messageData['content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT';
     					$messageData['type'] = 'text';
+    					$messageDoc = new Message();
+    					$messageDoc->exchangeArray($messageData);
+    					$dm->persist($messageDoc);
+    					$dm->flush();
+    				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
+    					$messageData['content'] = 'QUERY_AUTH_CODE';
+    					$messageData['type'] = 'text';
+    					$messageDoc = new Message();
+    					$messageDoc->exchangeArray($messageData);
+    					$dm->persist($messageDoc);
+    					$dm->flush();
     					return new ConsoleModel(array('result' => ''));
     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
