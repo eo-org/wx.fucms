@@ -131,16 +131,16 @@ class CallbackController extends AbstractActionController
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
     	
-//     	$appId = $this->params()->fromRoute('appId');
+    	$appId = $this->params()->fromRoute('appId');
     	
-//     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
-//     	if($authDoc == null) {
-//     		return new ConsoleModel(array('result' => "数据没有绑定"));
-//     	}
-//     	$websiteId = $authDoc->getWebsiteId();
-//     	SiteInfo::setWebsiteId($websiteId);
+    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+    	if($authDoc == null) {
+    		return new ConsoleModel(array('result' => "数据没有绑定"));
+    	}
+    	$websiteId = $authDoc->getWebsiteId();
+    	SiteInfo::setWebsiteId($websiteId);
     	
-//     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
+    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');    	
@@ -153,53 +153,33 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-//     	$messageData = array(
-//     		'appId' => $appId,
-//     		'openId' => $openId,
-//     		'type' => $msgType,
-//     	);
+    	$messageData = array(
+    		'appId' => $appId,
+    		'openId' => $openId,
+    		'type' => $msgType,
+    	);
     	$returnData = array(
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
-    	);    	
-    	
-    	if($openId == 'ocjKfuG0RpHa_PJUMOEB1L9LOkzU'){
-    		$returnData['MsgType'] = 'text';
-    		$returnData['Content'] = 'from_callback';
-    		$result = $this->getResultXml($returnData);
-    		$enResult = $wxEncrypt->Encrypt($result);
-    		if($enResult['status']) {
-    			$resultStr = $enResult['msg'];
-    		} else {
-    			$resultStr= 'success';
-    		}
-    		$messageData['content'] = '自己测试发送消息';
-    		$messageData['data'] = array();
-    		$messageData['data']['res'] = $postObj;
-    		$messageDoc = new Message();
-    		$messageDoc->exchangeArray($messageData);
-    		$dm->persist($messageDoc);
-    		$dm->flush();
-    		return new ConsoleModel(array('result' => $resultStr));
-    	}
+    	);
 
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
     		//全网发布事件信息反馈
-    		if($wxNumber == 'gh_3c884a361561'){
-    			$returnData['MsgType'] = 'text';
-    			$Event = (string)$Event;
-    			$content = (string)$postObj->Content;
-    			$returnData['Content'] = $Event.'from_callback';
-    			$result = $this->getResultXml($returnData);
-    			$enResult = $wxEncrypt->Encrypt($result);
-    			if($enResult['status']) {
-    				$resultStr = $enResult['msg'];
-    			} else {
-    				$resultStr= 'success';
-    			}
-    			return new ConsoleModel(array('result' => $resultStr));
-    		}
+//     		if($wxNumber == 'gh_3c884a361561'){
+//     			$returnData['MsgType'] = 'text';
+//     			$Event = (string)$Event;
+//     			$content = (string)$postObj->Content;
+//     			$returnData['Content'] = $Event.'from_callback';
+//     			$result = $this->getResultXml($returnData);
+//     			$enResult = $wxEncrypt->Encrypt($result);
+//     			if($enResult['status']) {
+//     				$resultStr = $enResult['msg'];
+//     			} else {
+//     				$resultStr= 'success';
+//     			}
+//     			return new ConsoleModel(array('result' => $resultStr));
+//     		}
     		//全网发布反馈结束
     		if($Event == 'subscribe') {
     			$openId = $postObj->FromUserName;
@@ -220,75 +200,75 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = (string)$postObj->Content;
-    				if($content == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
-    					$matchData = array(
-    						'type' => 'text',
-    						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
-    					);
-    					$messageData['content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT';
-    					$messageData['type'] = 'text';
-    					$messageDoc = new Message();
-    					$messageDoc->exchangeArray($messageData);
-    					$dm->persist($messageDoc);
-    					$dm->flush();
-    				}else if($wxNumber == 'gh_3c884a361561'){
-    					$content = strstr($content,':');
-    					$content = substr($content, 1);
+//     				if($content == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
+//     					$matchData = array(
+//     						'type' => 'text',
+//     						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
+//     					);
+//     					$messageData['content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT';
+//     					$messageData['type'] = 'text';
+//     					$messageDoc = new Message();
+//     					$messageDoc->exchangeArray($messageData);
+//     					$dm->persist($messageDoc);
+//     					$dm->flush();
+//     				}else if($wxNumber == 'gh_3c884a361561'){
+//     					$content = strstr($content,':');
+//     					$content = substr($content, 1);
     					
-    					$token = '9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
+//     					$token = '9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
     					
-    					/****/
-    					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$token;
+//     					/****/
+//     					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$token;
     					
-    					$postData = array('component_appid' => 'wx2ce4babba45b702d','authorization_code' => $content);
-    					$postData = json_encode($postData);
-    					$ch = curl_init();
-    					curl_setopt($ch, CURLOPT_URL, $url);
-    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    					curl_setopt($ch, CURLOPT_POST, 1);
-    					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-    					$output = curl_exec($ch);
-    					curl_close($ch);
+//     					$postData = array('component_appid' => 'wx2ce4babba45b702d','authorization_code' => $content);
+//     					$postData = json_encode($postData);
+//     					$ch = curl_init();
+//     					curl_setopt($ch, CURLOPT_URL, $url);
+//     					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//     					curl_setopt($ch, CURLOPT_POST, 1);
+//     					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+//     					$output = curl_exec($ch);
+//     					curl_close($ch);
     					
-    					$tokenResult = json_decode($output, true);
-    					$token = $tokenResult['authorization_info']['authorizer_access_token'];
+//     					$tokenResult = json_decode($output, true);
+//     					$token = $tokenResult['authorization_info']['authorizer_access_token'];
     					
-    					$authDoc = new Auth();
-    					$tokenResult['authorization_info']['websiteId'] = 'test';
-    					$authDoc->exchangeArray($tokenResult['authorization_info']);
-    					$currentDateTime = new \DateTime();
-    					$authDoc->setTokenModified($currentDateTime);
-    					$authDoc->setCreated($currentDateTime);
-    					$dm->persist($authDoc);
-    					$dm->flush();
+//     					$authDoc = new Auth();
+//     					$tokenResult['authorization_info']['websiteId'] = 'test';
+//     					$authDoc->exchangeArray($tokenResult['authorization_info']);
+//     					$currentDateTime = new \DateTime();
+//     					$authDoc->setTokenModified($currentDateTime);
+//     					$authDoc->setCreated($currentDateTime);
+//     					$dm->persist($authDoc);
+//     					$dm->flush();
     					
-    					$touserData = array(
-    						'touser' => 'ozy4qt1eDxSxzCr0aNT0mXCWfrDE',
-    						'msgtype' => 'text',
-    						'text' => array(
-    							'content' => $content.'_from_api',
-    						),
-    					);
-    					$touserData = json_encode($touserData);
-    					$url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='.$token;
-    					$ch = curl_init();
-    					curl_setopt($ch, CURLOPT_URL, $url);
-    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    					curl_setopt($ch, CURLOPT_POST, 1);
-    					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
-    					$output = curl_exec($ch);
-    					curl_close($ch);
+//     					$touserData = array(
+//     						'touser' => 'ozy4qt1eDxSxzCr0aNT0mXCWfrDE',
+//     						'msgtype' => 'text',
+//     						'text' => array(
+//     							'content' => $content.'_from_api',
+//     						),
+//     					);
+//     					$touserData = json_encode($touserData);
+//     					$url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='.$token;
+//     					$ch = curl_init();
+//     					curl_setopt($ch, CURLOPT_URL, $url);
+//     					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//     					curl_setopt($ch, CURLOPT_POST, 1);
+//     					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
+//     					$output = curl_exec($ch);
+//     					curl_close($ch);
     					
-    					/***/
-    					$messageData['content'] = 'QUERY_AUTH_CODE';
-    					$messageData['type'] = 'text';
-    					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output, 'auth_code' => $content);
-    					$messageDoc = new Message();
-    					$messageDoc->exchangeArray($messageData);
-    					$dm->persist($messageDoc);
-    					$dm->flush();
-    					return new ConsoleModel(array('result' => ''));
-    				}else {
+//     					/***/
+//     					$messageData['content'] = 'QUERY_AUTH_CODE';
+//     					$messageData['type'] = 'text';
+//     					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output, 'auth_code' => $content);
+//     					$messageDoc = new Message();
+//     					$messageDoc->exchangeArray($messageData);
+//     					$dm->persist($messageDoc);
+//     					$dm->flush();
+//     					return new ConsoleModel(array('result' => ''));
+//     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
     					->field('keywords')->equals($content)
     					->getQuery()
@@ -301,7 +281,7 @@ class CallbackController extends AbstractActionController
     						$keywordsData = $keywordsDoc->getArrayCopy();
     						$matchData = $keywordsData;
     					}
-    				}    				
+//     				}    				
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
@@ -391,11 +371,11 @@ class CallbackController extends AbstractActionController
     		$messageData['data']['result'] = $result;
     	}
     	
-//     	$messageDoc = new Message();
-//     	$messageDoc->exchangeArray($messageData);
+    	$messageDoc = new Message();
+    	$messageDoc->exchangeArray($messageData);
     	
-//     	$cdm->persist($messageDoc);
-//     	$cdm->flush();
+    	$cdm->persist($messageDoc);
+    	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
     }
