@@ -197,13 +197,6 @@ class CallbackController extends AbstractActionController
     			} else {
     				$resultStr= 'success';
     			}
-    			$messageData['content'] = $content;
-    			$messageData['data'] = array();
-    			$messageData['data']['res'] = $postObj;
-    			$messageDoc = new Message();
-    			$messageDoc->exchangeArray($messageData);
-    			$dm->persist($messageDoc);
-    			$dm->flush();
     			return new ConsoleModel(array('result' => $resultStr));
     		}
     		//全网发布反馈结束
@@ -237,9 +230,10 @@ class CallbackController extends AbstractActionController
     					$messageDoc->exchangeArray($messageData);
     					$dm->persist($messageDoc);
     					$dm->flush();
-    				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
+    				}else if($wxNumber == 'gh_3c884a361561'){
     					$messageData['content'] = 'QUERY_AUTH_CODE';
     					$messageData['type'] = 'text';
+    					$messageData['data'] = array('res'=>$postObj);
     					$messageDoc = new Message();
     					$messageDoc->exchangeArray($messageData);
     					$dm->persist($messageDoc);
