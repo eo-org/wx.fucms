@@ -232,7 +232,7 @@ class CallbackController extends AbstractActionController
     					$dm->persist($messageDoc);
     					$dm->flush();
     				}else if($wxNumber == 'gh_3c884a361561'){
-    					$content = strstr($str,':');
+    					$content = strstr($content,':');
     					$content = substr($content, 1);
     					
     					$token = '9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
