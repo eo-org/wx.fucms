@@ -8,6 +8,7 @@ use Application\WxEncrypt\Encrypt;
 use Application\Document\Ticket;
 use Application\Document\Message;
 use Application\Document\Query;
+use Application\Document\Auth;
 
 use Application\SiteInfo;
 
@@ -239,7 +240,7 @@ class CallbackController extends AbstractActionController
     					/****/
     					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$token;
     					
-    					$postData = array('component_appid' => 'wx570bc396a51b8ff8','authorization_code' =>$content);
+    					$postData = array('component_appid' => 'wx2ce4babba45b702d','authorization_code' => $content);
     					$postData = json_encode($postData);
     					$ch = curl_init();
     					curl_setopt($ch, CURLOPT_URL, $url);
@@ -249,10 +250,39 @@ class CallbackController extends AbstractActionController
     					$output = curl_exec($ch);
     					curl_close($ch);
     					
+    					$tokenResult = json_decode($output, true);
+    					$token = $tokenResult['authorization_info']['authorizer_access_token'];
+    					
+    					$authDoc = new Auth();
+    					$tokenResult['authorization_info']['websiteId'] = 'test';
+    					$authDoc->exchangeArray($tokenResult['authorization_info']);
+    					$currentDateTime = new \DateTime();
+    					$authDoc->setTokenModified($currentDateTime);
+    					$authDoc->setCreated($currentDateTime);
+    					$dm->persist($authDoc);
+    					$dm->flush();
+    					
+    					$touserData = array(
+    						'touser' => 'ozy4qt1eDxSxzCr0aNT0mXCWfrDE',
+    						'msgtype' => 'text',
+    						'text' => array(
+    							'content' => $content.'_from_api',
+    						),
+    					);
+    					$touserData = json_encode($touserData);
+    					$url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='.$token;
+    					$ch = curl_init();
+    					curl_setopt($ch, CURLOPT_URL, $url);
+    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    					curl_setopt($ch, CURLOPT_POST, 1);
+    					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
+    					$output = curl_exec($ch);
+    					curl_close($ch);
+    					
     					/***/
     					$messageData['content'] = 'QUERY_AUTH_CODE';
     					$messageData['type'] = 'text';
-    					$messageData['data'] = array('res'=>$postObj,'msg' => $output);
+    					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output);
     					$messageDoc = new Message();
     					$messageDoc->exchangeArray($messageData);
     					$dm->persist($messageDoc);
