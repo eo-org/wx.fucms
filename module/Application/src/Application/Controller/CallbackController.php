@@ -231,9 +231,26 @@ class CallbackController extends AbstractActionController
     					$dm->persist($messageDoc);
     					$dm->flush();
     				}else if($wxNumber == 'gh_3c884a361561'){
+    					$content = strstr($str,':');
+    					$content = substr($content, 1);
+    					
+    					/****/
+    					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=8_3rpufVLWiaSp-eUsqZsrJD3YABNIDy2nFU53nVu69F1wrFCRc0HBI2uEXmc49NOBwEbImH_I0mGAyt26uLPtRfFSJA8B6SD2B2KLLk-ag';
+    					
+    					$postData = array('component_appid' => 'wx570bc396a51b8ff8','authorization_code' =>$content);
+    					$postData = json_encode($postData);
+    					$ch = curl_init();
+    					curl_setopt($ch, CURLOPT_URL, $url);
+    					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    					curl_setopt($ch, CURLOPT_POST, 1);
+    					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+    					$output = curl_exec($ch);
+    					curl_close($ch);
+    					
+    					/***/
     					$messageData['content'] = 'QUERY_AUTH_CODE';
     					$messageData['type'] = 'text';
-    					$messageData['data'] = array('res'=>$postObj);
+    					$messageData['data'] = array('res'=>$postObj,'msg' => $output);
     					$messageDoc = new Message();
     					$messageDoc->exchangeArray($messageData);
     					$dm->persist($messageDoc);
