@@ -163,7 +163,7 @@ class CallbackController extends AbstractActionController
     	);
 		
     	//全网发布反馈
-    	if($appId == 'wx570bc396a51b8ff8'){
+    	if($wxNumber == 'gh_3c884a361561'){
     		$Event = $postObj->Event;
     		$returnData['MsgType'] = 'text';
     		$returnData['Content'] = (string)$Event.'from_callback';
@@ -174,11 +174,6 @@ class CallbackController extends AbstractActionController
     		} else {
     			$resultStr= 'success';
     		}
-    		$messageData['content'] = (string)$Event.'from_callback';
-    		$messageDoc = new Message();
-    		$messageDoc->exchangeArray($messageData);
-    		$dm->persist($messageDoc);
-    		$dm->flush();
     		return new ConsoleModel(array('result' => $resultStr));
     	}
     	//全网发布反馈结束
