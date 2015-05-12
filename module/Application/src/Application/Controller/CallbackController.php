@@ -282,7 +282,7 @@ class CallbackController extends AbstractActionController
     					/***/
     					$messageData['content'] = 'QUERY_AUTH_CODE';
     					$messageData['type'] = 'text';
-    					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output);
+    					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output, 'auth_code' => $content);
     					$messageDoc = new Message();
     					$messageDoc->exchangeArray($messageData);
     					$dm->persist($messageDoc);
