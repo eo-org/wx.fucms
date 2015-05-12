@@ -130,16 +130,16 @@ class CallbackController extends AbstractActionController
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');
     	
-    	$appId = $this->params()->fromRoute('appId');
+//     	$appId = $this->params()->fromRoute('appId');
     	
-    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
-    	if($authDoc == null) {
-    		return new ConsoleModel(array('result' => "数据没有绑定"));
-    	}
-    	$websiteId = $authDoc->getWebsiteId();
-    	SiteInfo::setWebsiteId($websiteId);
+//     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+//     	if($authDoc == null) {
+//     		return new ConsoleModel(array('result' => "数据没有绑定"));
+//     	}
+//     	$websiteId = $authDoc->getWebsiteId();
+//     	SiteInfo::setWebsiteId($websiteId);
     	
-    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
+//     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');    	
