@@ -152,41 +152,15 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-    	$messageData = array(
-    		'appId' => $appId,
-    		'openId' => $openId,
-    		'type' => $msgType,
-    	);
+//     	$messageData = array(
+//     		'appId' => $appId,
+//     		'openId' => $openId,
+//     		'type' => $msgType,
+//     	);
     	$returnData = array(
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
-    	);
-    	
-    	//全网发布事件信息反馈
-    	if($wxNumber == 'gh_3c884a361561'){
-    		$Event = $postObj->Event;
-    		$returnData['MsgType'] = 'text';
-    		$Event = (string)$Event;
-    		$content = (string)$postObj->Content;
-    		$returnData['Content'] = $Event.'from_callback';
-    		$result = $this->getResultXml($returnData);
-    		$enResult = $wxEncrypt->Encrypt($result);
-    		if($enResult['status']) {
-    			$resultStr = $enResult['msg'];
-    		} else {
-    			$resultStr= 'success';
-    		}
-    		$messageData['content'] = $content;
-    		$messageData['data'] = array();
-    		$messageData['data']['res'] = $postObj;
-    		$messageDoc = new Message();
-    		$messageDoc->exchangeArray($messageData);
-    		$dm->persist($messageDoc);
-    		$dm->flush();
-    		return new ConsoleModel(array('result' => $resultStr));
-    	}
-    	//全网发布反馈结束
-    	
+    	);    	
     	
     	if($openId == 'ocjKfuG0RpHa_PJUMOEB1L9LOkzU'){
     		$returnData['MsgType'] = 'text';
@@ -210,6 +184,29 @@ class CallbackController extends AbstractActionController
 
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
+    		//全网发布事件信息反馈
+    		if($wxNumber == 'gh_3c884a361561'){
+    			$returnData['MsgType'] = 'text';
+    			$Event = (string)$Event;
+    			$content = (string)$postObj->Content;
+    			$returnData['Content'] = $Event.'from_callback';
+    			$result = $this->getResultXml($returnData);
+    			$enResult = $wxEncrypt->Encrypt($result);
+    			if($enResult['status']) {
+    				$resultStr = $enResult['msg'];
+    			} else {
+    				$resultStr= 'success';
+    			}
+    			$messageData['content'] = $content;
+    			$messageData['data'] = array();
+    			$messageData['data']['res'] = $postObj;
+    			$messageDoc = new Message();
+    			$messageDoc->exchangeArray($messageData);
+    			$dm->persist($messageDoc);
+    			$dm->flush();
+    			return new ConsoleModel(array('result' => $resultStr));
+    		}
+    		//全网发布反馈结束
     		if($Event == 'subscribe') {
     			$openId = $postObj->FromUserName;
     			$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
