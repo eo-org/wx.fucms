@@ -161,23 +161,30 @@ class CallbackController extends AbstractActionController
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
     	);
-
+		
+    	//全网发布反馈
+    	if($appId == 'wx570bc396a51b8ff8'){
+    		$Event = $postObj->Event;
+    		$returnData['MsgType'] = 'text';
+    		$returnData['Content'] = (string)$Event.'from_callback';
+    		$result = $this->getResultXml($returnData);
+    		$enResult = $wxEncrypt->Encrypt($result);
+    		if($enResult['status']) {
+    			$resultStr = $enResult['msg'];
+    		} else {
+    			$resultStr= 'success';
+    		}
+    		$messageData['content'] = (string)$Event.'from_callback';
+    		$messageDoc = new Message();
+    		$messageDoc->exchangeArray($messageData);
+    		$dm->persist($messageDoc);
+    		$dm->flush();
+    		return new ConsoleModel(array('result' => $resultStr));
+    	}
+    	//全网发布反馈结束
+    	
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
-    		//全网发布反馈
-    		if($appId == 'wx570bc396a51b8ff8'){
-    			$returnData['MsgType'] = 'text';
-    			$returnData['Content'] = (string)$Event.'from_callback';
-    			$result = $this->getResultXml($returnData);
-    			$enResult = $wxEncrypt->Encrypt($result);
-    			if($enResult['status']) {
-    				$resultStr = $enResult['msg'];
-    			} else {
-    				$resultStr= 'success';
-    			}
-    			return new ConsoleModel(array('result' => $resultStr));
-    		}
-    		//全网发布反馈结束
     		if($Event == 'subscribe') {
     			$openId = $postObj->FromUserName;
     			$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
