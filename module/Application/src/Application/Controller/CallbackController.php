@@ -161,12 +161,12 @@ class CallbackController extends AbstractActionController
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
     	);
-		
-    	//全网发布反馈
+    	
+    	//全网发布事件信息反馈
     	if($wxNumber == 'gh_3c884a361561'){
-    		$Event = $postObj->Event;
     		$returnData['MsgType'] = 'text';
-    		$returnData['Content'] = (string)$Event.'from_callback';
+    		$Event = (string)$Event;
+    		$returnData['Content'] = $Event.'from_callback';
     		$result = $this->getResultXml($returnData);
     		$enResult = $wxEncrypt->Encrypt($result);
     		if($enResult['status']) {
@@ -178,6 +178,20 @@ class CallbackController extends AbstractActionController
     	}
     	//全网发布反馈结束
     	
+    	
+    	if($openId == 'ocjKfuG0RpHa_PJUMOEB1L9LOkzU'){
+    		$returnData['MsgType'] = 'text';
+    		$returnData['Content'] = 'from_callback';
+    		$result = $this->getResultXml($returnData);
+    		$enResult = $wxEncrypt->Encrypt($result);
+    		if($enResult['status']) {
+    			$resultStr = $enResult['msg'];
+    		} else {
+    			$resultStr= 'success';
+    		}
+    		return new ConsoleModel(array('result' => $resultStr));
+    	}
+
     	if($msgType == 'event') {
     		$Event = $postObj->Event;
     		if($Event == 'subscribe') {
@@ -207,10 +221,6 @@ class CallbackController extends AbstractActionController
     				}else if($content == 'QUERY_AUTH_CODE:$query_auth_code$'){
     					$messageData['content'] = 'publictest';
     					$messageData['type'] = 'text';
-    					$messageDoc = new Message();
-    					$messageDoc->exchangeArray($messageData);    					 
-    					$dm->persist($messageDoc);
-    					$dm->flush();
     					return new ConsoleModel(array('result' => ''));
     				}else {
     					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
@@ -315,11 +325,11 @@ class CallbackController extends AbstractActionController
     		$messageData['data']['result'] = $result;
     	}
     	
-    	$messageDoc = new Message();
-    	$messageDoc->exchangeArray($messageData);
+//     	$messageDoc = new Message();
+//     	$messageDoc->exchangeArray($messageData);
     	
-    	$cdm->persist($messageDoc);
-    	$cdm->flush();
+//     	$cdm->persist($messageDoc);
+//     	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
     }
