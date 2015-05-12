@@ -234,8 +234,10 @@ class CallbackController extends AbstractActionController
     					$content = strstr($str,':');
     					$content = substr($content, 1);
     					
+    					$token = '9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
+    					
     					/****/
-    					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
+    					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$token;
     					
     					$postData = array('component_appid' => 'wx570bc396a51b8ff8','authorization_code' =>$content);
     					$postData = json_encode($postData);
