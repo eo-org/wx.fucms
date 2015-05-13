@@ -102,6 +102,12 @@ class CallbackController extends AbstractActionController
 					<ArticleCount>%s</ArticleCount>
 					<Articles>%s</Articles>
 					</xml>';
+    	$serviceTpl = '<xml>
+					     <ToUserName><![CDATA[%s]]></ToUserName>
+					     <FromUserName><![CDATA[%s]]></FromUserName>
+					     <CreateTime>%s</CreateTime>
+					     <MsgType><![CDATA[transfer_customer_service]]></MsgType>
+					 </xml>';
     	if(isset($data['MsgType'])) {
     		switch ($data['MsgType'])
     		{
@@ -118,6 +124,9 @@ class CallbackController extends AbstractActionController
     					$articlesStr = $articlesStr.$itemStr;
     				}
     				$resultStr = sprintf($newsTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['ArticleCount'], $articlesStr);
+    				break;
+    			case 'transfer_customer_service':
+    				$resultStr = sprintf($serviceTpl, $data['ToUserName'], $data['FromUserName'], time());
     				break;
     		}
     	}
@@ -164,124 +173,57 @@ class CallbackController extends AbstractActionController
     	);
 
     	if($msgType == 'event') {
-    		$Event = $postObj->Event;
-    		//全网发布事件信息反馈
-//     		if($wxNumber == 'gh_3c884a361561'){
-//     			$returnData['MsgType'] = 'text';
-//     			$Event = (string)$Event;
-//     			$content = (string)$postObj->Content;
-//     			$returnData['Content'] = $Event.'from_callback';
-//     			$result = $this->getResultXml($returnData);
-//     			$enResult = $wxEncrypt->Encrypt($result);
-//     			if($enResult['status']) {
-//     				$resultStr = $enResult['msg'];
-//     			} else {
-//     				$resultStr= 'success';
-//     			}
-//     			return new ConsoleModel(array('result' => $resultStr));
-//     		}
-    		//全网发布反馈结束
-    		if($Event == 'subscribe') {
-    			$openId = $postObj->FromUserName;
-    			$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
-    			$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
-    			$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
-    			
-    			$ch = curl_init();
-    			curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
-    			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    			curl_setopt($ch, CURLOPT_HEADER, 0);
-    			$output = curl_exec($ch);
-    			curl_close($ch);
-    			$userData = json_decode($output, true);
+    		$Event = (string)$postObj->Event;
+    		switch ($Event) {
+    			case 'subscribe':
+    				$openId = $postObj->FromUserName;
+    				$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
+    				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    				$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
+    				 
+    				$ch = curl_init();
+    				curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
+    				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    				curl_setopt($ch, CURLOPT_HEADER, 0);
+    				$output = curl_exec($ch);
+    				curl_close($ch);
+    				$userData = json_decode($output, true);
+    				break;
+    			case 'CLICK':
+    				$EventKey = (string)$postObj->EventKey;
+    				if($EventKey == 'kefu') {
+    					$returnData['MsgType'] = 'transfer_customer_service';
+    					$result = $this->getResultXml($returnData);
+    					$enResult = $wxEncrypt->Encrypt($result);
+    					if($enResult['status']) {
+    						$resultStr = $enResult['msg'];
+    					} else {
+    						$resultStr= 'success';
+    					}
+    					$messageData['data']['result'] = $result;
+    				}
+    				break;
     		}
     	} else {
     		switch ($msgType) {
     			case 'text':
     				$matchData = '';
     				$content = (string)$postObj->Content;
-//     				if($content == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
-//     					$matchData = array(
-//     						'type' => 'text',
-//     						'content' => 'TESTCOMPONENT_MSG_TYPE_TEXT_callback'
-//     					);
-//     					$messageData['content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT';
-//     					$messageData['type'] = 'text';
-//     					$messageDoc = new Message();
-//     					$messageDoc->exchangeArray($messageData);
-//     					$dm->persist($messageDoc);
-//     					$dm->flush();
-//     				}else if($wxNumber == 'gh_3c884a361561'){
-//     					$content = strstr($content,':');
-//     					$content = substr($content, 1);
-    					
-//     					$token = '9lwl3oJloAPWXhi2yFxd3NbpZCODJ4WLAvBxy4-XocIKOmb1t7-nxobN12NTYwycs8H4i4KAJbETmSiPFVSgOchMePoNHnmznORJq_Ktano';
-    					
-//     					/****/
-//     					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$token;
-    					
-//     					$postData = array('component_appid' => 'wx2ce4babba45b702d','authorization_code' => $content);
-//     					$postData = json_encode($postData);
-//     					$ch = curl_init();
-//     					curl_setopt($ch, CURLOPT_URL, $url);
-//     					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//     					curl_setopt($ch, CURLOPT_POST, 1);
-//     					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-//     					$output = curl_exec($ch);
-//     					curl_close($ch);
-    					
-//     					$tokenResult = json_decode($output, true);
-//     					$token = $tokenResult['authorization_info']['authorizer_access_token'];
-    					
-//     					$authDoc = new Auth();
-//     					$tokenResult['authorization_info']['websiteId'] = 'test';
-//     					$authDoc->exchangeArray($tokenResult['authorization_info']);
-//     					$currentDateTime = new \DateTime();
-//     					$authDoc->setTokenModified($currentDateTime);
-//     					$authDoc->setCreated($currentDateTime);
-//     					$dm->persist($authDoc);
-//     					$dm->flush();
-    					
-//     					$touserData = array(
-//     						'touser' => 'ozy4qt1eDxSxzCr0aNT0mXCWfrDE',
-//     						'msgtype' => 'text',
-//     						'text' => array(
-//     							'content' => $content.'_from_api',
-//     						),
-//     					);
-//     					$touserData = json_encode($touserData);
-//     					$url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='.$token;
-//     					$ch = curl_init();
-//     					curl_setopt($ch, CURLOPT_URL, $url);
-//     					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//     					curl_setopt($ch, CURLOPT_POST, 1);
-//     					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
-//     					$output = curl_exec($ch);
-//     					curl_close($ch);
-    					
-//     					/***/
-//     					$messageData['content'] = 'QUERY_AUTH_CODE';
-//     					$messageData['type'] = 'text';
-//     					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output, 'auth_code' => $content);
-//     					$messageDoc = new Message();
-//     					$messageDoc->exchangeArray($messageData);
-//     					$dm->persist($messageDoc);
-//     					$dm->flush();
-//     					return new ConsoleModel(array('result' => ''));
-//     				}else {
-    					$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
-    					->field('keywords')->equals($content)
-    					->getQuery()
-    					->getSingleResult();
-    					
-    					$messageData['data']['pre'] = $postData['msg'];
-    					$messageData['content'] = $content;
-    					$messageData['data']['query'] = $content;
-    					if(!is_null($keywordsDoc)) {
-    						$keywordsData = $keywordsDoc->getArrayCopy();
-    						$matchData = $keywordsData;
-    					}
-//     				}    				
+    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+					    				->field('keywords')->equals($content)
+					    				->getQuery()
+					    				->getSingleResult();
+    				
+    				$messageData['data']['pre'] = $postData['msg'];
+    				$messageData['content'] = $content;
+    				$messageData['data']['query'] = $content;
+    				if(!is_null($keywordsDoc)) {
+    					$keywordsData = $keywordsDoc->getArrayCopy();
+    					$matchData = $keywordsData;
+   					}
+   					if($content == '客服') {
+   						$matchData = array('type' => 'transfer_customer_service');
+   					}
     				if($matchData){
     					switch ($matchData['type']) {
     						case 'text':
@@ -310,6 +252,9 @@ class CallbackController extends AbstractActionController
     							}
     							$returnData['ArticleCount'] = $articleCount;
     							$returnData['Articles'] = $articles;
+    							break;
+    						case 'transfer_customer_service':
+    							
     							break;
     					}
     					$returnData['MsgType'] = $matchData['type'];
