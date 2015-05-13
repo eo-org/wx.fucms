@@ -7,7 +7,7 @@ use Application\WxEncrypt\Encrypt;
 
 use Application\Document\Ticket;
 use Application\Document\Message;
-use Application\Document\Query;
+use WxDocument\Query;
 use Application\Document\Auth;
 
 use Application\SiteInfo;
@@ -209,7 +209,7 @@ class CallbackController extends AbstractActionController
     			case 'text':
     				$matchData = '';
     				$content = (string)$postObj->Content;
-    				$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
 					    				->field('keywords')->equals($content)
 					    				->getQuery()
 					    				->getSingleResult();
@@ -242,7 +242,7 @@ class CallbackController extends AbstractActionController
     							break;
     						case 'news':
     							$articleCount = 0;
-    							$newsDocs = $cdm->createQueryBuilder('Application\Document\News')
+    							$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
     											->field('id')->in($matchData['newsId'])
     											->getQuery()->execute();
     							$articles = array();
@@ -335,7 +335,7 @@ class CallbackController extends AbstractActionController
     	SiteInfo::setWebsiteId($websiteId);
     	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     	$content = '我';
-    	$keywordsDoc = $cdm->createQueryBuilder('Application\Document\Query')
+    	$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
 					    	->field('keywords')->equals($content)
 					    	->getQuery()->getSingleResult();
     	
