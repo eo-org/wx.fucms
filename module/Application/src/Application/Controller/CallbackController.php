@@ -120,7 +120,7 @@ class CallbackController extends AbstractActionController
     					if(isset($item['url'])) {
     						$item['url'] = $item['selfUrl'];
     					}
-    					$itemStr = sprintf($newsItemTpl, $item['title'], $item['description'], $item['picUrl'], $item['url']);
+    					$itemStr = sprintf($newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
     					$articlesStr = $articlesStr.$itemStr;
     				}
     				$resultStr = sprintf($newsTpl, $data['ToUserName'], $data['FromUserName'], time(), $data['ArticleCount'], $articlesStr);
@@ -203,6 +203,21 @@ class CallbackController extends AbstractActionController
     					$messageData['data']['result'] = $result;
     				}
     				break;
+    			case 'SCAN':
+    				$EventKey = (string)$postObj->EventKey;
+//     				if($EventKey == 'serivce') {
+    					$returnData['MsgType'] = 'transfer_customer_service';
+    					$result = $this->getResultXml($returnData);
+    					$enResult = $wxEncrypt->Encrypt($result);
+    					if($enResult['status']) {
+    						$resultStr = $enResult['msg'];
+    					} else {
+    						$resultStr= 'success';
+    					}
+    					$messageData['data']['result'] = $result;
+//     				}
+    				break;
+    				
     		}
     	} else {
     		switch ($msgType) {
