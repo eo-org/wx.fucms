@@ -229,9 +229,30 @@ class CallbackController extends AbstractActionController
     				$messageData['data']['pre'] = $postData['msg'];
     				$messageData['content'] = $content;
     				$messageData['data']['query'] = $content;
-    				if(!is_null($keywordsDoc)) {
-    					$keywordsData = $keywordsDoc->getArrayCopy();
-    					$matchData = $keywordsData;
+    				if(is_null($keywordsDoc)) {
+    					$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
+    					$settingData = $settingDoc->getArrayCopy();    					
+    					if(isset($settingData['defaultReply'])) {
+    						$content = $settingData['defaultReply'];
+    						$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+					    						->field('keywords')->equals($content)
+					    						->getQuery()
+					    						->getSingleResult();
+    						 
+    						$messageData['data']['pre'] = $postData['msg'];
+    						$messageData['content'] = $content;
+    						$messageData['data']['query'] = $content;
+    						if(!is_null($keywordsDoc)) {
+    							$keywordsData = $keywordsDoc->getArrayCopy();
+    							$matchData = $keywordsData;
+    						}
+    					}else {
+    						$returnData['Content'] = '欢迎关注本微信号!';
+    						$returnData['MsgType'] = 'text';
+    					}
+   					}else {
+   						$keywordsData = $keywordsDoc->getArrayCopy();
+   						$matchData = $keywordsData;
    					}
    					if($content == '客服') {
    						$matchData = array('type' => 'transfer_customer_service');
@@ -315,9 +336,6 @@ class CallbackController extends AbstractActionController
     				break;
     		}
     		$returnData['MsgType'] = $matchData['type'];
-    	} else {
-    		$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-    		$returnData['MsgType'] = 'text';
     	}
     	
     	$result = $this->getResultXml($returnData);
