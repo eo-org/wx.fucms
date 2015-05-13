@@ -8,6 +8,7 @@ use Application\WxEncrypt\Encrypt;
 use Application\Document\Ticket;
 use Application\Document\Message;
 use WxDocument\Query;
+use WxDocument\Article;
 use Application\Document\Auth;
 
 use Application\SiteInfo;
@@ -171,6 +172,7 @@ class CallbackController extends AbstractActionController
     		'ToUserName' =>$openId,
     		'FromUserName' => $wxNumber,
     	);
+    	$matchData = '';
 
     	if($msgType == 'event') {
     		$Event = (string)$postObj->Event;
@@ -191,16 +193,16 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
-    				if($EventKey == 'kefu') {
-    					$returnData['MsgType'] = 'transfer_customer_service';
-    					$result = $this->getResultXml($returnData);
-    					$enResult = $wxEncrypt->Encrypt($result);
-    					if($enResult['status']) {
-    						$resultStr = $enResult['msg'];
-    					} else {
-    						$resultStr= 'success';
-    					}
-    					$messageData['data']['result'] = $result;
+    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+				    				->field('keywords')->equals($EventKey)
+				    				->getQuery()
+				    				->getSingleResult();
+    				$messageData['data']['pre'] = $postData['msg'];
+    				$messageData['content'] = $content;
+    				$messageData['data']['query'] = $content;
+    				if(!is_null($keywordsDoc)) {
+    					$keywordsData = $keywordsDoc->getArrayCopy();
+    					$matchData = $keywordsData;
     				}
     				break;
     			case 'SCAN':
@@ -222,7 +224,6 @@ class CallbackController extends AbstractActionController
     	} else {
     		switch ($msgType) {
     			case 'text':
-    				$matchData = '';
     				$content = (string)$postObj->Content;
     				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
 					    				->field('keywords')->equals($content)
@@ -239,44 +240,6 @@ class CallbackController extends AbstractActionController
    					if($content == '客服') {
    						$matchData = array('type' => 'transfer_customer_service');
    					}
-    				if($matchData){
-    					switch ($matchData['type']) {
-    						case 'text':
-    							$returnData['Content'] = $matchData['content'];
-    							break;
-    						case 'image':
-    							$returnData['MediaId'] = $matchData['mediaId'];
-    							break;
-    						case 'voice':
-    							$returnData['MediaId'] = $matchData['mediaId'];
-    							break;
-    						case 'video':
-    							$returnData['MediaId'] = $matchData['mediaId'];
-    							$returnData['Title'] = $matchData['title'];
-    							$returnData['Description'] = $matchData['description'];
-    							break;
-    						case 'news':
-    							$articleCount = 0;
-    							$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
-    											->field('id')->in($matchData['newsId'])
-    											->getQuery()->execute();
-    							$articles = array();
-    							foreach ($newsDocs as $newsDoc){
-    								$articles[] = $newsDoc->getArrayCopy();
-    								$articleCount = $articleCount + 1;
-    							}
-    							$returnData['ArticleCount'] = $articleCount;
-    							$returnData['Articles'] = $articles;
-    							break;
-    						case 'transfer_customer_service':
-    							
-    							break;
-    					}
-    					$returnData['MsgType'] = $matchData['type'];
-    				} else {
-    					$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
-    					$returnData['MsgType'] = 'text';
-    				}
     				break;
     			case 'image':
     				$picUrl = $postObj->PicUrl;
@@ -321,15 +284,54 @@ class CallbackController extends AbstractActionController
     				$messageData['url'] = $url;
     				break;
     		}
-    		$result = $this->getResultXml($returnData);
-    		$enResult = $wxEncrypt->Encrypt($result);
-    		if($enResult['status']) {
-    			$resultStr = $enResult['msg'];
-    		} else {
-    			$resultStr= 'success';
-    		}
-    		$messageData['data']['result'] = $result;
     	}
+    	
+    	if($matchData){
+    		switch ($matchData['type']) {
+    			case 'text':
+    				$returnData['Content'] = $matchData['content'];
+    				break;
+    			case 'image':
+    				$returnData['MediaId'] = $matchData['mediaId'];
+    				break;
+    			case 'voice':
+    				$returnData['MediaId'] = $matchData['mediaId'];
+    				break;
+    			case 'video':
+    				$returnData['MediaId'] = $matchData['mediaId'];
+    				$returnData['Title'] = $matchData['title'];
+    				$returnData['Description'] = $matchData['description'];
+    				break;
+    			case 'news':
+    				$articleCount = 0;
+    				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
+    				->field('id')->in($matchData['newsId'])
+    				->getQuery()->execute();
+    				$articles = array();
+    				foreach ($newsDocs as $newsDoc){
+    					$articles[] = $newsDoc->getArrayCopy();
+    					$articleCount = $articleCount + 1;
+    				}
+    				$returnData['ArticleCount'] = $articleCount;
+    				$returnData['Articles'] = $articles;
+    				break;
+    			case 'transfer_customer_service':
+    				break;
+    		}
+    		$returnData['MsgType'] = $matchData['type'];
+    	} else {
+    		$returnData['Content'] = '热烈欢迎您/:handclap/:handclap/:handclap鼓掌关注武汉长江联合官方微信账号，我们只提供领先的信息化解决方案，如果您对建站有任何的疑问，可随时咨询，我们将及时报以最专业的答复，您的十分满意是我们唯一的服务宗旨mo-得意~~';
+    		$returnData['MsgType'] = 'text';
+    	}
+    	
+    	$result = $this->getResultXml($returnData);
+    	$enResult = $wxEncrypt->Encrypt($result);
+    	if($enResult['status']) {
+    		$resultStr = $enResult['msg'];
+    	} else {
+    		$resultStr= 'success';
+    	}
+    	$messageData['data']['result'] = $result;
     	
     	$messageDoc = new Message();
     	$messageDoc->exchangeArray($messageData);
