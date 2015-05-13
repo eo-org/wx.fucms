@@ -118,9 +118,6 @@ class CallbackController extends AbstractActionController
     			case 'news':
     				$articlesStr = '';
     				foreach ($data['Articles'] as $item){
-    					if(isset($item['url'])) {
-    						$item['url'] = $item['selfUrl'];
-    					}
     					$itemStr = sprintf($newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
     					$articlesStr = $articlesStr.$itemStr;
     				}
@@ -198,8 +195,8 @@ class CallbackController extends AbstractActionController
 				    				->getQuery()
 				    				->getSingleResult();
     				$messageData['data']['pre'] = $postData['msg'];
-    				$messageData['content'] = $content;
-    				$messageData['data']['query'] = $content;
+    				$messageData['content'] = $EventKey;
+    				$messageData['data']['query'] = $EventKey;
     				if(!is_null($keywordsDoc)) {
     					$keywordsData = $keywordsDoc->getArrayCopy();
     					$matchData = $keywordsData;
@@ -218,8 +215,7 @@ class CallbackController extends AbstractActionController
     					}
     					$messageData['data']['result'] = $result;
 //     				}
-    				break;
-    				
+    				break;    				
     		}
     	} else {
     		switch ($msgType) {
