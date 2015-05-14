@@ -233,22 +233,15 @@ class CallbackController extends AbstractActionController
     					$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     					$settingData = $settingDoc->getArrayCopy();    					
     					if(isset($settingData['defaultReply'])) {
-    						$content = $settingData['defaultReply'];
+    						$defaultReply = $settingData['defaultReply'];
     						$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-					    						->field('keywords')->equals($content)
+					    						->field('keywords')->equals($defaultReply)
 					    						->getQuery()
 					    						->getSingleResult();
-    						 
-    						$messageData['data']['pre'] = $postData['msg'];
-    						$messageData['content'] = $content;
-    						$messageData['data']['query'] = $content;
     						if(!is_null($keywordsDoc)) {
     							$keywordsData = $keywordsDoc->getArrayCopy();
     							$matchData = $keywordsData;
     						}
-    					}else {
-    						$returnData['Content'] = '欢迎关注本微信号!';
-    						$returnData['MsgType'] = 'text';
     					}
    					}else {
    						$keywordsData = $keywordsDoc->getArrayCopy();
@@ -336,6 +329,11 @@ class CallbackController extends AbstractActionController
     				break;
     		}
     		$returnData['MsgType'] = $matchData['type'];
+    	}else {
+    		$returnData = array(
+    			'Content' => '欢迎关注本微信号',
+    			'MsgType' => 'text'
+    		);
     	}
     	
     	$result = $this->getResultXml($returnData);
