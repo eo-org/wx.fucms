@@ -219,7 +219,7 @@ class CallbackController extends AbstractActionController
 					    					->field('keywords')->equals($EventKey)
 					    					->getQuery()
 					    					->getSingleResult();
-    					if(is_null($keywordsDoc)){
+    					if(is_null(false)){
     						$matchData = null;
     					}else {
     						$keywordsData = $keywordsDoc->getArrayCopy();
