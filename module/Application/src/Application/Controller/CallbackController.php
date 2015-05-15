@@ -204,7 +204,7 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-//     				if($EventKey == 'serivce') {
+    				if($EventKey == 'serivce') {
     					$returnData['MsgType'] = 'transfer_customer_service';
     					$result = $this->getResultXml($returnData);
     					$enResult = $wxEncrypt->Encrypt($result);
@@ -214,7 +214,18 @@ class CallbackController extends AbstractActionController
     						$resultStr= 'success';
     					}
     					$messageData['data']['result'] = $result;
-//     				}
+    				}else {
+    					$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+					    					->field('keywords')->equals($EventKey)
+					    					->getQuery()
+					    					->getSingleResult();
+    					if(is_null($keywordsDoc)){
+    						$matchData = null;
+    					}else {
+    						$keywordsData = $keywordsDoc->getArrayCopy();
+    						$matchData = $keywordsData;
+    					}
+    				}
     				break;    				
     		}
     	} else {
