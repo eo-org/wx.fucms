@@ -204,31 +204,8 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-    				$returnData['MsgType'] = 'text';
-    				$returnData['Content'] = $EventKey;
-//     				if($EventKey == 'serivce') {
-//     					$returnData['MsgType'] = 'transfer_customer_service';
-//     					$result = $this->getResultXml($returnData);
-//     					$enResult = $wxEncrypt->Encrypt($result);
-//     					if($enResult['status']) {
-//     						$resultStr = $enResult['msg'];
-//     					} else {
-//     						$resultStr= 'success';
-//     					}
-//     					$messageData['data']['result'] = $result;
-//     				}else {
-//     					$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-// 					    					->field('keywords')->equals($EventKey)
-// 					    					->getQuery()
-// 					    					->getSingleResult();
-//     					if(is_null($keywordsDoc)){
-//     						$matchData = false;
-//     					}else {
-//     						$keywordsData = $keywordsDoc->getArrayCopy();
-//     						$matchData = $keywordsData;
-//     					}
-//     				}
-    				break;    				
+    				$matchData = false;
+    				break;
     		}
     	} else {
     		switch ($msgType) {
@@ -365,31 +342,5 @@ class CallbackController extends AbstractActionController
     	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
-    }
-    
-    public function demoAction()
-    {
-    	$str = '0';
-    	echo mb_detect_encoding($str);
-    	die();
-//     	$websiteId = '547e6e60ce2350a00d000029';
-    	$websiteId = '547d70e3ce2350bc0d000029';
-    	SiteInfo::setWebsiteId($websiteId);
-    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
-    	$content = '我';
-    	$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-					    	->field('keywords')->equals($content)
-					    	->getQuery()->getSingleResult();
-    	
-    	
-    	if(!is_null($keywordsDoc)){
-    		print_r($content);
-    	}else {
-    		die('no');
-    	}
-//     	print_r($keywordsDoc->getArrayCopy());
-    	die();
-    	
-    	return new jsonModel();
     }
 }
