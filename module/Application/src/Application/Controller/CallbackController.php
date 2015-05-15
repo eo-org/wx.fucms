@@ -203,7 +203,7 @@ class CallbackController extends AbstractActionController
     				}
     				break;
     			case 'SCAN':
-    				$EventKey = (string)$postObj->EventKey;
+    				$EventKey = $postObj->EventKey;
     				$messageData['content'] = $EventKey;
     				$messageDoc = new Message();
     				$messageDoc->exchangeArray($messageData);
