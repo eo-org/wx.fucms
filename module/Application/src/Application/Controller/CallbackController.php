@@ -204,7 +204,13 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-    				$matchData = false;
+    				$messageData['content'] = $EventKey;
+    				$messageDoc = new Message();
+    				$messageDoc->exchangeArray($messageData);
+    				 
+    				$cdm->persist($messageDoc);
+    				$cdm->flush();
+    				return new ConsoleModel(array('result' => ''));
     				break;
     		}
     	} else {
