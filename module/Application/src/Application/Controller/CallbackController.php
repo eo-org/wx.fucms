@@ -203,14 +203,15 @@ class CallbackController extends AbstractActionController
     				}
     				break;
     			case 'SCAN':
-    				$EventKey = $postObj->EventKey;
-    				$messageData['content'] = $EventKey;
-    				$messageDoc = new Message();
-    				$messageDoc->exchangeArray($messageData);
-    				 
-    				$cdm->persist($messageDoc);
-    				$cdm->flush();
-    				return new ConsoleModel(array('result' => ''));
+    				$EventKey = (string)$postObj->EventKey;
+    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+					    				->field('keywords')->equals($EventKey)
+					    				->getQuery()
+					    				->getSingleResult();
+    				if(!is_null($keywordsDoc)) {
+    					$keywordsData = $keywordsDoc->getArrayCopy();
+    					$matchData = $keywordsData;
+    				}
     				break;
     		}
     	} else {
