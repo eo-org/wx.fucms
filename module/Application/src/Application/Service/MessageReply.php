@@ -80,8 +80,13 @@ class MessageReply implements ServiceLocatorAwareInterface
 			);
 		}else {
 			$result = array(
-				'status' => false,
-				'msg' => '无匹配',
+				'status' => true,
+				'data' => array(
+					'ToUserName' =>$openId,
+					'FromUserName' => $wxNumber,
+					'MsgType' => 'text',
+					'Content' => '感谢您关注本微信号!'
+				),
 			);
 		}		
 		return $result;

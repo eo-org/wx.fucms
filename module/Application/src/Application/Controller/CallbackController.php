@@ -9,6 +9,7 @@ use Application\Document\Ticket;
 use Application\Document\Message;
 use WxDocument\Query;
 use WxDocument\Article;
+use WxDocument\User;
 use Application\Document\Auth;
 
 use Application\SiteInfo;
@@ -133,7 +134,7 @@ class CallbackController extends AbstractActionController
     
     public function msgAction()
     {
-    	$resultStr = 'success';
+    	$resultStr = '';
     	
     	$sm = $this->getServiceLocator();
     	$dm = $sm->get('DocumentManager');    	
@@ -146,8 +147,7 @@ class CallbackController extends AbstractActionController
     	$websiteId = $authDoc->getWebsiteId();
     	SiteInfo::setWebsiteId($websiteId);
     	
-    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
-    	
+    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');    	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');    	
     	$wxEncrypt = new Encrypt($sm, $q);
@@ -155,8 +155,6 @@ class CallbackController extends AbstractActionController
     	$postData = $wxEncrypt->Decrypt($postData);
     	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
     	
-//     	$wxNumber = $postObj->ToUserName;
-//     	$msgContent = $postObj->Content;
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	$messageData = array(
@@ -168,7 +166,7 @@ class CallbackController extends AbstractActionController
     		$Event = (string)$postObj->Event;
     		$messageData['type'] = $Event;
     		switch ($Event) {
-    			case 'subscribe':    				
+    			case 'subscribe':
     				$openId = $postObj->FromUserName;
     				$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
     				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
@@ -181,6 +179,9 @@ class CallbackController extends AbstractActionController
     				$output = curl_exec($ch);
     				curl_close($ch);
     				$userData = json_decode($output, true);    				
+    				$userDoc = new User();
+    				$userDoc->exchangeArray($userData);
+    				$cdm->persist($userDoc);
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
@@ -199,6 +200,7 @@ class CallbackController extends AbstractActionController
     			case 'text':    				
     				$content = (string)$postObj->Content;
     				$replyResult = $messageReply->getKeywordReply($postObj, $content);
+    				$messageData['content'] = $content;
     				break;
     		}
     	}    	
