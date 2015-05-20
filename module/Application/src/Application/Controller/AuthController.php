@@ -3,6 +3,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Document\Auth;
+use WxDocument\Setting;
 
 class AuthController extends AbstractActionController
 {
@@ -21,12 +22,11 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
     	$websiteId = $this->params()->fromRoute('websiteId');
-    	if(is_null($websiteId)) {
-    		$websiteId = 'test';
-    	}
-    	$config = $this->getServiceLocator()->get('Config');
+    	SiteInfo::setWebsiteId($websiteId);
+    	$sm = $this->getServiceLocator();
+    	$config = $sm->get('Config');
     	$wx = $config['env']['wx'];
-    	$dm = $this->getServiceLocator()->get('DocumentManager');
+    	$dm = $sm->get('DocumentManager');
     	$q = $this->params()->fromQuery();
     	$authCode = $q['auth_code'];
     	
@@ -103,6 +103,24 @@ class AuthController extends AbstractActionController
     	$authDoc->setCreated($currentDateTime);
     	$dm->persist($authDoc);
     	$dm->flush();
+    	$pa = $sm->get('Application\Service\PublicityAuth');
+    	$componentAccessToken = $pa->getComponentAccessToken();
+    	
+    	$getAuthorizerInfoUrl = 'https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token='.$componentAccessToken;
+    	$postData = array(
+    		'component_appid' => $wx['appId'],
+    		'authorizer_appid' => $authInfoResult['authorization_info']['authorizer_appid']
+    	);
+    	$postStr = json_encode($postData);
+    	$authorizerInfoResultStr = $this->curlPostResult($getAuthorizerInfoUrl, $postStr);
+    	$authorizerInfoResult = json_decode($authorizerInfoResultStr, true);
+    	
+    	$settingDoc = new Setting();
+    	$settingDoc->exchangeArray($authorizerInfoResult);
+    	$cdm = $sm->get('CmsDocumentManager');
+    	
+    	$cdm->persist($settingDoc);
+    	$cdm->flush();
     	return $this->redirect()->toUrl($redirecturi);
     }
 }
