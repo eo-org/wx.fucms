@@ -34,15 +34,17 @@ class MessageReply implements ServiceLocatorAwareInterface
 		$keywordsData = '';
 		if(is_null($keywordsDoc)) {
 			$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
-			$settingData = $settingDoc->getArrayCopy();
-			if(isset($settingData['defaultReply'])) {
-				$defaultReply = $settingData['defaultReply'];
-				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-									->field('keywords')->equals($defaultReply)
-									->getQuery()
-									->getSingleResult();
-				if(!is_null($keywordsDoc)) {
-					$keywordsData = $keywordsDoc->getArrayCopy();
+			if(!is_null($settingDoc)) {
+				$settingData = $settingDoc->getArrayCopy();
+				if(isset($settingData['defaultReply'])) {
+					$defaultReply = $settingData['defaultReply'];
+					$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+										->field('keywords')->equals($defaultReply)
+										->getQuery()
+										->getSingleResult();
+					if(!is_null($keywordsDoc)) {
+						$keywordsData = $keywordsDoc->getArrayCopy();
+					}
 				}
 			}
 		}else {

@@ -178,10 +178,11 @@ class CallbackController extends AbstractActionController
     				curl_setopt($ch, CURLOPT_HEADER, 0);
     				$output = curl_exec($ch);
     				curl_close($ch);
-    				$userData = json_decode($output, true);    				
-    				$userDoc = new User();
-    				$userDoc->exchangeArray($userData);
-    				$cdm->persist($userDoc);
+    				$userData = json_decode($output, true);
+    				$messageData['data'] = array('userData' =>$userData);
+//     				$userDoc = new User();
+//     				$userDoc->exchangeArray($userData);
+//     				$cdm->persist($userDoc);
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
