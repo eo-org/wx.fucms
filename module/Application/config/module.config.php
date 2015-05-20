@@ -138,7 +138,8 @@ return array(
 	),
 	'service_manager' => array(
 		'invokables' => array(
-			'Application\Service\PublicityAuth' => 'Application\Service\PublicityAuth'
+			'Application\Service\PublicityAuth' => 'Application\Service\PublicityAuth',
+			'Application\Service\MessageReply'	=> 'Application\Service\MessageReply',
 		),
 		'factories' => array(
 			'CmsDocumentManager' => 'Application\Service\Db\CmsDocumentManagerFactory',

@@ -9,7 +9,6 @@ use Application\Document\Ticket;
 use Application\Document\Message;
 use WxDocument\Query;
 use WxDocument\Article;
-use WxDocument\User;
 use Application\Document\Auth;
 
 use Application\SiteInfo;
@@ -137,8 +136,7 @@ class CallbackController extends AbstractActionController
     	$resultStr = 'success';
     	
     	$sm = $this->getServiceLocator();
-    	$dm = $sm->get('DocumentManager');
-    	
+    	$dm = $sm->get('DocumentManager');    	
     	$appId = $this->params()->fromRoute('appId');
     	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
@@ -156,26 +154,21 @@ class CallbackController extends AbstractActionController
     	
     	$postData = $wxEncrypt->Decrypt($postData);
     	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
-    	$wxNumber = $postObj->ToUserName;
-    	$msgContent = $postObj->Content;
-    	$openId = $postObj->FromUserName;
-    	$msgType = $postObj->MsgType;
     	
+//     	$wxNumber = $postObj->ToUserName;
+//     	$msgContent = $postObj->Content;
+//     	$openId = $postObj->FromUserName;
+    	$msgType = $postObj->MsgType;
     	$messageData = array(
-    		'appId' => $appId,
     		'openId' => $openId,
-    		'type' => $msgType,
     	);
-    	$returnData = array(
-    		'ToUserName' =>$openId,
-    		'FromUserName' => $wxNumber,
-    	);
-    	$matchData = '';
-
+    	$replyResult = array('status' => false);
+    	$messageReply = $sm->get('Application\Service\MessageReply');
     	if($msgType == 'event') {
     		$Event = (string)$postObj->Event;
+    		$messageData['type'] = $Event;
     		switch ($Event) {
-    			case 'subscribe':
+    			case 'subscribe':    				
     				$openId = $postObj->FromUserName;
     				$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
     				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
@@ -187,182 +180,37 @@ class CallbackController extends AbstractActionController
     				curl_setopt($ch, CURLOPT_HEADER, 0);
     				$output = curl_exec($ch);
     				curl_close($ch);
-    				$userData = json_decode($output, true);
-    				$userDoc = new User();
-    				$userDoc->exchangeArray($userData);
-    				$cdm->persist($userDoc);
-    				$cdm->flush();
-    				break;
-    			case 'unsubscribe':
-    				$openId = $postObj->FromUserName;
-    				$cdm->createQueryBuilder('WxDocument\User')
-    					->remove()
-    					->field('id')->equals($openId)
-    					->getQuery()
-    					->execute();
-    				return new ConsoleModel(array('result' => ''));
+    				$userData = json_decode($output, true);    				
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
-    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-				    				->field('keywords')->equals($EventKey)
-				    				->getQuery()
-				    				->getSingleResult();
-    				$messageData['data']['pre'] = $postData['msg'];
+    				$replyResult = $messageReply->getKeywordReply($postObj, $EventKey);
     				$messageData['content'] = $EventKey;
-    				$messageData['data']['query'] = $EventKey;
-    				if(is_null($keywordsDoc)) {
-    					$matchData = false;
-    				}else {
-    					$keywordsData = $keywordsDoc->getArrayCopy();
-    					$matchData = $keywordsData;
-    				}
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-					    				->field('keywords')->equals($EventKey)
-					    				->getQuery()
-					    				->getSingleResult();
-    				if(is_null($keywordsDoc)) {
-    					$matchData = false;
-    				}else {
-    					$keywordsData = $keywordsDoc->getArrayCopy();
-    					$matchData = $keywordsData;
-    				}
+    				$replyResult = $messageReply->getKeywordReply($postObj, $EventKey);
+    				$messageData['content'] = $EventKey;
     				break;
     		}
     	} else {
-    		switch ($msgType) {
-    			case 'text':
+    		$messageData['type'] = $msgType;
+    		switch ($msgType) {    			
+    			case 'text':    				
     				$content = (string)$postObj->Content;
-    				$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-					    				->field('keywords')->equals($content)
-					    				->getQuery()
-					    				->getSingleResult();
-    				
-    				$messageData['data']['pre'] = $postData['msg'];
-    				$messageData['content'] = $content;
-    				$messageData['data']['query'] = $content;
-    				if(is_null($keywordsDoc)) {
-    					$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
-    					$settingData = $settingDoc->getArrayCopy();    					
-    					if(isset($settingData['defaultReply'])) {
-    						$defaultReply = $settingData['defaultReply'];
-    						$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-					    						->field('keywords')->equals($defaultReply)
-					    						->getQuery()
-					    						->getSingleResult();
-    						if(!is_null($keywordsDoc)) {
-    							$keywordsData = $keywordsDoc->getArrayCopy();
-    							$matchData = $keywordsData;
-    						}
-    					}
-   					}else {
-   						$keywordsData = $keywordsDoc->getArrayCopy();
-   						$matchData = $keywordsData;
-   					}
-   					if($content == '客服') {
-   						$matchData = array('type' => 'transfer_customer_service');
-   					}
-    				break;
-    			case 'image':
-    				$picUrl = $postObj->PicUrl;
-    				$mediaId = $postObj->MediaId;
-    				$messageData['picUrl'] = $picUrl;
-    				$messageData['mediaId'] = $mediaId;
-    				break;
-    			case 'voice':
-    				$mediaId = $postObj->MediaId;
-    				$format = $postObj->Format;
-    				$messageData['format'] = $format;
-    				$messageData['mediaId'] = $mediaId;
-    				break;
-    			case 'video':
-    				$mediaId = $postObj->MediaId;
-    				$thumbMediaId = $postObj->ThumbMediaId;
-    				$messageData['mediaId'] = $mediaId;
-    				$messageData['thumbMediaId'] = $thumbMediaId;
-    				break;
-    			case 'shortvideo':
-    				$mediaId = $postObj->MediaId;
-    				$thumbMediaId = $postObj->ThumbMediaId;
-    				$messageData['mediaId'] = $mediaId;
-    				$messageData['thumbMediaId'] = $thumbMediaId;
-    				break;
-    			case 'location':
-    				$locationX = $postObj->Location_X;
-    				$locationY = $postObj->Location_Y;
-    				$scale = $postObj->Scale;
-    				$label = $postObj->Label;
-    				$messageData['locationX'] = $locationX;
-    				$messageData['locationY'] = $locationY;
-    				$messageData['scale'] = $scale;
-    				$messageData['label'] = $label;
-    				break;
-    			case 'link':
-    				$title = $postObj->Title;
-    				$description = $postObj->Description;
-    				$url = $postObj->Url;
-    				$messageData['title'] = $title;
-    				$messageData['description'] = $description;
-    				$messageData['url'] = $url;
+    				$replyResult = $messageReply->getKeywordReply($postObj, $content);
     				break;
     		}
-    	}
-    	
-    	if($matchData){
-    		switch ($matchData['type']) {
-    			case 'text':
-    				$returnData['Content'] = $matchData['content'];
-    				break;
-    			case 'image':
-    				$returnData['MediaId'] = $matchData['mediaId'];
-    				break;
-    			case 'voice':
-    				$returnData['MediaId'] = $matchData['mediaId'];
-    				break;
-    			case 'video':
-    				$returnData['MediaId'] = $matchData['mediaId'];
-    				$returnData['Title'] = $matchData['title'];
-    				$returnData['Description'] = $matchData['description'];
-    				break;
-    			case 'news':
-    				$articleCount = 0;
-    				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
-    				->field('id')->in($matchData['newsId'])
-    				->getQuery()->execute();
-    				$articles = array();
-    				foreach ($newsDocs as $newsDoc){
-    					$articles[] = $newsDoc->getArrayCopy();
-    					$articleCount = $articleCount + 1;
-    				}
-    				$returnData['ArticleCount'] = $articleCount;
-    				$returnData['Articles'] = $articles;
-    				break;
-    			case 'transfer_customer_service':
-    				break;
+    	}    	
+    	if($replyResult['status']) {
+    		$result = $this->getResultXml($replyResult['data']);
+    		$enResult = $wxEncrypt->Encrypt($result);
+    		if($enResult['status']) {
+    			$resultStr = $enResult['msg'];
     		}
-    		$returnData['MsgType'] = $matchData['type'];
-    	}else {
-    		$returnData = array(
-    			'Content' => '欢迎关注本微信号',
-    			'MsgType' => 'text'
-    		);
     	}
-    	
-    	$result = $this->getResultXml($returnData);
-    	$enResult = $wxEncrypt->Encrypt($result);
-    	if($enResult['status']) {
-    		$resultStr = $enResult['msg'];
-    	} else {
-    		$resultStr= 'success';
-    	}
-    	$messageData['data']['result'] = $result;
-    	
     	$messageDoc = new Message();
-    	$messageDoc->exchangeArray($messageData);
-    	
+    	$messageDoc->exchangeArray($messageData);    	
     	$cdm->persist($messageDoc);
     	$cdm->flush();
     	
