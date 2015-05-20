@@ -9,6 +9,7 @@ use Application\Document\Ticket;
 use Application\Document\Message;
 use WxDocument\Query;
 use WxDocument\Article;
+use WxDocument\User;
 use Application\Document\Auth;
 
 use Application\SiteInfo;
@@ -187,6 +188,19 @@ class CallbackController extends AbstractActionController
     				$output = curl_exec($ch);
     				curl_close($ch);
     				$userData = json_decode($output, true);
+    				$userDoc = new User();
+    				$userDoc->exchangeArray($userData);
+    				$dm->persist($userDoc);
+    				$dm->flush();
+    				break;
+    			case 'unsubscribe':
+    				$openId = $postObj->FromUserName;
+    				$cdm->createQueryBuilder('WxDocument\User')
+    					->remove()
+    					->field('id')->equals($openId)
+    					->getQuery()
+    					->execute();
+    				return new ConsoleModel(array('result' => ''));
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
@@ -197,7 +211,9 @@ class CallbackController extends AbstractActionController
     				$messageData['data']['pre'] = $postData['msg'];
     				$messageData['content'] = $EventKey;
     				$messageData['data']['query'] = $EventKey;
-    				if(!is_null($keywordsDoc)) {
+    				if(is_null($keywordsDoc)) {
+    					$matchData = false;
+    				}else {
     					$keywordsData = $keywordsDoc->getArrayCopy();
     					$matchData = $keywordsData;
     				}
@@ -208,7 +224,9 @@ class CallbackController extends AbstractActionController
 					    				->field('keywords')->equals($EventKey)
 					    				->getQuery()
 					    				->getSingleResult();
-    				if(!is_null($keywordsDoc)) {
+    				if(is_null($keywordsDoc)) {
+    					$matchData = false;
+    				}else {
     					$keywordsData = $keywordsDoc->getArrayCopy();
     					$matchData = $keywordsData;
     				}
