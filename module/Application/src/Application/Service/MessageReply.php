@@ -50,9 +50,9 @@ class MessageReply implements ServiceLocatorAwareInterface
 		}else {
 			$keywordsData = $keywordsDoc->getArrayCopy();
 		}
-		if($keywordsData) {
-			$wxNumber = $postObj->ToUserName;
-			$openId = $postObj->FromUserName;
+		$wxNumber = $postObj->ToUserName;
+		$openId = $postObj->FromUserName;
+		if($keywordsData) {			
 			$returnData = array(
 				'ToUserName' =>$openId,
 				'FromUserName' => $wxNumber,

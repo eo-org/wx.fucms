@@ -167,11 +167,9 @@ class CallbackController extends AbstractActionController
     		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
-    				$openId = $postObj->FromUserName;
-    				$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
+    				$pa = $sm->get('Application\Service\PublicityAuth');
     				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
     				$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
-    				 
     				$ch = curl_init();
     				curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
     				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -179,7 +177,10 @@ class CallbackController extends AbstractActionController
     				$output = curl_exec($ch);
     				curl_close($ch);
     				$userData = json_decode($output, true);
-    				$messageData['data'] = array('userData' =>$userData);
+    				$messageData['data'] = array(
+    					'authorizerAccessToken' =>$authorizerAccessToken,
+    					'userData' => $userData
+    				);
 //     				$userDoc = new User();
 //     				$userDoc->exchangeArray($userData);
 //     				$cdm->persist($userDoc);
