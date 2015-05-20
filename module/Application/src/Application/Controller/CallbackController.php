@@ -181,9 +181,9 @@ class CallbackController extends AbstractActionController
     					'authorizerAccessToken' =>$authorizerAccessToken,
     					'userData' => $userData
     				);
-//     				$userDoc = new User();
-//     				$userDoc->exchangeArray($userData);
-//     				$cdm->persist($userDoc);
+    				$userDoc = new User();
+    				$userDoc->exchangeArray($userData);
+    				$cdm->persist($userDoc);
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
