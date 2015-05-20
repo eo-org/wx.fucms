@@ -190,8 +190,8 @@ class CallbackController extends AbstractActionController
     				$userData = json_decode($output, true);
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
-    				$dm->persist($userDoc);
-    				$dm->flush();
+    				$cdm->persist($userDoc);
+    				$cdm->flush();
     				break;
     			case 'unsubscribe':
     				$openId = $postObj->FromUserName;
