@@ -157,7 +157,7 @@ class CallbackController extends AbstractActionController
     	
 //     	$wxNumber = $postObj->ToUserName;
 //     	$msgContent = $postObj->Content;
-//     	$openId = $postObj->FromUserName;
+    	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	$messageData = array(
     		'openId' => $openId,
