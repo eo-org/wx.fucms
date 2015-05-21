@@ -2,6 +2,7 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Application\SiteInfo;
 use Application\Document\Auth;
 use WxDocument\Setting;
 
@@ -22,7 +23,6 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
     	$websiteId = $this->params()->fromRoute('websiteId');
-    	SiteInfo::setWebsiteId($websiteId);
     	$sm = $this->getServiceLocator();
     	$config = $sm->get('Config');
     	$wx = $config['env']['wx'];
@@ -49,8 +49,7 @@ class AuthController extends AbstractActionController
 				    		->getQuery()
 				    		->getSingleResult();
     		
-    	$redirecturi = $fucmsToken->getRedirecturi();
-    	
+    	$redirecturi = $fucmsToken->getRedirecturi();    	
     	$authDoc = new Auth();
     	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
     	$authInfoResult['authorization_info']['msg'] = array('q'=>$q, 'authCode'=>$authCode);
@@ -61,6 +60,7 @@ class AuthController extends AbstractActionController
     	$dm->persist($authDoc);
     	$dm->flush();
     	
+    	SiteInfo::setWebsiteId($websiteId);
     	$componentAccessToken = $pa->getComponentAccessToken();    	
     	$getAuthorizerInfoUrl = 'https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token='.$componentAccessToken;
     	$postData = array(
