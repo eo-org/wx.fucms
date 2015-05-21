@@ -186,11 +186,14 @@ class CallbackController extends AbstractActionController
     				$cdm->persist($userDoc);
     				break;
     			case 'unsubscribe':
+    				$messageData['content'] = '取消关注';
+    				$openid = (string)$openId;
     				$cdm->createQueryBuilder('WxDocument\User')
 						->remove()
-						->field('openid')->equals((string)$openId)
+						->field('openid')->equals($openid)
 						->getQuery()
 						->execute();
+    				$messageData['content'] = '取消关注=>'.$openid;
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;

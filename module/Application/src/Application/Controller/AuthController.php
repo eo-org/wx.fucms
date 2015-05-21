@@ -49,8 +49,12 @@ class AuthController extends AbstractActionController
 				    		->getQuery()
 				    		->getSingleResult();
     		
-    	$redirecturi = $fucmsToken->getRedirecturi();    	
-    	$authDoc = new Auth();
+    	$redirecturi = $fucmsToken->getRedirecturi();
+    	
+    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByWebsiteId($websiteId);
+    	if(is_null($authDoc)){
+    		$authDoc = new Auth();
+    	}
     	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
     	$authInfoResult['authorization_info']['msg'] = array('q'=>$q, 'authCode'=>$authCode);
     	$authDoc->exchangeArray($authInfoResult['authorization_info']);
@@ -61,7 +65,7 @@ class AuthController extends AbstractActionController
     	$dm->flush();
     	
     	SiteInfo::setWebsiteId($websiteId);
-    	$componentAccessToken = $pa->getComponentAccessToken();    	
+    	$componentAccessToken = $pa->getComponentAccessToken();
     	$getAuthorizerInfoUrl = 'https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token='.$componentAccessToken;
     	$postData = array(
     		'component_appid' => $wx['appId'],
@@ -71,9 +75,13 @@ class AuthController extends AbstractActionController
     	$authorizerInfoResultStr = $this->curlPostResult($getAuthorizerInfoUrl, $postStr);
     	$authorizerInfoResult = json_decode($authorizerInfoResultStr, true);
     	
-    	$settingDoc = new Setting();
-    	$settingDoc->exchangeArray($authorizerInfoResult);
     	$cdm = $sm->get('CmsDocumentManager');
+    	$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
+    	if(is_null($settingDoc)) {
+    		$settingDoc = new Setting();
+    	}
+    	$settingDoc->exchangeArray($authorizerInfoResult);
+    	
     	
     	$cdm->persist($settingDoc);
     	$cdm->flush();
