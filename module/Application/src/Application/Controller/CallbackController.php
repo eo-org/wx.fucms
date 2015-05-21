@@ -188,7 +188,7 @@ class CallbackController extends AbstractActionController
     			case 'unsubscribe':
     				$cdm->createQueryBuilder('WxDocument\User')
 						->remove()
-						->field('openid')->equals($openId)
+						->field('openid')->equals((string)$openId)
 						->getQuery()
 						->execute();
     				break;
