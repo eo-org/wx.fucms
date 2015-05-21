@@ -137,7 +137,7 @@ class CallbackController extends AbstractActionController
     	$resultStr = '';
     	
     	$sm = $this->getServiceLocator();
-    	$dm = $sm->get('DocumentManager');    	
+    	$dm = $sm->get('DocumentManager');
     	$appId = $this->params()->fromRoute('appId');
     	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
@@ -184,6 +184,13 @@ class CallbackController extends AbstractActionController
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
     				$cdm->persist($userDoc);
+    				break;
+    			case 'unsubscribe':
+    				$cdm->createQueryBuilder('WxDocument\User')
+						->remove()
+						->field('openid')->equals($openId)
+						->getQuery()
+						->execute();
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
