@@ -6,7 +6,7 @@ use Zend\View\Model\ConsoleModel;
 use Application\WxEncrypt\Encrypt;
 
 use Application\Document\Ticket;
-use Application\Document\Message;
+use WxDocument\Message;
 use WxDocument\Query;
 use WxDocument\Article;
 use WxDocument\User;
@@ -162,21 +162,25 @@ class CallbackController extends AbstractActionController
     	);
     	$replyResult = array('status' => false);
     	$messageReply = $sm->get('Application\Service\MessageReply');
+    	//获取用户信息
+    	$pa = $sm->get('Application\Service\PublicityAuth');
+    	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    	$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($ch, CURLOPT_HEADER, 0);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+    	$userData = json_decode($output, true);
+    	//获取用户信息结束
+    	$messageData['nickname'] = $userData['nickname'];
+    	$messageData['headimgurl'] = $userData['headimgurl'];
     	if($msgType == 'event') {
     		$Event = (string)$postObj->Event;
     		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
-    				$pa = $sm->get('Application\Service\PublicityAuth');
-    				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
-    				$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
-    				$ch = curl_init();
-    				curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
-    				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    				curl_setopt($ch, CURLOPT_HEADER, 0);
-    				$output = curl_exec($ch);
-    				curl_close($ch);
-    				$userData = json_decode($output, true);
     				$messageData['data'] = array(
     					'authorizerAccessToken' =>$authorizerAccessToken,
     					'userData' => $userData
