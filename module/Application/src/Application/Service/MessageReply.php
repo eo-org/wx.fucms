@@ -27,28 +27,35 @@ class MessageReply implements ServiceLocatorAwareInterface
 		$keyword = (string)$keyword;
 		$cdm = $this->sm->get('CmsDocumentManager');
 		
-		$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+		
+		if($keyword != '10000'){
+			$keywordsData = array(
+				'type' => 'transfer_customer_service'
+			);
+		}else {
+			$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
 							->field('keywords')->equals($keyword)
 							->getQuery()
 							->getSingleResult();
-		$keywordsData = '';
-		if(is_null($keywordsDoc)) {
-			$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
-			if(!is_null($settingDoc)) {
-				$settingData = $settingDoc->getArrayCopy();
-				if(isset($settingData['defaultReply'])) {
-					$defaultReply = $settingData['defaultReply'];
-					$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
-										->field('keywords')->equals($defaultReply)
-										->getQuery()
-										->getSingleResult();
-					if(!is_null($keywordsDoc)) {
-						$keywordsData = $keywordsDoc->getArrayCopy();
+			$keywordsData = '';
+			if(is_null($keywordsDoc)) {
+				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
+				if(!is_null($settingDoc)) {
+					$settingData = $settingDoc->getArrayCopy();
+					if(isset($settingData['defaultReply'])) {
+						$defaultReply = $settingData['defaultReply'];
+						$keywordsDoc = $cdm->createQueryBuilder('WxDocument\Query')
+						->field('keywords')->equals($defaultReply)
+						->getQuery()
+						->getSingleResult();
+						if(!is_null($keywordsDoc)) {
+							$keywordsData = $keywordsDoc->getArrayCopy();
+						}
 					}
 				}
+			}else {
+				$keywordsData = $keywordsDoc->getArrayCopy();
 			}
-		}else {
-			$keywordsData = $keywordsDoc->getArrayCopy();
 		}
 		$wxNumber = $postObj->ToUserName;
 		$openId = $postObj->FromUserName;
@@ -92,5 +99,11 @@ class MessageReply implements ServiceLocatorAwareInterface
 			);
 		}		
 		return $result;
+	}
+	
+	public function getSubscribeReply($postObj)
+	{
+		$cdm = $this->sm->get('CmsDocumentManager');
+		
 	}
 }
