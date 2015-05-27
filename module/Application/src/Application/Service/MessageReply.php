@@ -28,7 +28,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 		$cdm = $this->sm->get('CmsDocumentManager');
 		
 		
-		if($keyword != '10000'){
+		if($keyword == '10000'){
 			$keywordsData = array(
 				'type' => 'transfer_customer_service'
 			);
