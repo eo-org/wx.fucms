@@ -71,8 +71,16 @@ class MessageReply implements ServiceLocatorAwareInterface
 					break;
 				case 'news':
 					$articleCount = 0;
+					if(isset($keywordsData['news'])) {
+						$newsIdArr = array();
+						foreach ($keywordsData['news'] as $newsItem) {
+							$newsIdArr[] = $newsItem['id'];
+						}
+					}else {
+						$newsIdArr = $keywordsData['newsId'];
+					}
 					$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
-									->field('id')->in($keywordsData['newsId'])
+									->field('id')->in($newsIdArr)
 									->getQuery()->execute();
 					$articles = array();
 					foreach ($newsDocs as $newsDoc){
