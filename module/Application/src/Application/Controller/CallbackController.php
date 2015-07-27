@@ -189,6 +189,7 @@ class CallbackController extends AbstractActionController
     				$settingData = $settingDoc->getArrayCopy();
     				if($data['isAddFriendReplyOpen']) {
     					$replyResult = $messageReply->getKeywordReply($postObj, $data['addFriendAutoreplyInfo']);
+    					$messageData['data']['reply'] = $replyResult;
     				}
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
@@ -217,7 +218,7 @@ class CallbackController extends AbstractActionController
     		}
     	} else {
     		$messageData['type'] = $msgType;
-    		switch ($msgType) {    			
+    		switch ($msgType) {
     			case 'text':    				
     				$content = (string)$postObj->Content;
     				$replyResult = $messageReply->getKeywordReply($postObj, $content);
