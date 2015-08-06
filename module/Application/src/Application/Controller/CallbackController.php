@@ -181,15 +181,16 @@ class CallbackController extends AbstractActionController
     		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
-    				$messageData['data'] = array(
-    					'authorizerAccessToken' =>$authorizerAccessToken,
-    					'userData' => $userData
-    				);
     				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     				$settingData = $settingDoc->getArrayCopy();
+    				$messageData['msg'] = array(
+    					'authorizerAccessToken' =>$authorizerAccessToken,
+    					'userData' => $userData,
+    					'settingData' => $settingData
+    				);    				
     				if($data['isAddFriendReplyOpen']) {
     					$replyResult = $messageReply->getKeywordReply($postObj, $data['addFriendAutoreplyInfo']);
-    					$messageData['data']['reply'] = $replyResult;
+    					$messageData['msg']['reply'] = $replyResult;
     				}
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
