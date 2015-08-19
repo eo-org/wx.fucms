@@ -64,145 +64,81 @@ class MessageReply implements ServiceLocatorAwareInterface
 		return $this->sm;
 	}
 	
-	protected function _getTextXml($appId, $openId, $content)
+	protected function _getTextXml($mpId, $openId, $content)
 	{
-// 		$resultStr = '';
-// 		switch ($type)
-// 		{
-// 			case 'text':
-// 				$resultStr = 
-// 				break;
-// 			case 'news':
-// 				$articlesStr = '';
-// 				foreach ($data['articleList'] as $item){
-// 					$itemStr = sprintf($this->newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
-// 					$articlesStr .= $itemStr;
-// 				}
-// 				$resultStr = sprintf($this->newsTpl, $openId, $appId, time(), $data['articleCount'], $articlesStr);
-// 				break;
-// 			case 'transfer_customer_service':
-// 				$resultStr = sprintf($this->customerServiceTpl, $openId, $appId, time());
-// 				break;
-// 		}
-		return sprintf($this->textTpl, $openId, $appId, time(), $content);
+		return sprintf($this->textTpl, $openId, $mpId, time(), $content);
 	}
 	
-	protected function _getNewsXml($appId, $openId, $articleList)
+	protected function _getNewsXml($mpId, $openId, $articleList)
 	{
 		$articlesStr = '';
 		foreach ($articleList as $item){
 			$itemStr = sprintf($this->newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
 			$articlesStr .= $itemStr;
 		}
-		$resultStr = sprintf($this->newsTpl, $openId, $appId, time(), count($articleList), $articlesStr);
+		$resultStr = sprintf($this->newsTpl, $openId, $mpId, time(), count($articleList), $articlesStr);
 	}
 	
-	protected function _getCustomerServiceXml($appId, $openId)
+	protected function _getCustomerServiceXml($mpId, $openId)
 	{
-		return sprintf($this->customerServiceTpl, $openId, $appId, time());
+		return sprintf($this->customerServiceTpl, $openId, $mpId, time());
 	}
 	
-	public function getReply($appId, $openId, $keyword)
+	/**
+	 * 
+	 * @param String $mpId
+	 * @param String $openId
+	 * @param String $keyword
+	 * @return string
+	 * @example $mpId is the original id of each Media Platform, $openId is the user id who sends the message, $keyword is the message
+	 */
+	public function getReply($mpId, $openId, $keyword)
 	{
 		$keyword = (string)$keyword;
 		$cdm = $this->sm->get('CmsDocumentManager');
 		
 		$msgType = 'text';
-		$reply = $keyword;
+		$reply = '欢迎使用本服务号为您服务';
 		
 		$xml = "";
 		
 		if($keyword == '10000') {
 			//qr code set 10000 equals customer service
-			//$msgType = 'transfer_customer_service';
-			$xml = $this->_getCustomerServiceXml($appId, $openId);
+			$xml = $this->_getCustomerServiceXml($mpId, $openId);
 		} else {
 			$queryDoc = $cdm->createQueryBuilder('WxDocument\Query')
 				->field('keywords')->equals($keyword)
 				->getQuery()
 				->getSingleResult();
 			if(!is_null($queryDoc)) {
-// 				$keywordsData = array(
-// 					'type' => 'text',
-// 					'data' => '感谢您关注本公众号',
-// 				);
-// 			} else {
 				$msgType = $queryDoc->getType();
 				$reply = $queryDoc->getContent();
-				
-				
-// 				$keywordsData = $keywordsDoc->getArrayCopy();
 			}
 		}
-		//$wxNumber = $postObj->ToUserName;
-		//$openId = $postObj->FromUserName;
-		// 		if($keywordsData) {
-		
-		
-// 		$returnData = array(
-// 			'ToUserName' => $openId,
-// 			'FromUserName' => $wxNumber,
-// 			'MsgType' => $keywordsData['type'],
-// 		);
 		switch ($msgType){
 			case 'text':
-				//$returnData['Content'] = $keywordsData['content'];
-				
-				
-				//$returnData['articleCount'] = $articleCount;
-				//$returnData['articleList'] = $articles;
-				//$reply = 
-				
-				$xml = $this->_getTextXml($appId, $openId, $reply);
-				
+				$xml = $this->_getTextXml($mpId, $openId, $reply);
 				break;
 			case 'news':
 				$articleCount = 0;
-// 				if(isset($keywordsData['news'])) {
-// 					$newsIdArr = array();
-// 					foreach ($keywordsData['news'] as $newsItem) {
-// 						$newsIdArr[] = $newsItem['id'];
-// 					}
-// 				}else {
-// 					$newsIdArr = $keywordsData['newsId'];
-// 				}
+				$newsIdArr = $queryDoc->getNews();
 				
-				$newsIdArr = $queryDoc->getNewsId();
-				
+				$idArr = array();
+				foreach($newsIdArr as $id => $label) {
+					$idArr[] = $id;
+				}
 				
 				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
-					->field('id')->in($newsIdArr)
+					->field('id')->in($idArr)
 					->getQuery()
 					->execute();
 				$articleList = array();
 				foreach ($newsDocs as $newsDoc){
 					$articleList[] = $newsDoc->getArrayCopy();
-					//$articleCount = $articleCount + 1;
 				}
-				//$returnData['articleCount'] = $articleCount;
-				//$returnData['articleList'] = $articles;
-				
-				$sml = $this->_getNewsXml($appId, $openId, $articleList);
-				
+				$sml = $this->_getNewsXml($mpId, $openId, $articleList);
 				break;
 		}
-// 		$result = array(
-// 			'status' => true,
-// 			'data' => $returnData
-// 		);
-		
-		
-		// 		}else {
-		// 			$result = array(
-		// 				'status' => true,
-		// 				'data' => array(
-		// 					'ToUserName' =>$openId,
-		// 					'FromUserName' => $wxNumber,
-		// 					'MsgType' => 'text',
-		// 					'Content' => '感谢您关注本微信号!'
-		// 				),
-		// 			);
-		// 		}
 		return $xml;
 	}
 	

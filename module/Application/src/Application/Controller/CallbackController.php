@@ -138,17 +138,15 @@ class CallbackController extends AbstractActionController
     	
     	$sm = $this->getServiceLocator();
     	//$dm = $sm->get('DocumentManager');
-    	$appxxxId = $this->params()->fromRoute('appId');
     	
     	
     	$q = $this->params()->fromQuery();
     	$postData = file_get_contents('php://input');
     	$wxEncrypt = new Encrypt($sm, $q);
-    	 
     	$postData = $wxEncrypt->Decrypt($postData);
     	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
     	 
-    	$appId = $postObj->ToUserName;
+    	$mpId = $postObj->ToUserName;
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
@@ -156,18 +154,18 @@ class CallbackController extends AbstractActionController
     	
     	$messageReply = $sm->get('Application\Service\MessageReply');
     	
-    	$xml = $messageReply->getReply($appId, $openId, $appId.' = '.$appxxxId);
+//     	$xml = $messageReply->getReply($mpId, $openId, $appId.' = '.$appxxxId);
     	
     	
     	
-    	$enResult = $wxEncrypt->Encrypt($xml);
-    	if($enResult['status']) {
-    		$resultStr = $enResult['msg'];
-    	}
+//     	$enResult = $wxEncrypt->Encrypt($xml);
+//     	if($enResult['status']) {
+//     		$resultStr = $enResult['msg'];
+//     	}
     	
     	
     	
-    	return new ConsoleModel(array('result' => $resultStr));
+//     	return new ConsoleModel(array('result' => $resultStr));
     	
     	
     	
@@ -253,19 +251,19 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
-    				$xml = $messageReply->getReply($appId, $openId, $EventKey);
+    				$xml = $messageReply->getReply($mpId, $openId, $EventKey);
     				//$messageData['content'] = $EventKey;
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-    				$xml = $messageReply->getReply($appId, $openId, $EventKey);
+    				$xml = $messageReply->getReply($mpId, $openId, $EventKey);
     				//$messageData['content'] = $EventKey;
     				break;
     		}
     	} else if($msgType == 'text') {
     		
     		$keyword = (string)$postObj->Content;
-    		$xml = $messageReply->getReply($appId, $openId, $keyword);
+    		$xml = $messageReply->getReply($mpId, $openId, $keyword);
     		
     		
     		//$messageData['type'] = $msgType;
