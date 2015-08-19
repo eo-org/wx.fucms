@@ -137,31 +137,65 @@ class CallbackController extends AbstractActionController
     	$resultStr = '';
     	
     	$sm = $this->getServiceLocator();
-    	$dm = $sm->get('DocumentManager');
-    	$appId = $this->params()->fromRoute('appId');
+    	//$dm = $sm->get('DocumentManager');
+    	//$appId = $this->params()->fromRoute('appId');
     	
-    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
-    	if($authDoc == null) {
-    		return new ConsoleModel(array('result' => "数据没有绑定"));
-    	}
-    	$websiteId = $authDoc->getWebsiteId();
-    	SiteInfo::setWebsiteId($websiteId);
     	
-    	$cdm = $this->getServiceLocator()->get('CmsDocumentManager');    	
     	$q = $this->params()->fromQuery();
-    	$postData = file_get_contents('php://input');    	
+    	$postData = file_get_contents('php://input');
     	$wxEncrypt = new Encrypt($sm, $q);
-    	
+    	 
     	$postData = $wxEncrypt->Decrypt($postData);
     	$postObj = simplexml_load_string($postData['msg'], 'SimpleXMLElement', LIBXML_NOCDATA);
-    	
+    	 
+    	$appId = $postObj->ToUserName;
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
+    	
+    	
+    	
+    	$messageReply = $sm->get('Application\Service\MessageReply');
+    	
+    	$xml = $messageReply->getReply($appId, $openId, 'xyz');
+    	
+    	
+    	
+    	$enResult = $wxEncrypt->Encrypt($xml);
+    	if($enResult['status']) {
+    		$resultStr = $enResult['msg'];
+    	}
+    	
+    	
+    	
+    	return new ConsoleModel(array('result' => $resultStr));
+    	
+    	
+    	
+    	
+//     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+//     	if($authDoc == null) {
+//     		return new ConsoleModel(array('result' => "数据没有绑定"));
+//     	}
+//     	$websiteId = $authDoc->getWebsiteId();
+//     	SiteInfo::setWebsiteId($websiteId);
+    	
+    	    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
     	$messageData = array(
     		'openId' => $openId,
     	);
     	$replyResult = array('status' => false);
-    	$messageReply = $sm->get('Application\Service\MessageReply');
+    	//$messageReply = $sm->get('Application\Service\MessageReply');
     	//获取用户信息
     	
     	
@@ -171,7 +205,7 @@ class CallbackController extends AbstractActionController
     		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
-    				
+    				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     				$pa = $sm->get('Application\Service\PublicityAuth');
     				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
     				$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
@@ -206,6 +240,7 @@ class CallbackController extends AbstractActionController
     				$cdm->persist($userDoc);
     				break;
     			case 'unsubscribe':
+    				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
     				$messageData['content'] = '取消关注';
     				$openid = (string)$openId;
     				$cdm->createQueryBuilder('WxDocument\User')
