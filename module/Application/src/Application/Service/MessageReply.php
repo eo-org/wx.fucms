@@ -108,7 +108,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 		$cdm = $this->sm->get('CmsDocumentManager');
 		
 		$msgType = 'text';
-		$reply = "感谢您关注本公众号";
+		$reply = $keyword;
 		
 		$xml = "";
 		

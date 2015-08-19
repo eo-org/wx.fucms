@@ -138,7 +138,7 @@ class CallbackController extends AbstractActionController
     	
     	$sm = $this->getServiceLocator();
     	//$dm = $sm->get('DocumentManager');
-    	//$appId = $this->params()->fromRoute('appId');
+    	$appxxxId = $this->params()->fromRoute('appId');
     	
     	
     	$q = $this->params()->fromQuery();
@@ -156,7 +156,7 @@ class CallbackController extends AbstractActionController
     	
     	$messageReply = $sm->get('Application\Service\MessageReply');
     	
-    	$xml = $messageReply->getReply($appId, $openId, 'xyz');
+    	$xml = $messageReply->getReply($appId, $openId, $appId.' = '.$appxxxId);
     	
     	
     	
