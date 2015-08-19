@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * collection="wx_query"
  * )
  */
-class Query
+class _Query
 {
 	/**
 	 * @ODM\Id

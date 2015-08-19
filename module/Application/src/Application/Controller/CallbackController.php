@@ -163,24 +163,33 @@ class CallbackController extends AbstractActionController
     	$replyResult = array('status' => false);
     	$messageReply = $sm->get('Application\Service\MessageReply');
     	//获取用户信息
-    	$pa = $sm->get('Application\Service\PublicityAuth');
-    	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
-    	$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
-    	$ch = curl_init();
-    	curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    	curl_setopt($ch, CURLOPT_HEADER, 0);
-    	$output = curl_exec($ch);
-    	curl_close($ch);
-    	$userData = json_decode($output, true);
-    	//获取用户信息结束
-    	$messageData['nickname'] = $userData['nickname'];
-    	$messageData['headimgurl'] = $userData['headimgurl'];
+    	
+    	
+    	
     	if($msgType == 'event') {
     		$Event = (string)$postObj->Event;
     		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
+    				
+    				$pa = $sm->get('Application\Service\PublicityAuth');
+    				$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    				$getUserInfoUrl = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openId.'&lang=zh_CN';
+    				$ch = curl_init();
+    				curl_setopt($ch, CURLOPT_URL, $getUserInfoUrl);
+    				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    				curl_setopt($ch, CURLOPT_HEADER, 0);
+    				$output = curl_exec($ch);
+    				curl_close($ch);
+    				$userData = json_decode($output, true);
+    				//获取用户信息结束
+    				$messageData['nickname'] = $userData['nickname'];
+    				$messageData['headimgurl'] = $userData['headimgurl'];
+    				
+    				
+    				
+    				
+    				
     				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     				$settingData = $settingDoc->getArrayCopy();
     				$messageData['msg'] = array(
@@ -189,8 +198,8 @@ class CallbackController extends AbstractActionController
     					
     				);
     				if($settingData['isAddFriendReplyOpen']) {
-    					$replyResult = $messageReply->getKeywordReply($postObj, $settingData['addFriendAutoreplyInfo']);
-    					$messageData['msg']['reply'] = $replyResult;
+    					$xml = $messageReply->getKeywordReply($postObj, $settingData['addFriendAutoreplyInfo']);
+    					//$messageData['msg']['reply'] = $replyResult;
     				}
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
@@ -204,40 +213,45 @@ class CallbackController extends AbstractActionController
 						->field('openid')->equals($openid)
 						->getQuery()
 						->execute();
-    				$messageData['content'] = '取消关注=>'.$openid;
+    				//$messageData['content'] = '取消关注=>'.$openid;
+    				$xml = "";
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
-    				$replyResult = $messageReply->getKeywordReply($postObj, $EventKey);
-    				$messageData['content'] = $EventKey;
+    				$xml = $messageReply->getReply($appId, $openId, $EventKey);
+    				//$messageData['content'] = $EventKey;
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
-    				$replyResult = $messageReply->getKeywordReply($postObj, $EventKey);
-    				$messageData['content'] = $EventKey;
+    				$xml = $messageReply->getReply($appId, $openId, $EventKey);
+    				//$messageData['content'] = $EventKey;
     				break;
     		}
-    	} else {
-    		$messageData['type'] = $msgType;
-    		switch ($msgType) {
-    			case 'text':    				
-    				$content = (string)$postObj->Content;
-    				$replyResult = $messageReply->getKeywordReply($postObj, $content);
-    				$messageData['content'] = $content;
-    				break;
-    		}
-    	}    	
-    	if($replyResult['status']) {
-    		$result = $this->getResultXml($replyResult['data']);
-    		$enResult = $wxEncrypt->Encrypt($result);
-    		if($enResult['status']) {
-    			$resultStr = $enResult['msg'];
-    		}
+    	} else if($msgType == 'text') {
+    		
+    		$keyword = (string)$postObj->Content;
+    		$xml = $messageReply->getReply($appId, $openId, $keyword);
+    		
+    		
+    		//$messageData['type'] = $msgType;
+//     		switch ($msgType) {
+//     			case 'text':    				
+    				
+    			//	$messageData['content'] = $content;
+//     				break;
+//     		}
     	}
-    	$messageDoc = new Message();
-    	$messageDoc->exchangeArray($messageData);    	
-    	$cdm->persist($messageDoc);
-    	$cdm->flush();
+    	//if($replyResult['status']) {
+		//$result = $this->getResultXml($replyResult['data']);
+		$enResult = $wxEncrypt->Encrypt($xml);
+		if($enResult['status']) {
+			$resultStr = $enResult['msg'];
+		}
+    	//}
+//     	$messageDoc = new Message();
+//     	$messageDoc->exchangeArray($messageData);    	
+//     	$cdm->persist($messageDoc);
+//     	$cdm->flush();
     	
     	return new ConsoleModel(array('result' => $resultStr));
     }

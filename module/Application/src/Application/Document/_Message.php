@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * collection="wx_message"
  * )
  */
-class Message
+class _Message
 {
 	/**
 	 * @ODM\Id
