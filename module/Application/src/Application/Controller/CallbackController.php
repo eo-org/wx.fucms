@@ -137,7 +137,7 @@ class CallbackController extends AbstractActionController
     	$resultStr = '';
     	
     	$sm = $this->getServiceLocator();
-    	//$dm = $sm->get('DocumentManager');
+    	$dm = $sm->get('DocumentManager');
     	
     	
     	$q = $this->params()->fromQuery();
