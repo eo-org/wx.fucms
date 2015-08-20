@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * collection="log"
  * )
  */
-class Log extends AbstractDocument
+class Log
 {
 	/**
 	 * @ODM\Id
