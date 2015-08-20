@@ -165,7 +165,7 @@ class CallbackController extends AbstractActionController
     	
 //     	return new ConsoleModel(array('result' => $resultStr));
     	
-    	
+    	$appId = $this->params()->fromRoute('appId');
     	
     	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
