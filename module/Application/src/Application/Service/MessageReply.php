@@ -46,7 +46,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 			<Url><![CDATA[%s]]></Url>
 			</item>";
 		
-		$customerServiceTpl = "<xml>
+		$this->customerServiceTpl = "<xml>
 			<ToUserName><![CDATA[%s]]></ToUserName>
 			<FromUserName><![CDATA[%s]]></FromUserName>
 			<CreateTime>%s</CreateTime>
@@ -137,12 +137,6 @@ class MessageReply implements ServiceLocatorAwareInterface
 					$articleList[] = $newsDoc->getArrayCopy();
 				}
 				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
-				
-				
-				$logger = $this->getServiceLocator()->get('Logger');
-				
-				$logger->write($xml);
-				
 				break;
 		}
 		return $xml;
