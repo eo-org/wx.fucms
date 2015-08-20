@@ -1,7 +1,7 @@
 <?php
 namespace Application\Service;
 
-use Application\Document\Logger;
+use Application\Document\Log;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -23,7 +23,7 @@ class Logger implements ServiceLocatorAwareInterface
 	{
 		$wxDm = $this->getServiceLocator()->get('DocumentManager');
 		
-		$logDoc = new Logger();
+		$logDoc = new Log();
 		$logDoc->setMsg($msg);
 		
 		$wxDm->clear();
