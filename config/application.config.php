@@ -5,7 +5,7 @@ return array(
 		 * *****basic modules******
 		 */
 		'Application',
-		'Site',
+		//'Site',
 		'DoctrineMongo'
 	),
 	'module_listener_options' => array(
