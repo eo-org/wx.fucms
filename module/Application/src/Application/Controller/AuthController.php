@@ -23,7 +23,11 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
     	$websiteId = $this->params()->fromRoute('websiteId');
-    	$cmsDbSeq = $this->params()->fromRoute('cmsDbSeq');
+    	
+    	
+    	
+    	
+    	
     	$sm = $this->getServiceLocator();
     	$config = $sm->get('Config');
     	$wx = $config['env']['wx'];
@@ -55,6 +59,24 @@ class AuthController extends AbstractActionController
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByWebsiteId($websiteId);
     	if(is_null($authDoc)){
     		$authDoc = new Auth();
+    		
+    		
+    		$host = $config['env']['account_fucms_db']['host'];
+    		$username = $config['env']['account_fucms_db']['username'];
+    		$password = $config['env']['account_fucms_db']['password'];
+    		$m = new \MongoClient($host, array(
+    			'username' => $username,
+    			'password' => $password,
+    			'db' => 'admin'
+    		));
+    		
+    		$db = $m->selectDb('account_fucms');
+    		$siteArr = $db->website->findOne(array(
+    			'_id' => new \MongoId($websiteId)
+    		));
+
+    		$cmsDbSeq = $siteArr['globalSiteId'];
+    		$authInfoResult['authorization_info']['cmsDbSeq'] = $cmsDbSeq;
     	}
     	$authInfoResult['authorization_info']['websiteId'] = $websiteId;
     	$authInfoResult['authorization_info']['msg'] = array('q'=>$q, 'authCode'=>$authCode);
