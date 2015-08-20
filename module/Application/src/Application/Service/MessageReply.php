@@ -124,14 +124,9 @@ class MessageReply implements ServiceLocatorAwareInterface
 				$newsIdArr = $queryDoc->getNews();
 				
 				$idArr = array();
-				foreach($newsIdArr as $id => $label) {
-					$idArr[] = $id;
+				foreach($newsIdArr as $newsItem) {
+					$idArr[] = $newsItem['id'];
 				}
-				
-				
-				
-				
-				
 				
 				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
 					->field('id')->in($idArr)
