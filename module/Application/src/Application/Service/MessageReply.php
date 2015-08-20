@@ -71,12 +71,12 @@ class MessageReply implements ServiceLocatorAwareInterface
 	
 	protected function _getNewsXml($mpId, $openId, $articleList)
 	{
-		$articlesStr = '';
-		foreach ($articleList as $item){
+		$articleListStr = '';
+		foreach($articleList as $item) {
 			$itemStr = sprintf($this->newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
-			$articlesStr .= $itemStr;
+			$articleListStr.= $itemStr;
 		}
-		$resultStr = sprintf($this->newsTpl, $openId, $mpId, time(), count($articleList), $articlesStr);
+		$resultStr = sprintf($this->newsTpl, $openId, $mpId, time(), count($articleList), $articleListStr);
 	}
 	
 	protected function _getCustomerServiceXml($mpId, $openId)
@@ -137,6 +137,12 @@ class MessageReply implements ServiceLocatorAwareInterface
 					$articleList[] = $newsDoc->getArrayCopy();
 				}
 				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
+				
+				
+				$logger = $this->getServiceLocator()->get('Logger');
+				
+				$logger->write($xml);
+				
 				break;
 		}
 		return $xml;

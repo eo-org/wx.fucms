@@ -138,6 +138,7 @@ return array(
 	),
 	'service_manager' => array(
 		'invokables' => array(
+			'Logger' => 'Application\Service\Logger',
 			'Application\Service\PublicityAuth' => 'Application\Service\PublicityAuth',
 			'Application\Service\MessageReply'	=> 'Application\Service\MessageReply',
 		),
