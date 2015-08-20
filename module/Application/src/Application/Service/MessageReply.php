@@ -76,7 +76,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 			$itemStr = sprintf($this->newsItemTpl, $item['title'], $item['description'], $item['coverUrl'], $item['url']);
 			$articleListStr.= $itemStr;
 		}
-		$resultStr = sprintf($this->newsTpl, $openId, $mpId, time(), count($articleList), $articleListStr);
+		return sprintf($this->newsTpl, $openId, $mpId, time(), count($articleList), $articleListStr);
 	}
 	
 	protected function _getCustomerServiceXml($mpId, $openId)
