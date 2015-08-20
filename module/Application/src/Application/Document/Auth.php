@@ -25,12 +25,17 @@ class Auth extends AbstractDocument
 	/**
 	 * @ODM\Field(type="string")
 	 */
-	protected $status = 'active';
+	protected $authorizerAppid;
 	
 	/**
 	 * @ODM\Field(type="string")
 	 */
-	protected $authorizerAppid;
+	protected $cmsDbSeq;
+	
+	/**
+	 * @ODM\Field(type="string")
+	 */
+	protected $status = 'active';
 	
 	/**
 	 * @ODM\Field(type="string")
@@ -87,6 +92,10 @@ class Auth extends AbstractDocument
 			$this->authorizerAppid = $data['authorizer_appid'];
 		}
 		
+		if(isset($data['cmsDbSeq'])){
+			$this->cmsDbSeq = $data['cmsDbSeq'];
+		}
+		
 		if(isset($data['authorizer_access_token'])){
 			$this->authorizerAccessToken = $data['authorizer_access_token'];
 		}
@@ -125,6 +134,7 @@ class Auth extends AbstractDocument
 			'id' => $this->id,
 			'websiteId' => $this->websiteId,
 			'authorizerAppid'	=> $this->authorizerAppid,
+			'cmsDbSeq' => $this->cmsDbSeq,
 			'authorizerAccessToken'	=> $this->authorizerAccessToken,
 			'expiresIn'	=> $this->expiresIn,
 			'authorizerRefreshToken'		=> $this->authorizerRefreshToken,

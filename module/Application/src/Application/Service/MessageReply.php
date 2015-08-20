@@ -97,7 +97,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 		$keyword = (string)$keyword;
 		$cdm = $this->sm->get('CmsDocumentManager');
 		
-		$msgType = 'text';
+		$replyType = 'text';
 		$reply = '欢迎使用本服务号为您服务';
 		
 		$xml = "";
@@ -111,11 +111,11 @@ class MessageReply implements ServiceLocatorAwareInterface
 				->getQuery()
 				->getSingleResult();
 			if(!is_null($queryDoc)) {
-				$msgType = $queryDoc->getType();
+				$replyType = $queryDoc->getType();
 				$reply = $queryDoc->getContent();
 			}
 		}
-		switch ($msgType){
+		switch ($replyType){
 			case 'text':
 				$xml = $this->_getTextXml($mpId, $openId, $reply);
 				break;

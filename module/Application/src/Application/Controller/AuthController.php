@@ -23,6 +23,7 @@ class AuthController extends AbstractActionController
     public function indexAction()
     {
     	$websiteId = $this->params()->fromRoute('websiteId');
+    	$cmsDbSeq = $this->params()->fromRoute('cmsDbSeq');
     	$sm = $this->getServiceLocator();
     	$config = $sm->get('Config');
     	$wx = $config['env']['wx'];

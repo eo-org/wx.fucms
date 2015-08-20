@@ -150,8 +150,6 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-    	
-    	
     	$messageReply = $sm->get('Application\Service\MessageReply');
     	
 //     	$xml = $messageReply->getReply($mpId, $openId, $appId.' = '.$appxxxId);
@@ -170,12 +168,12 @@ class CallbackController extends AbstractActionController
     	
     	
     	
-//     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
-//     	if($authDoc == null) {
-//     		return new ConsoleModel(array('result' => "数据没有绑定"));
-//     	}
-//     	$websiteId = $authDoc->getWebsiteId();
-//     	SiteInfo::setWebsiteId($websiteId);
+    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+    	if($authDoc == null) {
+    		return new ConsoleModel(array('result' => "数据没有绑定"));
+    	}
+    	$websiteId = $authDoc->getWebsiteId();
+    	SiteInfo::setWebsiteId($websiteId);
     	
     	    	
     	

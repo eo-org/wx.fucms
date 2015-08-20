@@ -90,25 +90,25 @@ return array(
             		),
             	)
             ),
-        	'admrs' => array(
-        		'type'    => 'literal',
-        		'options' => array(
-        			'route'    => '/admrs'
-        		),
-        		'may_terminate' => true,
-        		'child_routes' => array (
-					'restroutes' => array (
-						'type' => 'segment',
-						'options' => array (
-							'route' => '[/:controller].json[/:id]',
-							'constraints' => array (
-								'controller' => '[a-z-]*',
-								'id' => '[A-Za-z0-9-_]*'
-							)
-						)
-					)
-				)
-            )
+//         	'admrs' => array(
+//         		'type'    => 'literal',
+//         		'options' => array(
+//         			'route'    => '/admrs'
+//         		),
+//         		'may_terminate' => true,
+//         		'child_routes' => array (
+// 					'restroutes' => array (
+// 						'type' => 'segment',
+// 						'options' => array (
+// 							'route' => '[/:controller].json[/:id]',
+// 							'constraints' => array (
+// 								'controller' => '[a-z-]*',
+// 								'id' => '[A-Za-z0-9-_]*'
+// 							)
+// 						)
+// 					)
+// 				)
+//             )
         ),
     ),
     'view_manager' => array(
@@ -142,7 +142,8 @@ return array(
 			'Application\Service\MessageReply'	=> 'Application\Service\MessageReply',
 		),
 		'factories' => array(
-			'CmsDocumentManager' => 'Application\Service\Db\CmsDocumentManagerFactory',
+			'CmsDocumentManager'	=> 'Application\Service\Db\CmsDocumentManagerFactory',
+			'WxDocumentManager'		=> 'Application\Service\Db\WxDocumentManagerFatory'
 		)
 	)
 );
