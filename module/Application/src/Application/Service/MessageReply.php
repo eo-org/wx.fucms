@@ -128,6 +128,11 @@ class MessageReply implements ServiceLocatorAwareInterface
 					$idArr[] = $id;
 				}
 				
+				
+				
+				
+				
+				
 				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
 					->field('id')->in($idArr)
 					->getQuery()
@@ -136,7 +141,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 				foreach ($newsDocs as $newsDoc){
 					$articleList[] = $newsDoc->getArrayCopy();
 				}
-				$sml = $this->_getNewsXml($mpId, $openId, $articleList);
+				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
 				break;
 		}
 		return $xml;
