@@ -11,6 +11,60 @@ class ApiController extends AbstractActionController
     	return new JsonModel(array('msg' => 'api action required'));
     }
     
+    public function openIdAction()
+    {
+    	
+    }
+    
+    public function userInfoAction()
+    {
+    	$appId = $this->params()->fromQuery('appId');
+    	$code = $this->params()->fromQuery('code');
+    	
+    	$sm = $this->getServiceLocator();
+    	
+    	$pa = $sm->get('Application\Service\PublicityAuth');
+    	$componentAppId = $pa->getComponentAppId();
+    	$componentAccessToken = $pa->getComponentAccessToken($websiteId);
+    	
+    	
+    	$url = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid=".$appId."&code=".$code."&grant_type=authorization_code&component_appid=".$componentAppId."&component_access_token=".$componentAccessToken;
+    	
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+    	
+    	$userObj = json_decode($output);
+    	
+//     	$pa = $sm->get('Application\Service\PublicityAuth');
+//     	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+//     	$ch = curl_init();
+//     	curl_setopt($ch, CURLOPT_URL, 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$authorizerAccessToken.'&type=jsapi');
+//     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//     	curl_setopt($ch, CURLOPT_HEADER, 0);
+//     	$output = curl_exec($ch);
+//     	curl_close($ch);
+    	
+//     	$ticketObj = json_decode($output);
+//     	$ticket = $ticketObj->ticket;
+//     	$currentDateTime = new \DateTime();
+//     	$data = array(
+//     		'jsApiTicket' => $ticket,
+//     		'jsApiTicketModified' => $currentDateTime,
+//     	);
+//     	$authDoc->exchangeArray($data);
+//     	$dm->persist($authDoc);
+//     	$dm->flush();
+
+    	
+    	return new JsonModel(array(
+    		'openId' => $userObj->openId,
+    		'scope' => $userObj->scope
+    	));
+    }
+    
     public function componentAccessTokenAction()
     {
     	$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');

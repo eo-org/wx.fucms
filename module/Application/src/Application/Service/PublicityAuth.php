@@ -20,6 +20,13 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 		return $this->sm;
 	}
 	
+	public function getComponentAppId()
+	{
+		$config = $this->sm->get('Config');
+		$wx = $config['env']['wx'];
+		return $wx['appId'];
+	}
+	
 	public function getComponentAccessToken()
 	{
 		$dm = $this->sm->get('DocumentManager');
