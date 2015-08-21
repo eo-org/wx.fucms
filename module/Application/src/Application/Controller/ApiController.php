@@ -60,7 +60,7 @@ class ApiController extends AbstractActionController
 
     	
     	return new JsonModel(array(
-    		'openId' => $userObj->openId,
+    		'openId' => $userObj->openid,
     		'scope' => $userObj->scope
     	));
     }
