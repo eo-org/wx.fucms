@@ -25,7 +25,7 @@ class ApiController extends AbstractActionController
     	
     	$pa = $sm->get('Application\Service\PublicityAuth');
     	$componentAppId = $pa->getComponentAppId();
-    	$componentAccessToken = $pa->getComponentAccessToken($websiteId);
+    	$componentAccessToken = $pa->getComponentAccessToken();
     	
     	
     	$url = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid=".$appId."&code=".$code."&grant_type=authorization_code&component_appid=".$componentAppId."&component_access_token=".$componentAccessToken;

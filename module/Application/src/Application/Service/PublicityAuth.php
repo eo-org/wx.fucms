@@ -71,11 +71,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			curl_close($ch);
 			
 			$tokenResultStr = $output;
-			
-			
-			
 			$tokenResultArr = json_decode($tokenResultStr , true);
-			
 			
 			$currentDateTime = new \DateTime();
 			
@@ -90,10 +86,6 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			$dm->persist($tokenDoc);
 			$dm->flush();
 		}
-		
-		
-		
-		
 		return $tokenDoc->getValue();
 	}
 	
