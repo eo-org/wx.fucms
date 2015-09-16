@@ -18,6 +18,7 @@ class Module implements BootstrapListenerInterface
 		
 		$fileConfig = $sm->get('Config');
 		$env = $fileConfig['env'];
+		$auth = $fileConfig['auth'];
 		
 		AnnotationDriver::registerAnnotationClasses();
 		$config = new Configuration();
@@ -34,8 +35,8 @@ class Module implements BootstrapListenerInterface
 			$config->setAutoGenerateProxyClasses(false);
 		}
 		$connection = new Connection('127.0.0.1', array(
-			'username' => 'craftgavin',
-			'password' => 'whothirstformagic?',
+			'username' => $auth['db']['username'],
+			'password' => $auth['db']['password'],
 			'db' => 'admin'
 		));
 		$connection->initialize();
