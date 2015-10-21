@@ -20,6 +20,63 @@ class ApiController extends AbstractActionController
     {
     	$appId = $this->params()->fromQuery('appId');
     	$code = $this->params()->fromQuery('code');
+    	 
+    	$sm = $this->getServiceLocator();
+    	 
+    	$pa = $sm->get('Application\Service\PublicityAuth');
+    	$componentAppId = $pa->getComponentAppId();
+    	$componentAccessToken = $pa->getComponentAccessToken();
+    	 
+    	 
+    	$url = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid=".$appId."&code=".$code."&grant_type=authorization_code&component_appid=".$componentAppId."&component_access_token=".$componentAccessToken;
+    	 
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+    	 
+    	$accessTokenObj = json_decode($output);
+		
+    	$accessToken = $accessTokenObj->access_token;
+    	$openid = $accessTokenObj->openid;
+    	
+    	$url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$accessToken.'&openid='.$openId.'&lang=zh_CN';
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
+    		
+    	$userInfo = json_decode($output, true);
+    	//     	$pa = $sm->get('Application\Service\PublicityAuth');
+    	//     	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    	//     	$ch = curl_init();
+    	//     	curl_setopt($ch, CURLOPT_URL, 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$authorizerAccessToken.'&type=jsapi');
+    	//     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	//     	curl_setopt($ch, CURLOPT_HEADER, 0);
+    	//     	$output = curl_exec($ch);
+    	//     	curl_close($ch);
+    	 
+    	//     	$ticketObj = json_decode($output);
+    	//     	$ticket = $ticketObj->ticket;
+    	//     	$currentDateTime = new \DateTime();
+    	//     	$data = array(
+    	//     		'jsApiTicket' => $ticket,
+    	//     		'jsApiTicketModified' => $currentDateTime,
+    	//     	);
+    	//     	$authDoc->exchangeArray($data);
+    	//     	$dm->persist($authDoc);
+    	//     	$dm->flush();
+    	
+    	 
+    	return new JsonModel($userInfo);
+    }
+    
+    public function userBaseAction()
+    {
+    	$appId = $this->params()->fromQuery('appId');
+    	$code = $this->params()->fromQuery('code');
     	
     	$sm = $this->getServiceLocator();
     	
@@ -61,7 +118,7 @@ class ApiController extends AbstractActionController
     	
     	return new JsonModel(array(
     		'openId' => $userObj->openid,
-    		'scope' => $userObj->scope
+    		//'scope' => $userObj->scope
     	));
     }
     
