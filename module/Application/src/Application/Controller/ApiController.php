@@ -41,7 +41,7 @@ class ApiController extends AbstractActionController
     	$accessToken = $accessTokenObj->access_token;
     	$openid = $accessTokenObj->openid;
     	
-    	$url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$accessToken.'&openid='.$openId.'&lang=zh_CN';
+    	$url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$accessToken.'&openid='.$openid.'&lang=zh_CN';
     	$ch = curl_init();
     	curl_setopt($ch, CURLOPT_URL, $url);
     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
