@@ -213,22 +213,17 @@ class CallbackController extends AbstractActionController
     				curl_close($ch);
     				$userData = json_decode($output, true);
     				//获取用户信息结束
-    				$messageData['nickname'] = $userData['nickname'];
-    				$messageData['headimgurl'] = $userData['headimgurl'];
-    				
-    				
-    				
-    				
-    				
+//     				$messageData['nickname'] = $userData['nickname'];
+//     				$messageData['headimgurl'] = $userData['headimgurl'];
     				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     				$settingData = $settingDoc->getArrayCopy();
-    				$messageData['msg'] = array(
-    					'isAddFriendReplyOpen' => $settingData['isAddFriendReplyOpen'],
-    					'addFriendAutoreplyInfo' => $settingData['addFriendAutoreplyInfo']
+//     				$messageData['msg'] = array(
+//     					'isAddFriendReplyOpen' => $settingData['isAddFriendReplyOpen'],
+//     					'addFriendAutoreplyInfo' => $settingData['addFriendAutoreplyInfo']
     					
-    				);
+//     				);
     				if($settingData['isAddFriendReplyOpen']) {
-    					$xml = $messageReply->getKeywordReply($postObj, $settingData['addFriendAutoreplyInfo']);
+    					$xml = $messageReply->getReply($mpId, $openId, $settingData['addFriendAutoreplyInfo']);
     					//$messageData['msg']['reply'] = $replyResult;
     				}
     				$userDoc = new User();
