@@ -45,7 +45,7 @@ class PublicityAuth implements ServiceLocatorAwareInterface
 			$modified = $tokenDoc->getModified()->format('y-m-d H:i:s');
 			$currentTimestamp = time();
 			$timestamp = strtotime ($modified);
-			if($currentTimestamp - $timestamp > 6000) {
+			if($currentTimestamp - $timestamp > 4800) {
 				$regenerateToken = true;
 			}
 		}
