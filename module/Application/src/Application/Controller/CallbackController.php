@@ -150,55 +150,80 @@ class CallbackController extends AbstractActionController
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
     	
-    	$messageReply = $sm->get('Application\Service\MessageReply');
-    	
-//     	$xml = $messageReply->getReply($mpId, $openId, $appId.' = '.$appxxxId);
-    	
-    	
-    	
-//     	$enResult = $wxEncrypt->Encrypt($xml);
-//     	if($enResult['status']) {
-//     		$resultStr = $enResult['msg'];
-//     	}
-    	
-    	
-    	
-//     	return new ConsoleModel(array('result' => $resultStr));
-    	
-    	$appId = $this->params()->fromRoute('appId');
-    	
-    	
+    	$messageReply = $sm->get('Application\Service\MessageReply');    	
+    	$appId = $this->params()->fromRoute('appId');    	
     	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
     	if($authDoc == null) {
     		return new ConsoleModel(array('result' => "数据没有绑定"));
     	}
+    	/***全网发布校验***/
+    	if($mpId == 'gh_3c884a361561'){
+    		$returnData = array(
+    			'FromUserName' => $mpId,
+    			'ToUserName' => $openId
+    		);
+    		if($msgType == 'event '){
+				$returnData['MsgType'] = 'text';
+				$returnData['Content'] = (string)$Event.'from_callback';
+			}else if($msgType == 'text') {
+				$keyword = (string)$postObj->Content;
+				if($keyword == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
+					$returnData['MsgType'] = 'text';
+					$returnData['Content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT_callback';
+				}else {
+					$keyword = strstr($keyword,':');
+					$content = substr($keyword, 1);
+					$touserData = array(
+							'touser' => $openId,
+							'msgtype' => 'text',
+							'text' => array(
+								'content' => $content.'_from_api',
+							),
+					);
+					$pa = $sm->get('Application\Service\PublicityAuth');
+					$accessToken = $pa->getComponentAccessToken();
+					$url = 'https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token='.$accessToken;
+						
+					$postData = array('component_appid' => 'wx2ce4babba45b702d','authorization_code' => $content);
+					$postData = json_encode($postData);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_POST, 1);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+					$output = curl_exec($ch);
+					curl_close($ch);
+						
+					$tokenResult = json_decode($output, true);
+					$token = $tokenResult['authorization_info']['authorizer_access_token'];
+					
+					$touserData = json_encode($touserData);
+					$url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token='.$token;
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_POST, 1);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
+					$output = curl_exec($ch);
+					curl_close($ch);
+					return new ConsoleModel(array('result' => ''));
+				}
+			}
+			$result = $this->getResultXml($returnData);
+			$enResult = $wxEncrypt->Encrypt($result);
+			if($enResult['status']) {
+				$resultStr = $enResult['msg'];
+			} else {
+				$resultStr= 'success';
+			}
+			return new ConsoleModel(array('result' => $resultStr));			
+    	}
+    	/***全网发布校验结束**/
     	$websiteId = $authDoc->getWebsiteId();
     	SiteInfo::setWebsiteId($websiteId);
-    	
-    	    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	$messageData = array(
-    		'openId' => $openId,
-    	);
-    	$replyResult = array('status' => false);
-    	//$messageReply = $sm->get('Application\Service\MessageReply');
-    	//获取用户信息
-    	
-    	
-    	
+    	$replyResult = array('status' => false);    	
     	if($msgType == 'event') {
     		$Event = (string)$postObj->Event;
-    		$messageData['type'] = $Event;
     		switch ($Event) {
     			case 'subscribe':
     				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
@@ -213,18 +238,11 @@ class CallbackController extends AbstractActionController
     				curl_close($ch);
     				$userData = json_decode($output, true);
     				//获取用户信息结束
-//     				$messageData['nickname'] = $userData['nickname'];
-//     				$messageData['headimgurl'] = $userData['headimgurl'];
+    				
     				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     				$settingData = $settingDoc->getArrayCopy();
-//     				$messageData['msg'] = array(
-//     					'isAddFriendReplyOpen' => $settingData['isAddFriendReplyOpen'],
-//     					'addFriendAutoreplyInfo' => $settingData['addFriendAutoreplyInfo']
-    					
-//     				);
     				if($settingData['isAddFriendReplyOpen']) {
     					$xml = $messageReply->getReply($mpId, $openId, $settingData['addFriendAutoreplyInfo']);
-    					//$messageData['msg']['reply'] = $replyResult;
     				}
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
@@ -232,53 +250,32 @@ class CallbackController extends AbstractActionController
     				break;
     			case 'unsubscribe':
     				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
-    				$messageData['content'] = '取消关注';
     				$openid = (string)$openId;
     				$cdm->createQueryBuilder('WxDocument\User')
 						->remove()
 						->field('openid')->equals($openid)
 						->getQuery()
 						->execute();
-    				//$messageData['content'] = '取消关注=>'.$openid;
     				$xml = "";
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
     				$xml = $messageReply->getReply($mpId, $openId, $EventKey);
-    				//$messageData['content'] = $EventKey;
     				break;
     			case 'SCAN':
     				$EventKey = (string)$postObj->EventKey;
     				$xml = $messageReply->getReply($mpId, $openId, $EventKey);
-    				//$messageData['content'] = $EventKey;
     				break;
     		}
     	} else if($msgType == 'text') {
     		
     		$keyword = (string)$postObj->Content;
     		$xml = $messageReply->getReply($mpId, $openId, $keyword);
-    		
-    		
-    		//$messageData['type'] = $msgType;
-//     		switch ($msgType) {
-//     			case 'text':    				
-    				
-    			//	$messageData['content'] = $content;
-//     				break;
-//     		}
     	}
-    	//if($replyResult['status']) {
-		//$result = $this->getResultXml($replyResult['data']);
 		$enResult = $wxEncrypt->Encrypt($xml);
 		if($enResult['status']) {
 			$resultStr = $enResult['msg'];
-		}
-    	//}
-//     	$messageDoc = new Message();
-//     	$messageDoc->exchangeArray($messageData);    	
-//     	$cdm->persist($messageDoc);
-//     	$cdm->flush();
-    	
+		}    	
     	return new ConsoleModel(array('result' => $resultStr));
     }
 }
