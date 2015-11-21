@@ -157,12 +157,12 @@ class CallbackController extends AbstractActionController
     		return new ConsoleModel(array('result' => "数据没有绑定"));
     	}
     	/***全网发布校验***/
-    	if($mpId == 'gh_3c884a361561'){
+    	if($mpId == 'gh_3c884a361561' || $mpId == 'gh_3a8099fdd6b1'){
     		$returnData = array(
     			'FromUserName' => $mpId,
     			'ToUserName' => $openId
     		);
-    		if($msgType == 'event '){
+    		if($msgType == 'event'){
     			$Event = $postObj->Event;
 				$returnData['MsgType'] = 'text';
 				$returnData['Content'] = (string)$Event.'from_callback';
