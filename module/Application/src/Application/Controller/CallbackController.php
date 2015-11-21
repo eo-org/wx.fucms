@@ -149,13 +149,7 @@ class CallbackController extends AbstractActionController
     	$mpId = $postObj->ToUserName;
     	$openId = $postObj->FromUserName;
     	$msgType = $postObj->MsgType;
-    	
-    	$messageReply = $sm->get('Application\Service\MessageReply');    	
-    	$appId = $this->params()->fromRoute('appId');    	
-    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
-    	if($authDoc == null) {
-    		return new ConsoleModel(array('result' => "数据没有绑定"));
-    	}
+    	$messageReply = $sm->get('Application\Service\MessageReply');
     	/***全网发布校验***/
     	if($mpId == 'gh_3c884a361561' || $mpId == 'gh_3a8099fdd6b1'){
     		$returnData = array(
@@ -220,6 +214,11 @@ class CallbackController extends AbstractActionController
 			return new ConsoleModel(array('result' => $resultStr));			
     	}
     	/***全网发布校验结束**/
+    	$appId = $this->params()->fromRoute('appId');
+    	$authDoc = $dm->getRepository('Application\Document\Auth')->findOneByAuthorizerAppid($appId);
+    	if($authDoc == null) {
+    		return new ConsoleModel(array('result' => "数据没有绑定"));
+    	}
     	$websiteId = $authDoc->getWebsiteId();
     	SiteInfo::setWebsiteId($websiteId);
     	$replyResult = array('status' => false);    	
