@@ -169,7 +169,7 @@ class CallbackController extends AbstractActionController
 					$content = strstr($content,':');
 					$content = substr($content, 1);
 					$touserData = array(
-							'touser' => $openId,
+							'touser' => 'ozy4qt1eDxSxzCr0aNT0mXCWfrDE',
 							'msgtype' => 'text',
 							'text' => array(
 								'content' => $content.'_from_api',
@@ -188,7 +188,7 @@ class CallbackController extends AbstractActionController
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 					$output = curl_exec($ch);
 					curl_close($ch);
-						
+					
 					$tokenResult = json_decode($output, true);
 					$token = $tokenResult['authorization_info']['authorizer_access_token'];
 					
@@ -201,6 +201,15 @@ class CallbackController extends AbstractActionController
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $touserData);
 					$output = curl_exec($ch);
 					curl_close($ch);
+					
+					$messageData['content'] = 'QUERY_AUTH_CODE';
+					$messageData['type'] = 'text';
+					$messageData['data'] = array('res'=>$postObj,'msg' => $tokenResult, 'return' => $output, 'auth_code' => $content);
+					$messageDoc = new Message();
+					$messageDoc->exchangeArray($messageData);
+					$dm->persist($messageDoc);
+					$dm->flush();
+					
 					return new ConsoleModel(array('result' => ''));
 				}
 			}
