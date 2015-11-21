@@ -163,11 +163,12 @@ class CallbackController extends AbstractActionController
     			'ToUserName' => $openId
     		);
     		if($msgType == 'event '){
+    			$Event = $postObj->Event;
 				$returnData['MsgType'] = 'text';
 				$returnData['Content'] = (string)$Event.'from_callback';
 			}else if($msgType == 'text') {
-				$keyword = (string)$postObj->Content;
-				if($keyword == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
+				$content = (string)$postObj->Content;
+				if($content == 'TESTCOMPONENT_MSG_TYPE_TEXT'){
 					$returnData['MsgType'] = 'text';
 					$returnData['Content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT_callback';
 				}else {
