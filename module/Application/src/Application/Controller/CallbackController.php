@@ -166,8 +166,8 @@ class CallbackController extends AbstractActionController
 					$returnData['MsgType'] = 'text';
 					$returnData['Content'] = 'TESTCOMPONENT_MSG_TYPE_TEXT_callback';
 				}else {
-					$keyword = strstr($keyword,':');
-					$content = substr($keyword, 1);
+					$content = strstr($content,':');
+					$content = substr($content, 1);
 					$touserData = array(
 							'touser' => $openId,
 							'msgtype' => 'text',
