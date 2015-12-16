@@ -256,6 +256,8 @@ class CallbackController extends AbstractActionController
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
     				$cdm->persist($userDoc);
+    				$cdm->flush();
+    				return new ConsoleModel(array('result' => 'success'));
     				break;
     			case 'unsubscribe':
     				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
