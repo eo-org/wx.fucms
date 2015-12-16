@@ -18,6 +18,7 @@ class ApiController extends AbstractActionController
     
     public function userInfoAction()
     {
+    	//网页授权获取用户信息
     	$appId = $this->params()->fromQuery('appId');
     	$code = $this->params()->fromQuery('code');
     	 
@@ -48,6 +49,25 @@ class ApiController extends AbstractActionController
     	$output = curl_exec($ch);
     	curl_close($ch);
     		
+    	$userInfo = json_decode($output, true);
+    	
+    	return new JsonModel($userInfo);
+    }
+    
+    public function userInfoApiAction()
+    {
+    	//以openid通过微信公众平台提供的API获取用户信息
+    	$websiteId = $this->params()->fromRoute('websiteId');
+    	$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
+    	$authorizerAccessToken = $pa->getAuthorizerAccessToken($websiteId);
+    	$openid = $this->params()->fromQuery('openid');
+    	
+    	$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$authorizerAccessToken.'&openid='.$openid.'&lang=zh_CN';
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $url);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	$output = curl_exec($ch);
+    	curl_close($ch);
     	$userInfo = json_decode($output, true);
     	
     	return new JsonModel($userInfo);
@@ -104,8 +124,8 @@ class ApiController extends AbstractActionController
     
     public function componentAccessTokenAction()
     {
+    	$websiteId = $this->params()->fromRoute('websiteId');
     	$pa = $this->getServiceLocator()->get('Application\Service\PublicityAuth');
-    	
     	$accessToken = $pa->getComponentAccessToken();
     	
     	return new JsonModel(array('componentAccessToken' => $accessToken));
