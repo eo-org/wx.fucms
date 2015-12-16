@@ -151,7 +151,7 @@ class CallbackController extends AbstractActionController
     	$msgType = $postObj->MsgType;
     	$messageReply = $sm->get('Application\Service\MessageReply');
     	/***全网发布校验***/
-    	if($mpId == 'gh_3c884a361561' || $mpId == 'gh_3a8099fdd6b1'){
+    	if($mpId == 'gh_3c884a361561'){
     		$returnData = array(
     			'FromUserName' => $mpId,
     			'ToUserName' => $openId
@@ -220,7 +220,7 @@ class CallbackController extends AbstractActionController
 			} else {
 				$resultStr= 'success';
 			}
-			return new ConsoleModel(array('result' => $resultStr));			
+			return new ConsoleModel(array('result' => $resultStr));
     	}
     	/***全网发布校验结束**/
     	$appId = $this->params()->fromRoute('appId');
@@ -265,7 +265,7 @@ class CallbackController extends AbstractActionController
 						->field('openid')->equals($openid)
 						->getQuery()
 						->execute();
-    				$xml = "";
+    				return new ConsoleModel(array('result' => 'success'));
     				break;
     			case 'CLICK':
     				$EventKey = (string)$postObj->EventKey;
