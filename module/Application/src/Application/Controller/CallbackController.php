@@ -250,14 +250,16 @@ class CallbackController extends AbstractActionController
     				
     				$settingDoc = $cdm->createQueryBuilder('WxDocument\Setting')->getQuery()->getSingleResult();
     				$settingData = $settingDoc->getArrayCopy();
-    				if($settingData['isAddFriendReplyOpen']) {
-    					$xml = $messageReply->getReply($mpId, $openId, $settingData['addFriendAutoreplyInfo']);
-    				}
+    				
     				$userDoc = new User();
     				$userDoc->exchangeArray($userData);
     				$cdm->persist($userDoc);
     				$cdm->flush();
-    				return new ConsoleModel(array('result' => 'success'));
+    				if($settingData['isAddFriendReplyOpen']) {
+    					$xml = $messageReply->getReply($mpId, $openId, $settingData['addFriendAutoreplyInfo']);
+    				}else {
+    					return new ConsoleModel(array('result' => ''));
+    				}    				
     				break;
     			case 'unsubscribe':
     				$cdm = $this->getServiceLocator()->get('CmsDocumentManager');
