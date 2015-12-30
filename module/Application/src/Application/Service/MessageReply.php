@@ -134,7 +134,12 @@ class MessageReply implements ServiceLocatorAwareInterface
 					->execute();
 				$articleList = array();
 				foreach ($newsDocs as $newsDoc){
-					$articleList[] = $newsDoc->getArrayCopy();
+					$newsData = $newsDoc->getArrayCopy();
+					if(!isset($newsData['url'])){
+						$newsData['url'] = $newsData['selfUrl'];
+					}
+					$articleList[] = $newsData;
+					$articleCount = $articleCount + 1;
 				}
 				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
 				break;
