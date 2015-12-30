@@ -211,7 +211,11 @@ class MessageReply implements ServiceLocatorAwareInterface
 								->getQuery()->execute();
 				$articles = array();
 				foreach ($newsDocs as $newsDoc){
-					$articles[] = $newsDoc->getArrayCopy();
+					$newsData = $newsDoc->getArrayCopy();
+					if(!isset($newsData['url'])){
+						$newsData['url'] = $newsData['selfUrl'];
+					}
+					$articles[] = $newsData;
 					$articleCount = $articleCount + 1;
 				}
 				$returnData['ArticleCount'] = $articleCount;
