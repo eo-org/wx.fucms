@@ -122,7 +122,6 @@ class MessageReply implements ServiceLocatorAwareInterface
 			case 'news':
 				$articleCount = 0;
 				$newsIdArr = $queryDoc->getNews();
-				
 // 				$idArr = array();
 // 				foreach($newsIdArr as $newsItem) {
 // 					$idArr[] = $newsItem['id'];
@@ -140,7 +139,6 @@ class MessageReply implements ServiceLocatorAwareInterface
 // 					$articleList[] = $newsData;
 // 					$articleCount = $articleCount + 1;
 // 				}
-
 				$articleList = array();
 				foreach($newsIdArr as $newsItem) {
 					$articleDoc = $dm->getRepository('WxDocument\Article')->findOneById($newsItem['id']);
@@ -153,6 +151,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 						$articleCount = $articleCount + 1;
 					}
 				}
+				
 				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
 				break;
 		}
