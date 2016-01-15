@@ -141,7 +141,7 @@ class MessageReply implements ServiceLocatorAwareInterface
 // 				}
 				$articleList = array();
 				foreach($newsIdArr as $newsItem) {
-					$articleDoc = $dm->getRepository('WxDocument\Article')->findOneById($newsItem['id']);
+					$articleDoc = $cdm->getRepository('WxDocument\Article')->findOneById($newsItem['id']);
 					if(!empty($articleDoc)){
 						$newsData = $articleDoc->getArrayCopy();
 						if(!isset($newsData['url'])){
