@@ -123,23 +123,35 @@ class MessageReply implements ServiceLocatorAwareInterface
 				$articleCount = 0;
 				$newsIdArr = $queryDoc->getNews();
 				
-				$idArr = array();
-				foreach($newsIdArr as $newsItem) {
-					$idArr[] = $newsItem['id'];
-				}
-				
-				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
-					->field('id')->in($idArr)
-					->getQuery()
-					->execute();
+// 				$idArr = array();
+// 				foreach($newsIdArr as $newsItem) {
+// 					$idArr[] = $newsItem['id'];
+// 				}
+// 				$newsDocs = $cdm->createQueryBuilder('WxDocument\Article')
+// 					->field('id')->in($idArr)
+// 					->getQuery()
+// 					->execute();
+// 				$articleList = array();
+// 				foreach ($newsDocs as $newsDoc){
+// 					$newsData = $newsDoc->getArrayCopy();
+// 					if(!isset($newsData['url'])){
+// 						$newsData['url'] = $newsData['selfUrl'];
+// 					}
+// 					$articleList[] = $newsData;
+// 					$articleCount = $articleCount + 1;
+// 				}
+
 				$articleList = array();
-				foreach ($newsDocs as $newsDoc){
-					$newsData = $newsDoc->getArrayCopy();
-					if(!isset($newsData['url'])){
-						$newsData['url'] = $newsData['selfUrl'];
+				foreach($newsIdArr as $newsItem) {
+					$articleDoc = $dm->getRepository('WxDocument\Article')->findOneById($newsItem['id']);
+					if(!empty($articleDoc)){
+						$newsData = $articleDoc->getArrayCopy();
+						if(!isset($newsData['url'])){
+							$newsData['url'] = $newsData['selfUrl'];
+						}
+						$articleList[] = $newsData;
+						$articleCount = $articleCount + 1;
 					}
-					$articleList[] = $newsData;
-					$articleCount = $articleCount + 1;
 				}
 				$xml = $this->_getNewsXml($mpId, $openId, $articleList);
 				break;
